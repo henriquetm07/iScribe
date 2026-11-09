@@ -36,7 +36,23 @@
   line-height: normal;
   white-space: nowrap;
   cursor: pointer;
-  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+  --btn-radius-hover: 10px;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease,
+    border-radius 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hover: corners ease to a 10px radius */
+.is-button:hover:not(:disabled) {
+  border-radius: var(--btn-radius-hover);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-button {
+    transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
 }
 
 .is-button:focus {
@@ -71,7 +87,8 @@
 .is-button--xl      { --btn-height: 60px; --btn-padding: 20px; --btn-gap: 12px; --btn-icon: 22px; --btn-font: 15px; --btn-radius: 20px; }
 .is-button--xxl     { --btn-height: 80px; --btn-padding: 24px; --btn-gap: 14px; --btn-icon: 28px; --btn-font: 18px; --btn-radius: 24px; }
 
-.is-button--rounded { --btn-radius: var(--is-radius-full); }
+/* Half the height gives the same pill shape as 1000px, but lets the hover radius animate smoothly */
+.is-button--rounded { --btn-radius: calc(var(--btn-height) / 2); }
 
 /* ---------- Primary ---------- */
 .is-button--primary {
