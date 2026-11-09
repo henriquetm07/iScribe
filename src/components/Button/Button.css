@@ -36,8 +36,9 @@
   line-height: normal;
   white-space: nowrap;
   cursor: pointer;
-  /* Hover radius scales with size: a quarter of the height (Mini 5 · Small 8 · Regular 10 · Big 12.5 · XL 15 · XXL 20) */
-  --btn-radius-hover: calc(var(--btn-height) / 4);
+  /* Hover makes corners rounder, scaled to size: base radius + 1/8 of the height
+     (Mini 6→8.5 · Small 10→14 · Regular 12→17 · Big 16→22.25 · XL 20→27.5 · XXL 24→34) */
+  --btn-radius-hover: calc(var(--btn-radius) + var(--btn-height) / 8);
   transition:
     background-color 120ms ease,
     border-color 120ms ease,
