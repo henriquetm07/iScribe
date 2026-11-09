@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
-import { Button, type ButtonSize, type ButtonVariant } from './Button';
+import { Button, type ButtonProps, type ButtonSize, type ButtonVariant } from './Button';
 
 /** Simple 16×16 placeholder icon for the stories; scales with the button size. */
 const PlaceholderIcon = () => (
@@ -8,6 +8,19 @@ const PlaceholderIcon = () => (
     <circle cx="8" cy="8" r="6" strokeDasharray="2.5 2" />
   </svg>
 );
+
+/** Story-only toggles that switch the left and right icons on and off independently. */
+type StoryArgs = ButtonProps & {
+  showIconLeft: boolean;
+  showIconRight: boolean;
+};
+
+/** Turns the story args into real Button props, adding or removing each icon. */
+const toButtonProps = ({ showIconLeft, showIconRight, ...props }: StoryArgs): ButtonProps => ({
+  ...props,
+  iconLeft: showIconLeft ? props.iconLeft ?? <PlaceholderIcon /> : undefined,
+  iconRight: showIconRight ? props.iconRight ?? <PlaceholderIcon /> : undefined,
+});
 
 const variants: ButtonVariant[] = ['primary', 'secondary', 'outline', 'ghost', 'destructive', 'destructive-outline'];
 const sizes: ButtonSize[] = ['mini', 'small', 'regular', 'big', 'xl', 'xxl'];
@@ -34,22 +47,33 @@ const meta = {
     size: 'regular',
     rounded: false,
     disabled: false,
-    iconLeft: <PlaceholderIcon />,
-    iconRight: <PlaceholderIcon />,
+    showIconLeft: true,
+    showIconRight: true,
   },
   argTypes: {
+    showIconLeft: {
+      description: 'Show an icon before the label (story control; in code, pass `iconLeft`).',
+      control: 'boolean',
+      table: { category: 'Icons' },
+    },
+    showIconRight: {
+      description: 'Show an icon after the label (story control; in code, pass `iconRight`).',
+      control: 'boolean',
+      table: { category: 'Icons' },
+    },
+    iconLeft: { control: false, table: { category: 'Icons' } },
+    iconRight: { control: false, table: { category: 'Icons' } },
     variant: { control: 'select', options: variants },
     size: { control: 'inline-radio', options: sizes },
     rounded: { control: 'boolean' },
-    iconLeft: { control: false },
-    iconRight: { control: false },
   },
-} satisfies Meta<typeof Button>;
+  render: (args) => <Button {...toButtonProps(args)} />,
+} satisfies Meta<StoryArgs>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Change every option from the Controls panel. */
+/** Change every option from the Controls panel, including each icon on its own. */
 export const Playground: Story = {};
 
 export const Primary: Story = {};
@@ -68,51 +92,61 @@ export const Rounded: Story = { args: { rounded: true } };
 
 export const Disabled: Story = { args: { disabled: true } };
 
-export const WithoutIcons: Story = { args: { iconLeft: undefined, iconRight: undefined } };
+export const IconLeftOnly: Story = { name: 'Icon left only', args: { showIconLeft: true, showIconRight: false } };
 
-/** Every variant in every state, square and rounded — mirrors the Figma component sheet. */
+export const IconRightOnly: Story = { name: 'Icon right only', args: { showIconLeft: false, showIconRight: true } };
+
+export const WithoutIcons: Story = { args: { showIconLeft: false, showIconRight: false } };
+
+/** Every variant in every state, square and rounded — mirrors the Figma component sheet. Use the showIconLeft / showIconRight controls to change the whole sheet. */
 export const AllVariantsAndStates: Story = {
   name: 'All variants & states',
-  parameters: { layout: 'padded', controls: { disable: true } },
-  render: (args) => (
-    <div style={{ display: 'grid', gap: 32 }}>
-      {variants.map((variant) => (
-        <div key={variant} style={{ display: 'grid', gap: 12 }}>
-          <div style={{ ...label, fontWeight: 600, color: 'var(--is-fg-high-primary)' }}>{variantLabel[variant]}</div>
-          {[false, true].map((rounded) => (
-            <div key={String(rounded)} style={{ display: 'flex', gap: 20, flexWrap: 'wrap', alignItems: 'flex-end' }}>
-              {states.map((state) => (
-                <div key={state} style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
-                  {!rounded && <span style={label}>{state[0].toUpperCase() + state.slice(1)}</span>}
-                  <Button
-                    {...args}
-                    variant={variant}
-                    rounded={rounded}
-                    disabled={state === 'disabled'}
-                    data-state={state === 'active' || state === 'focus' ? state : undefined}
-                  />
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-      ))}
-    </div>
-  ),
+  parameters: { layout: 'padded', controls: { include: ['showIconLeft', 'showIconRight', 'children', 'size'] } },
+  render: (args) => {
+    const buttonProps = toButtonProps(args);
+    return (
+      <div style={{ display: 'grid', gap: 32 }}>
+        {variants.map((variant) => (
+          <div key={variant} style={{ display: 'grid', gap: 12 }}>
+            <div style={{ ...label, fontWeight: 600, color: 'var(--is-fg-high-primary)' }}>{variantLabel[variant]}</div>
+            {[false, true].map((rounded) => (
+              <div key={String(rounded)} style={{ display: 'flex', gap: 20, flexWrap: 'wrap', alignItems: 'flex-end' }}>
+                {states.map((state) => (
+                  <div key={state} style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
+                    {!rounded && <span style={label}>{state[0].toUpperCase() + state.slice(1)}</span>}
+                    <Button
+                      {...buttonProps}
+                      variant={variant}
+                      rounded={rounded}
+                      disabled={state === 'disabled'}
+                      data-state={state === 'active' || state === 'focus' ? state : undefined}
+                    />
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    );
+  },
 };
 
-/** Mini 20 · Small 32 · Regular 40 · Big 50 · XL 60 · XXL 80 — with two icons and with one. */
+/** Mini 20 · Small 32 · Regular 40 · Big 50 · XL 60 · XXL 80 — square and rounded. */
 export const Sizes: Story = {
-  parameters: { layout: 'padded', controls: { include: ['variant'] } },
-  render: (args) => (
-    <div style={{ display: 'grid', gridTemplateColumns: 'auto auto auto', gap: '16px 32px', alignItems: 'center', justifyContent: 'start' }}>
-      {sizes.map((size) => (
-        <div key={size} style={{ display: 'contents' }}>
-          <span style={{ ...label, textAlign: 'right' }}>{size === 'xl' || size === 'xxl' ? size.toUpperCase() : size[0].toUpperCase() + size.slice(1)}</span>
-          <div><Button {...args} size={size} /></div>
-          <div><Button {...args} size={size} rounded iconLeft={undefined} /></div>
-        </div>
-      ))}
-    </div>
-  ),
+  parameters: { layout: 'padded', controls: { include: ['showIconLeft', 'showIconRight', 'variant', 'children'] } },
+  render: (args) => {
+    const buttonProps = toButtonProps(args);
+    return (
+      <div style={{ display: 'grid', gridTemplateColumns: 'auto auto auto', gap: '16px 32px', alignItems: 'center', justifyContent: 'start' }}>
+        {sizes.map((size) => (
+          <div key={size} style={{ display: 'contents' }}>
+            <span style={{ ...label, textAlign: 'right' }}>{size === 'xl' || size === 'xxl' ? size.toUpperCase() : size[0].toUpperCase() + size.slice(1)}</span>
+            <div><Button {...buttonProps} size={size} /></div>
+            <div><Button {...buttonProps} size={size} rounded /></div>
+          </div>
+        ))}
+      </div>
+    );
+  },
 };
