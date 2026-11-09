@@ -80,7 +80,11 @@ const meta = {
           if (ctx.id.endsWith('--all-variants-and-states')) return allVariantsSpec();
           if (ctx.id.endsWith('--sizes')) return sizesSpec();
           // Storybook can run this more than once on the same snippet, so drop any spec added earlier.
-          const jsx = code.replace(/^(\s*\/\*[\s\S]*?\*\/\s*)+/, '');
+          const jsx = code
+            .replace(/^(\s*\/\*[\s\S]*?\*\/\s*)+/, '')
+            // Production builds minify names: show the icon slot and drop the Storybook click spy.
+            .replace(/(icon(?:Left|Right))=\{<\w+ \/>\}/g, '$1={<YourIcon />}')
+            .replace(/\n\s*onClick=\{[^}]*\}\}?/g, '');
           return `${buttonSpecComment(ctx.args)}\n${jsx}`;
         },
       },
