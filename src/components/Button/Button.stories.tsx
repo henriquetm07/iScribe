@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
 import { Button, type ButtonProps, type ButtonSize, type ButtonVariant } from './Button';
+import { allVariantsSpec, buttonSpecComment, sizesSpec } from './Button.docs';
 
 /** Simple 16×16 placeholder icon for the stories; scales with the button size. */
 const PlaceholderIcon = () => (
@@ -68,6 +69,21 @@ const meta = {
     rounded: { control: 'boolean' },
   },
   render: (args) => <Button {...toButtonProps(args)} />,
+  parameters: {
+    docs: {
+      source: {
+        /*
+         * "Show code" explains what each setting means: above the JSX it lists the Figma variables
+         * the button uses (colors, font size, corner radius, hover behaviour…) with their resolved values.
+         */
+        transform: (code: string, ctx: { id: string; args: StoryArgs }) => {
+          if (ctx.id.endsWith('--all-variants-and-states')) return allVariantsSpec();
+          if (ctx.id.endsWith('--sizes')) return sizesSpec();
+          return `${buttonSpecComment(ctx.args)}\n${code}`;
+        },
+      },
+    },
+  },
 } satisfies Meta<StoryArgs>;
 
 export default meta;
