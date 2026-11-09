@@ -36,7 +36,8 @@
   line-height: normal;
   white-space: nowrap;
   cursor: pointer;
-  --btn-radius-hover: 10px;
+  /* Hover radius scales with size: a quarter of the height (Mini 5 · Small 8 · Regular 10 · Big 12.5 · XL 15 · XXL 20) */
+  --btn-radius-hover: calc(var(--btn-height) / 4);
   transition:
     background-color 120ms ease,
     border-color 120ms ease,
@@ -44,8 +45,8 @@
     border-radius 220ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Hover: corners ease to a 10px radius */
-.is-button:hover:not(:disabled) {
+/* Hover: corners ease to the size's hover radius; fully rounded (pill) buttons keep their shape */
+.is-button:not(.is-button--rounded):hover:not(:disabled) {
   border-radius: var(--btn-radius-hover);
 }
 
