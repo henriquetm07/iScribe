@@ -35,7 +35,7 @@ const variantLabel: Record<ButtonVariant, string> = {
   'destructive-outline': 'Destructive Outline',
 };
 
-const label = { fontFamily: 'var(--is-font-ui)', fontSize: 12, color: 'var(--is-fg-low-primary)' } as const;
+const label = { fontFamily: 'var(--is-font-ui)', fontSize: 12, color: 'var(--is-foreground-low-contrast-primary-foreground)' } as const;
 
 const meta = {
   title: 'Components/Button',
@@ -108,7 +108,7 @@ export const AllVariantsAndStates: Story = {
       <div style={{ display: 'grid', gap: 32 }}>
         {variants.map((variant) => (
           <div key={variant} style={{ display: 'grid', gap: 12 }}>
-            <div style={{ ...label, fontWeight: 600, color: 'var(--is-fg-high-primary)' }}>{variantLabel[variant]}</div>
+            <div style={{ ...label, fontWeight: 600, color: 'var(--is-foreground-high-contrast-primary-foreground)' }}>{variantLabel[variant]}</div>
             {[false, true].map((rounded) => (
               <div key={String(rounded)} style={{ display: 'flex', gap: 20, flexWrap: 'wrap', alignItems: 'flex-end' }}>
                 {states.map((state) => (
@@ -132,7 +132,7 @@ export const AllVariantsAndStates: Story = {
   },
 };
 
-/** Mini 20 · Small 32 · Regular 40 · Big 50 · XL 60 · XXL 80 — square and rounded. */
+/** Mini 20 · Small 30 · Regular 40 · Big 50 · XL 60 · XXL 80 — square and rounded. */
 export const Sizes: Story = {
   parameters: { layout: 'padded', controls: { include: ['showIconLeft', 'showIconRight', 'variant', 'children'] } },
   render: (args) => {

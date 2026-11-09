@@ -14,7 +14,7 @@ export type ButtonSize = 'mini' | 'small' | 'regular' | 'big' | 'xl' | 'xxl';
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /** Visual style of the button */
   variant?: ButtonVariant;
-  /** Height scale: Mini 20 · Small 32 · Regular 40 · Big 50 · XL 60 · XXL 80 */
+  /** Height scale: Mini 20 · Small 30 · Regular 40 · Big 50 · XL 60 · XXL 80 */
   size?: ButtonSize;
   /** Fully rounded (pill) corners instead of the size's default radius */
   rounded?: boolean;

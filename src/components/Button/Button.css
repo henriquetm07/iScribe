@@ -3,20 +3,25 @@
  * Variants: primary, secondary, outline, ghost, destructive, destructive-outline
  * States:   default, active (hover/pressed), focus (keyboard), disabled
  * `data-state="active|focus"` forces a state for documentation only.
+ *
+ * Every size, color and stroke comes from the variables imported from Figma (src/styles/variables.css):
+ * the "Buttons Dimensions" collection for sizes and the "Semantic Colors" Button/Foreground groups for colors.
  */
 
 .is-button {
-  --btn-height: 40px;
-  --btn-padding: 12px;
-  --btn-gap: 6px;
-  --btn-icon: 16px;
-  --btn-font: 13px;
-  --btn-radius: 12px;
+  /* Defaults = Regular size */
+  --btn-height: var(--is-button-regular-height);
+  --btn-padding: var(--is-button-regular-padding);
+  --btn-gap: var(--is-button-regular-gap);
+  --btn-icon: var(--is-button-regular-icon-size);
+  --btn-font: var(--is-button-regular-font-size);
+  --btn-radius: var(--is-button-regular-roundness);
+  --btn-stroke: var(--is-button-regular-stroke);
 
   --btn-bg: transparent;
-  --btn-fg: var(--is-fg-high-primary);
+  --btn-fg: var(--is-foreground-high-contrast-primary-foreground);
   --btn-border: transparent;
-  --btn-border-width: var(--is-btn-stroke);
+  --btn-border-width: var(--btn-stroke);
 
   box-sizing: border-box;
   display: inline-flex;
@@ -37,7 +42,7 @@
   white-space: nowrap;
   cursor: pointer;
   /* Hover makes corners rounder, scaled to size: base radius + 1/8 of the height
-     (Mini 6→8.5 · Small 10→14 · Regular 12→17 · Big 16→22.25 · XL 20→27.5 · XXL 24→34) */
+     (Mini 8→10.5 · Small 10→13.75 · Regular 12→17 · Big 16→22.25 · XL 20→27.5 · XXL 24→34) */
   --btn-radius-hover: calc(var(--btn-radius) + var(--btn-height) / 8);
   transition:
     background-color 120ms ease,
@@ -81,93 +86,141 @@
   height: 100%;
 }
 
-/* ---------- Sizes ---------- */
-.is-button--mini    { --btn-height: 20px; --btn-padding: 8px;  --btn-gap: 4px;  --btn-icon: 12px; --btn-font: 10px; --btn-radius: 6px; }
-.is-button--small   { --btn-height: 32px; --btn-padding: 10px; --btn-gap: 5px;  --btn-icon: 14px; --btn-font: 12px; --btn-radius: 10px; }
-.is-button--regular { --btn-height: 40px; --btn-padding: 12px; --btn-gap: 6px;  --btn-icon: 16px; --btn-font: 13px; --btn-radius: 12px; }
-.is-button--big     { --btn-height: 50px; --btn-padding: 16px; --btn-gap: 8px;  --btn-icon: 18px; --btn-font: 14px; --btn-radius: 16px; }
-.is-button--xl      { --btn-height: 60px; --btn-padding: 20px; --btn-gap: 12px; --btn-icon: 22px; --btn-font: 15px; --btn-radius: 20px; }
-.is-button--xxl     { --btn-height: 80px; --btn-padding: 24px; --btn-gap: 14px; --btn-icon: 28px; --btn-font: 18px; --btn-radius: 24px; }
+/* ---------- Sizes (Figma "Buttons Dimensions") ---------- */
+.is-button--mini {
+  --btn-height: var(--is-button-mini-height);
+  --btn-padding: var(--is-button-mini-padding);
+  --btn-gap: var(--is-button-mini-gap);
+  --btn-icon: var(--is-button-mini-icon-size);
+  --btn-font: var(--is-button-mini-font-size);
+  --btn-radius: var(--is-button-mini-roundness);
+  --btn-stroke: var(--is-button-mini-stroke);
+}
+.is-button--small {
+  --btn-height: var(--is-button-small-height);
+  --btn-padding: var(--is-button-small-padding);
+  --btn-gap: var(--is-button-small-gap);
+  --btn-icon: var(--is-button-small-icon-size);
+  --btn-font: var(--is-button-small-font-size);
+  --btn-radius: var(--is-button-small-roundness);
+  --btn-stroke: var(--is-button-small-stroke);
+}
+.is-button--regular {
+  --btn-height: var(--is-button-regular-height);
+  --btn-padding: var(--is-button-regular-padding);
+  --btn-gap: var(--is-button-regular-gap);
+  --btn-icon: var(--is-button-regular-icon-size);
+  --btn-font: var(--is-button-regular-font-size);
+  --btn-radius: var(--is-button-regular-roundness);
+  --btn-stroke: var(--is-button-regular-stroke);
+}
+.is-button--big {
+  --btn-height: var(--is-button-big-height);
+  --btn-padding: var(--is-button-big-padding);
+  --btn-gap: var(--is-button-big-gap);
+  --btn-icon: var(--is-button-big-icon-size);
+  --btn-font: var(--is-button-big-font-size);
+  --btn-radius: var(--is-button-big-roundness);
+  --btn-stroke: var(--is-button-big-stroke);
+}
+.is-button--xl {
+  --btn-height: var(--is-button-xl-height);
+  --btn-padding: var(--is-button-xl-padding);
+  --btn-gap: var(--is-button-xl-gap);
+  --btn-icon: var(--is-button-xl-icon-size);
+  --btn-font: var(--is-button-xl-font-size);
+  --btn-radius: var(--is-button-xl-roundness);
+  --btn-stroke: var(--is-button-xl-stroke);
+}
+.is-button--xxl {
+  --btn-height: var(--is-button-xxl-height);
+  --btn-padding: var(--is-button-xxl-padding);
+  --btn-gap: var(--is-button-xxl-gap);
+  --btn-icon: var(--is-button-xxl-icon-size);
+  --btn-font: var(--is-button-xxl-font-size);
+  --btn-radius: var(--is-button-xxl-roundness);
+  --btn-stroke: var(--is-button-xxl-stroke);
+}
 
-/* Half the height gives the same pill shape as 1000px, but lets the hover radius animate smoothly */
-.is-button--rounded { --btn-radius: calc(var(--btn-height) / 2); }
+/* Fully rounded: Figma "Full Round" (hover radius change doesn't apply to these) */
+.is-button--rounded { --btn-radius: var(--is-full-round); }
 
 /* ---------- Primary ---------- */
 .is-button--primary {
-  --btn-bg: var(--is-btn-primary-bg);
-  --btn-fg: var(--is-fg-high-secondary);
+  --btn-bg: var(--is-button-primary-default-bg);
+  --btn-fg: var(--is-foreground-high-contrast-secondary-foreground);
 }
 .is-button--primary:is(:hover, :active, [data-state='active'], :focus-visible, [data-state='focus']) {
-  --btn-bg: var(--is-btn-primary-active-bg);
+  --btn-bg: var(--is-button-primary-active-bg);
 }
 
 /* ---------- Secondary ---------- */
 .is-button--secondary {
-  --btn-bg: var(--is-btn-secondary-bg);
-  --btn-border: var(--is-btn-secondary-stroke);
+  --btn-bg: var(--is-button-secondary-default-bg);
+  --btn-border: var(--is-button-secondarystroke);
   --btn-border-width: 1px;
 }
 .is-button--secondary:is(:hover, :active, [data-state='active'], :focus-visible, [data-state='focus']) {
-  --btn-bg: var(--is-btn-secondary-active-bg);
+  --btn-bg: var(--is-button-secondary-active-bg);
 }
 
 /* ---------- Outline ---------- */
 .is-button--outline {
-  --btn-border: var(--is-fg-high-primary);
+  --btn-border: var(--is-foreground-high-contrast-primary-foreground);
 }
 .is-button--outline:is(:hover, :active, [data-state='active']) {
-  --btn-bg: var(--is-btn-ghost-active-bg);
+  --btn-bg: var(--is-button-ghost-active-bg);
 }
 .is-button--outline:is(:focus-visible, [data-state='focus']) {
-  --btn-bg: var(--is-btn-outline-active-bg);
+  --btn-bg: var(--is-button-outline-active-bg);
 }
 
 /* ---------- Ghost ---------- */
 .is-button--ghost:is(:hover, :active, [data-state='active'], :focus-visible, [data-state='focus']) {
-  --btn-bg: var(--is-btn-ghost-active-bg);
+  --btn-bg: var(--is-button-ghost-active-bg);
 }
 .is-button--ghost:disabled {
-  --btn-fg: var(--is-fg-low-primary);
+  --btn-fg: var(--is-foreground-low-contrast-primary-foreground);
 }
 
 /* ---------- Destructive (primary) ---------- */
 .is-button--destructive {
-  --btn-bg: var(--is-btn-destructive);
-  --btn-fg: var(--is-fg-on-destructive);
+  --btn-bg: var(--is-button-destructive);
+  --btn-fg: var(--is-foreground-high-contrast-secondary-foreground-2);
 }
 .is-button--destructive:is(:hover, :active, [data-state='active'], :focus-visible, [data-state='focus']) {
-  --btn-bg: var(--is-btn-destructive-active);
+  --btn-bg: var(--is-button-destructive-acive);
 }
 
 /* ---------- Destructive outline ---------- */
 .is-button--destructive-outline {
-  --btn-border: var(--is-btn-destructive);
-  --btn-fg: var(--is-btn-destructive);
+  --btn-border: var(--is-button-destructive);
+  --btn-fg: var(--is-button-destructive);
 }
 .is-button--destructive-outline:is(:hover, :active, [data-state='active'], :focus-visible, [data-state='focus']) {
-  --btn-bg: var(--is-btn-ghost-active-bg);
-  --btn-border: var(--is-btn-destructive-active);
-  --btn-fg: var(--is-btn-destructive-active);
+  --btn-bg: var(--is-button-ghost-active-bg);
+  --btn-border: var(--is-button-destructive-acive);
+  --btn-fg: var(--is-button-destructive-acive);
 }
 
 /* ---------- Focus ring (all variants) ---------- */
 .is-button:is(:focus-visible, [data-state='focus']) {
-  --btn-border: var(--is-btn-accent);
-  --btn-border-width: var(--is-btn-stroke);
+  --btn-border: var(--is-button-accent);
+  --btn-border-width: var(--btn-stroke);
 }
 
 /* ---------- Disabled (all variants except ghost keep a filled background) ---------- */
 .is-button:disabled {
   cursor: not-allowed;
-  --btn-fg: var(--is-fg-medium-secondary);
+  --btn-fg: var(--is-foreground-medium-contrast-secondary-foreground);
 }
 .is-button:is(.is-button--primary, .is-button--secondary, .is-button--outline, .is-button--destructive, .is-button--destructive-outline):disabled {
-  --btn-bg: var(--is-btn-disabled-bg);
+  --btn-bg: var(--is-button-disabled-bg);
 }
 .is-button:is(.is-button--outline, .is-button--destructive-outline):disabled {
-  --btn-border: var(--is-fg-medium-secondary);
+  --btn-border: var(--is-foreground-medium-contrast-secondary-foreground);
 }
 .is-button--ghost:disabled {
   --btn-bg: transparent;
-  --btn-fg: var(--is-fg-low-primary);
+  --btn-fg: var(--is-foreground-low-contrast-primary-foreground);
 }

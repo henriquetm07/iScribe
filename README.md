@@ -30,13 +30,13 @@ src/
   styles/colors.ts   The same palette as data, used by the Colors page
   styles/variables.css  Every Figma variable: semantic colors (light/dark), roundness, text, button and label sizes
   styles/variables.ts   The same variables as data, used by the Variables page
-  styles/tokens.css  Component tokens (button colors alias the Figma variables), spacing, type
+  styles/tokens.css  Base fonts, spacing and page colors
   Introduction.mdx   Storybook landing page
   index.ts           Library exports
 ```
 
 ## Components
 
-- **Button** — primary, secondary, outline, ghost, destructive and destructive-outline variants; six sizes (Mini–XXL); square or rounded; optional left/right icons; light and dark tokens (from the SuperConscious Figma design system)
+- **Button** — primary, secondary, outline, ghost, destructive and destructive-outline variants; six sizes (Mini–XXL); square or rounded; optional left/right icons; every size and color comes from the Figma variables, with light and dark mode
 - **TextField** — labelled input with hint, error and disabled states
 - **NoteCard** — note preview with title, date, excerpt, tags and selected state

@@ -20,34 +20,6 @@
   --is-space-3: 12px;
   --is-space-4: 16px;
   --is-space-6: 24px;
-
-  --is-btn-stroke: 1.3px;
-  --is-radius-full: 1000px;
-}
-
-/*
- * Button tokens — aliases to the semantic color variables imported from Figma (variables.css).
- * Declared on [data-theme] too, so they follow the theme wherever it is set.
- */
-:root,
-[data-theme] {
-  --is-fg-high-primary: var(--is-foreground-high-contrast-primary-foreground);
-  --is-fg-high-secondary: var(--is-foreground-high-contrast-secondary-foreground);
-  --is-fg-on-destructive: var(--is-foreground-high-contrast-secondary-foreground-2);
-  --is-fg-medium-secondary: var(--is-foreground-medium-contrast-secondary-foreground);
-  --is-fg-low-primary: var(--is-foreground-low-contrast-primary-foreground);
-
-  --is-btn-primary-bg: var(--is-button-primary-default-bg);
-  --is-btn-primary-active-bg: var(--is-button-primary-active-bg);
-  --is-btn-secondary-bg: var(--is-button-secondary-default-bg);
-  --is-btn-secondary-stroke: var(--is-button-secondarystroke);
-  --is-btn-secondary-active-bg: var(--is-button-secondary-active-bg);
-  --is-btn-ghost-active-bg: var(--is-button-ghost-active-bg);
-  --is-btn-outline-active-bg: var(--is-button-outline-active-bg);
-  --is-btn-disabled-bg: var(--is-button-disabled-bg);
-  --is-btn-destructive: var(--is-button-destructive);
-  --is-btn-destructive-active: var(--is-button-destructive-acive);
-  --is-btn-accent: var(--is-button-accent);
 }
 
 [data-theme='dark'] {
