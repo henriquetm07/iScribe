@@ -1,9 +1,13 @@
 import type { Preview } from '@storybook/react-vite';
+import '../src/styles/colors.css';
 import '../src/styles/tokens.css';
 
 const preview: Preview = {
   parameters: {
     layout: 'centered',
+    options: {
+      storySort: { order: ['Introduction', 'Foundations', ['Colors'], 'Components'] },
+    },
     controls: {
       matchers: {
         color: /(background|color)$/i,

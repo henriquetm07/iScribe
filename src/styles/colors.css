@@ -1,0 +1,64 @@
+/*
+ * Color primitives from the SuperConscious design system (Figma page "Colors").
+ * LM = light mode, DM = dark mode. The Storybook Colors page reads src/styles/colors.ts; keep the two in sync.
+ */
+:root {
+  /* Neutrals · Whites */
+  --is-color-pure-white: #ffffff;
+  --is-color-off-white: #f0f2f4;
+
+  /* Neutrals · Translucent Whites */
+  --is-color-twhite-4: rgba(255, 255, 255, 0.04);
+  --is-color-twhite-8: rgba(255, 255, 255, 0.08);
+  --is-color-twhite-10: rgba(255, 255, 255, 0.1);
+  --is-color-twhite-18: rgba(255, 255, 255, 0.18);
+  --is-color-twhite-36: rgba(255, 255, 255, 0.36);
+  --is-color-twhite-50: rgba(255, 255, 255, 0.5);
+
+  /* Neutrals · Blacks */
+  --is-color-pure-black: #000000;
+  --is-color-black-1: #17191c;
+  --is-color-black-2: #0a0c0f;
+
+  /* Neutrals · Translucent Blacks */
+  --is-color-tblack-60: rgba(0, 0, 0, 0.6);
+  --is-color-tblack-80: rgba(0, 0, 0, 0.8);
+
+  /* Neutrals · Greys */
+  --is-color-grey-1: #99a3ad;
+  --is-color-grey-2: #6b747d;
+  --is-color-grey-3: #434a51;
+  --is-color-grey-4: #1d1c1e;
+
+  /* Neutrals · Translucent Greys */
+  --is-color-tgrey-3: rgba(29, 28, 30, 0.03);
+  --is-color-tgrey-6: rgba(29, 28, 30, 0.06);
+  --is-color-tgrey-12: rgba(29, 28, 30, 0.12);
+  --is-color-tgrey-22: rgba(29, 28, 30, 0.22);
+  --is-color-tgrey-44: rgba(29, 28, 30, 0.44);
+
+  /* Periwinkles · Periwinkles */
+  --is-color-periwinkle-main-lm: #3966ff;
+  --is-color-periwinkle-main-dm: #5479ff;
+  --is-color-periwinkle-1: #d6dbfe;
+  --is-color-periwinkle-2: #b3bbfb;
+  --is-color-periwinkle-3: #8b93f6;
+  --is-color-periwinkle-4: #6c78ef;
+
+  /* Periwinkles · Translucent Periwinkles */
+  --is-color-tperiwinkle-20: rgba(57, 102, 255, 0.2);
+
+  /* Status · Reds */
+  --is-color-light-red-lm: #fdc1cc;
+  --is-color-red-lm: #df2749;
+  --is-color-dark-red-lm: #be1938;
+  --is-color-light-red-dm: #ffcdce;
+  --is-color-red-dm: #e24d50;
+  --is-color-dark-red-dm: #c03033;
+
+  /* Status · Greens */
+  --is-color-light-green-lm: #b2f7db;
+  --is-color-green-lm: #28a574;
+  --is-color-light-green-dm: #c8fae6;
+  --is-color-green-dm: #14b475;
+}
