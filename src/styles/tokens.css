@@ -1,6 +1,7 @@
 :root {
   --is-font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --is-font-serif: 'Georgia', 'Times New Roman', serif;
+  --is-font-ui: 'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
   --is-ink: #1c1b29;
   --is-ink-muted: #5d5b72;
@@ -19,6 +20,52 @@
   --is-space-3: 12px;
   --is-space-4: 16px;
   --is-space-6: 24px;
+
+  /* Button tokens — from the SuperConscious design system (Figma "Buttons"), light mode */
+  --is-fg-high-primary: #1d1c1e;
+  --is-fg-high-secondary: #ffffff;
+  --is-fg-on-destructive: #ffffff;
+  --is-fg-medium-secondary: rgba(29, 28, 30, 0.22);
+  --is-fg-low-primary: #6b747d;
+
+  --is-btn-primary-bg: #1d1c1e;
+  --is-btn-primary-active-bg: #17191c;
+  --is-btn-secondary-bg: rgba(29, 28, 30, 0.03);
+  --is-btn-secondary-stroke: rgba(29, 28, 30, 0.06);
+  --is-btn-secondary-active-bg: rgba(29, 28, 30, 0.12);
+  --is-btn-ghost-active-bg: rgba(29, 28, 30, 0.06);
+  --is-btn-outline-active-bg: rgba(29, 28, 30, 0.06);
+  --is-btn-disabled-bg: rgba(29, 28, 30, 0.22);
+  --is-btn-destructive: #df2749;
+  --is-btn-destructive-active: #be1938;
+  --is-btn-accent: #3966ff;
+
+  --is-btn-stroke: 1.3px;
+  --is-radius-full: 1000px;
+}
+
+/* Dark mode button tokens (Figma "Dark Mode") */
+[data-theme='dark'] {
+  --is-paper: #17191c;
+  --is-ink: #ffffff;
+
+  --is-fg-high-primary: #ffffff;
+  --is-fg-high-secondary: #1d1c1e;
+  --is-fg-on-destructive: #ffffff;
+  --is-fg-medium-secondary: rgba(255, 255, 255, 0.36);
+  --is-fg-low-primary: #6b747d;
+
+  --is-btn-primary-bg: #ffffff;
+  --is-btn-primary-active-bg: #f0f2f4;
+  --is-btn-secondary-bg: rgba(255, 255, 255, 0.1);
+  --is-btn-secondary-stroke: rgba(255, 255, 255, 0.08);
+  --is-btn-secondary-active-bg: rgba(255, 255, 255, 0.18);
+  --is-btn-ghost-active-bg: rgba(29, 28, 30, 0.44);
+  --is-btn-outline-active-bg: rgba(29, 28, 30, 0.44);
+  --is-btn-disabled-bg: rgba(255, 255, 255, 0.36);
+  --is-btn-destructive: #e24d50;
+  --is-btn-destructive-active: #c03033;
+  --is-btn-accent: #5479ff;
 }
 
 body {

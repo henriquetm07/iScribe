@@ -1,33 +1,153 @@
+/*
+ * Button — matches the SuperConscious design system "Buttons" in Figma.
+ * Variants: primary, secondary, outline, ghost, destructive, destructive-outline
+ * States:   default, active (hover/pressed), focus (keyboard), disabled
+ * `data-state="active|focus"` forces a state for documentation only.
+ */
+
 .is-button {
-  font-family: var(--is-font-sans);
+  --btn-height: 40px;
+  --btn-padding: 12px;
+  --btn-gap: 6px;
+  --btn-icon: 16px;
+  --btn-font: 13px;
+  --btn-radius: 12px;
+
+  --btn-bg: transparent;
+  --btn-fg: var(--is-fg-high-primary);
+  --btn-border: transparent;
+  --btn-border-width: var(--is-btn-stroke);
+
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--btn-gap);
+  height: var(--btn-height);
+  padding: 0 var(--btn-padding);
+  border: var(--btn-border-width) solid var(--btn-border);
+  border-radius: var(--btn-radius);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-family: var(--is-font-ui);
+  font-size: var(--btn-font);
   font-weight: 600;
-  border: 1px solid transparent;
-  border-radius: var(--is-radius-sm);
+  line-height: normal;
+  white-space: nowrap;
   cursor: pointer;
-  transition: background 120ms ease, border-color 120ms ease;
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
 }
 
+.is-button:focus {
+  outline: none;
+}
+
+.is-button__label {
+  display: inline-block;
+}
+
+.is-button__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--btn-icon);
+  height: var(--btn-icon);
+  color: currentColor;
+}
+
+.is-button__icon > svg,
+.is-button__icon > img {
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------- Sizes ---------- */
+.is-button--mini    { --btn-height: 20px; --btn-padding: 8px;  --btn-gap: 4px;  --btn-icon: 12px; --btn-font: 10px; --btn-radius: 6px; }
+.is-button--small   { --btn-height: 32px; --btn-padding: 10px; --btn-gap: 5px;  --btn-icon: 14px; --btn-font: 12px; --btn-radius: 10px; }
+.is-button--regular { --btn-height: 40px; --btn-padding: 12px; --btn-gap: 6px;  --btn-icon: 16px; --btn-font: 13px; --btn-radius: 12px; }
+.is-button--big     { --btn-height: 50px; --btn-padding: 16px; --btn-gap: 8px;  --btn-icon: 18px; --btn-font: 14px; --btn-radius: 16px; }
+.is-button--xl      { --btn-height: 60px; --btn-padding: 20px; --btn-gap: 12px; --btn-icon: 22px; --btn-font: 15px; --btn-radius: 20px; }
+.is-button--xxl     { --btn-height: 80px; --btn-padding: 24px; --btn-gap: 14px; --btn-icon: 28px; --btn-font: 18px; --btn-radius: 24px; }
+
+.is-button--rounded { --btn-radius: var(--is-radius-full); }
+
+/* ---------- Primary ---------- */
+.is-button--primary {
+  --btn-bg: var(--is-btn-primary-bg);
+  --btn-fg: var(--is-fg-high-secondary);
+}
+.is-button--primary:is(:hover, :active, [data-state='active'], :focus-visible, [data-state='focus']) {
+  --btn-bg: var(--is-btn-primary-active-bg);
+}
+
+/* ---------- Secondary ---------- */
+.is-button--secondary {
+  --btn-bg: var(--is-btn-secondary-bg);
+  --btn-border: var(--is-btn-secondary-stroke);
+  --btn-border-width: 1px;
+}
+.is-button--secondary:is(:hover, :active, [data-state='active'], :focus-visible, [data-state='focus']) {
+  --btn-bg: var(--is-btn-secondary-active-bg);
+}
+
+/* ---------- Outline ---------- */
+.is-button--outline {
+  --btn-border: var(--is-fg-high-primary);
+}
+.is-button--outline:is(:hover, :active, [data-state='active']) {
+  --btn-bg: var(--is-btn-ghost-active-bg);
+}
+.is-button--outline:is(:focus-visible, [data-state='focus']) {
+  --btn-bg: var(--is-btn-outline-active-bg);
+}
+
+/* ---------- Ghost ---------- */
+.is-button--ghost:is(:hover, :active, [data-state='active'], :focus-visible, [data-state='focus']) {
+  --btn-bg: var(--is-btn-ghost-active-bg);
+}
+.is-button--ghost:disabled {
+  --btn-fg: var(--is-fg-low-primary);
+}
+
+/* ---------- Destructive (primary) ---------- */
+.is-button--destructive {
+  --btn-bg: var(--is-btn-destructive);
+  --btn-fg: var(--is-fg-on-destructive);
+}
+.is-button--destructive:is(:hover, :active, [data-state='active'], :focus-visible, [data-state='focus']) {
+  --btn-bg: var(--is-btn-destructive-active);
+}
+
+/* ---------- Destructive outline ---------- */
+.is-button--destructive-outline {
+  --btn-border: var(--is-btn-destructive);
+  --btn-fg: var(--is-btn-destructive);
+}
+.is-button--destructive-outline:is(:hover, :active, [data-state='active'], :focus-visible, [data-state='focus']) {
+  --btn-bg: var(--is-btn-ghost-active-bg);
+  --btn-border: var(--is-btn-destructive-active);
+  --btn-fg: var(--is-btn-destructive-active);
+}
+
+/* ---------- Focus ring (all variants) ---------- */
+.is-button:is(:focus-visible, [data-state='focus']) {
+  --btn-border: var(--is-btn-accent);
+  --btn-border-width: var(--is-btn-stroke);
+}
+
+/* ---------- Disabled (all variants except ghost keep a filled background) ---------- */
 .is-button:disabled {
-  opacity: 0.5;
   cursor: not-allowed;
+  --btn-fg: var(--is-fg-medium-secondary);
 }
-
-.is-button:focus-visible {
-  outline: 2px solid var(--is-accent);
-  outline-offset: 2px;
+.is-button:is(.is-button--primary, .is-button--secondary, .is-button--outline, .is-button--destructive, .is-button--destructive-outline):disabled {
+  --btn-bg: var(--is-btn-disabled-bg);
 }
-
-.is-button--sm { font-size: 13px; padding: var(--is-space-1) var(--is-space-3); }
-.is-button--md { font-size: 14px; padding: var(--is-space-2) var(--is-space-4); }
-.is-button--lg { font-size: 16px; padding: var(--is-space-3) var(--is-space-6); }
-
-.is-button--primary { background: var(--is-accent); color: #fff; }
-.is-button--primary:hover:not(:disabled) { background: var(--is-accent-hover); }
-
-.is-button--secondary { background: var(--is-surface); color: var(--is-ink); border-color: var(--is-border); }
-.is-button--secondary:hover:not(:disabled) { border-color: var(--is-ink-muted); }
-
-.is-button--ghost { background: transparent; color: var(--is-accent); }
-.is-button--ghost:hover:not(:disabled) { background: var(--is-accent-soft); }
-
-.is-button--danger { background: var(--is-danger); color: #fff; }
+.is-button:is(.is-button--outline, .is-button--destructive-outline):disabled {
+  --btn-border: var(--is-fg-medium-secondary);
+}
+.is-button--ghost:disabled {
+  --btn-bg: transparent;
+  --btn-fg: var(--is-fg-low-primary);
+}

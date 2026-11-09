@@ -32,6 +32,6 @@ src/
 
 ## Components
 
-- **Button** — primary, secondary, ghost and danger variants in three sizes
+- **Button** — primary, secondary, outline, ghost, destructive and destructive-outline variants; six sizes (Mini–XXL); square or rounded; optional left/right icons; light and dark tokens (from the SuperConscious Figma design system)
 - **TextField** — labelled input with hint, error and disabled states
 - **NoteCard** — note preview with title, date, excerpt, tags and selected state
