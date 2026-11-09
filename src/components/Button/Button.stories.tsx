@@ -79,7 +79,9 @@ const meta = {
         transform: (code: string, ctx: { id: string; args: StoryArgs }) => {
           if (ctx.id.endsWith('--all-variants-and-states')) return allVariantsSpec();
           if (ctx.id.endsWith('--sizes')) return sizesSpec();
-          return `${buttonSpecComment(ctx.args)}\n${code}`;
+          // Storybook can run this more than once on the same snippet, so drop any spec added earlier.
+          const jsx = code.replace(/^(\s*\/\*[\s\S]*?\*\/\s*)+/, '');
+          return `${buttonSpecComment(ctx.args)}\n${jsx}`;
         },
       },
     },
