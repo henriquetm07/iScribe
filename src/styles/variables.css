@@ -1,0 +1,260 @@
+/*
+ * Design variables imported from the SuperConscious Figma file (all local variable collections).
+ * Semantic colors switch with [data-theme='dark']; raw colors come from colors.css.
+ * The Storybook Variables page reads src/styles/variables.ts; keep the two in sync.
+ */
+
+/* Semantic Colors — Light Mode */
+:root {
+  --is-toggle-background-on: var(--is-color-tgrey-3);
+  --is-toggle-foreground-on: var(--is-color-periwinkle-main-lm);
+  --is-toggle-background-off: var(--is-color-tgrey-3);
+  --is-toggle-foreground-off: var(--is-color-tgrey-12);
+  --is-toggle-stroke: var(--is-color-tgrey-3);
+  --is-background-base-background: var(--is-color-off-white);
+  --is-background-elevated-background: var(--is-color-pure-white);
+  --is-background-modal-background: var(--is-color-tblack-60);
+  --is-surface-high-contrast-background: var(--is-color-tgrey-22);
+  --is-surface-medium-contrast-background: var(--is-color-tgrey-12);
+  --is-surface-soft-contrast-background: var(--is-color-tgrey-6);
+  --is-surface-super-soft-contrast-background: var(--is-color-tgrey-3);
+  --is-surface-super-soft-contrast-light: var(--is-color-twhite-50);
+  --is-surface-soft-contrast-light-2: var(--is-color-pure-white);
+  --is-surface-secondary-high-contrast: var(--is-color-pure-white);
+  --is-surface-soft-selection: var(--is-color-periwinkle-1);
+  --is-surface-elevated-inverted: var(--is-color-pure-black);
+  --is-status-background-positive-pw: var(--is-color-periwinkle-1);
+  --is-status-background-positive: var(--is-color-light-green-lm);
+  --is-status-background-alert: var(--is-color-light-red-lm);
+  --is-status-foreground-positive-pw: var(--is-color-periwinkle-main-lm);
+  --is-status-foreground-positive: var(--is-color-green-dm);
+  --is-status-foreground-alert: var(--is-color-red-lm);
+  --is-background-logo-background: var(--is-color-twhite-4);
+  --is-selection-low-contrast-selection: var(--is-color-tperiwinkle-20);
+  --is-foreground-high-contrast-primary-foreground: var(--is-color-grey-4);
+  --is-foreground-high-contrast-primary-foreground-2: var(--is-color-grey-4);
+  --is-labels-low-contrast: var(--is-color-tgrey-6);
+  --is-labels-low-contrast-2: var(--is-color-pure-white);
+  --is-labels-high-contrast-grey: var(--is-color-grey-1);
+  --is-labels-accent: var(--is-color-periwinkle-main-lm);
+  --is-labels-accent-2: var(--is-color-periwinkle-1);
+  --is-labels-alert: var(--is-color-red-lm);
+  --is-warning-banner-default-background: var(--is-color-pure-white);
+  --is-foreground-medium-contrast-primary-foreground: var(--is-color-grey-3);
+  --is-foreground-low-contrast-primary-foreground: var(--is-color-grey-2);
+  --is-foreground-high-contrast-secondary-foreground: var(--is-color-pure-white);
+  --is-foreground-high-contrast-secondary-foreground-2: var(--is-color-pure-white);
+  --is-foreground-medium-contrast-secondary-foreground: var(--is-color-tgrey-22);
+  --is-foreground-low-contrast-secondary-foreground: var(--is-color-tgrey-12);
+  --is-button-primary-default-bg: var(--is-color-grey-4);
+  --is-button-primary-active-bg: var(--is-color-black-1);
+  --is-button-secondary-default-bg: var(--is-surface-super-soft-contrast-background);
+  --is-button-secondarystroke: var(--is-surface-soft-contrast-background);
+  --is-button-secondarystroke-2: var(--is-surface-soft-contrast-background);
+  --is-button-secondary-active-bg: var(--is-surface-medium-contrast-background);
+  --is-button-outline-active-bg: var(--is-color-tgrey-6);
+  --is-button-ghost-active-bg: var(--is-color-tgrey-6);
+  --is-button-secondary-foreground: var(--is-color-grey-4);
+  --is-button-destructive: var(--is-color-red-lm);
+  --is-button-destructive-acive: var(--is-color-dark-red-lm);
+  --is-button-disabled-bg: var(--is-color-tgrey-22);
+  --is-button-accent: var(--is-color-periwinkle-main-lm);
+  --is-record-feature-wave-default: var(--is-color-grey-4);
+  --is-record-feature-wave-playback-play: var(--is-color-periwinkle-main-lm);
+  --is-record-feature-wave-playbacknot-played: var(--is-color-grey-1);
+  --is-checkbox-and-radio-selected-background: var(--is-color-green-dm);
+  --is-shadow-basic-shadow: rgba(0, 0, 0, 0.15);
+  --is-shadow-glow: rgba(0, 0, 0, 0.15);
+  --is-item-positive: var(--is-color-green-dm);
+  --is-previous-note-icons-main-1: var(--is-color-pure-white);
+  --is-previous-note-icons-second: var(--is-color-tgrey-3);
+  --is-previous-note-icons-third: var(--is-color-tgrey-6);
+  --is-recording-ring-1: #df2749;
+  --is-recording-ring-2: rgba(223, 39, 73, 0.2);
+  --is-alert-banner-critical: #e24d50;
+  --is-alert-banner-non-critical: #213446;
+}
+
+/* Semantic Colors — Dark Mode */
+[data-theme='dark'] {
+  --is-toggle-background-on: var(--is-color-pure-black);
+  --is-toggle-foreground-on: var(--is-color-periwinkle-main-dm);
+  --is-toggle-background-off: var(--is-color-tgrey-12);
+  --is-toggle-foreground-off: var(--is-color-twhite-18);
+  --is-toggle-stroke: var(--is-color-twhite-8);
+  --is-background-base-background: var(--is-color-black-2);
+  --is-background-elevated-background: var(--is-color-black-1);
+  --is-background-modal-background: var(--is-color-tblack-80);
+  --is-surface-high-contrast-background: var(--is-color-twhite-18);
+  --is-surface-medium-contrast-background: var(--is-color-twhite-10);
+  --is-surface-soft-contrast-background: var(--is-color-twhite-8);
+  --is-surface-super-soft-contrast-background: var(--is-color-twhite-4);
+  --is-surface-super-soft-contrast-light: var(--is-color-black-1);
+  --is-surface-soft-contrast-light-2: var(--is-color-pure-black);
+  --is-surface-secondary-high-contrast: var(--is-color-twhite-8);
+  --is-surface-soft-selection: var(--is-color-periwinkle-4);
+  --is-surface-elevated-inverted: var(--is-color-pure-white);
+  --is-status-background-positive-pw: var(--is-color-periwinkle-1);
+  --is-status-background-positive: var(--is-color-light-green-dm);
+  --is-status-background-alert: var(--is-color-light-red-dm);
+  --is-status-foreground-positive-pw: var(--is-color-periwinkle-main-dm);
+  --is-status-foreground-positive: var(--is-color-green-dm);
+  --is-status-foreground-alert: var(--is-color-red-dm);
+  --is-background-logo-background: var(--is-color-off-white);
+  --is-selection-low-contrast-selection: var(--is-color-tperiwinkle-20);
+  --is-foreground-high-contrast-primary-foreground: var(--is-color-pure-white);
+  --is-foreground-high-contrast-primary-foreground-2: var(--is-color-black-1);
+  --is-labels-low-contrast: var(--is-color-twhite-8);
+  --is-labels-low-contrast-2: var(--is-color-pure-black);
+  --is-labels-high-contrast-grey: var(--is-color-grey-2);
+  --is-labels-accent: var(--is-color-periwinkle-main-dm);
+  --is-labels-accent-2: var(--is-color-periwinkle-2);
+  --is-labels-alert: var(--is-color-red-dm);
+  --is-warning-banner-default-background: var(--is-color-pure-black);
+  --is-foreground-medium-contrast-primary-foreground: var(--is-color-grey-1);
+  --is-foreground-low-contrast-primary-foreground: var(--is-color-grey-2);
+  --is-foreground-high-contrast-secondary-foreground: var(--is-color-grey-4);
+  --is-foreground-high-contrast-secondary-foreground-2: var(--is-color-pure-white);
+  --is-foreground-medium-contrast-secondary-foreground: var(--is-color-twhite-36);
+  --is-foreground-low-contrast-secondary-foreground: var(--is-color-twhite-18);
+  --is-button-primary-default-bg: var(--is-color-pure-white);
+  --is-button-primary-active-bg: var(--is-color-off-white);
+  --is-button-secondary-default-bg: var(--is-color-twhite-10);
+  --is-button-secondarystroke: var(--is-color-twhite-8);
+  --is-button-secondarystroke-2: var(--is-color-twhite-8);
+  --is-button-secondary-active-bg: var(--is-color-twhite-18);
+  --is-button-outline-active-bg: var(--is-color-tgrey-44);
+  --is-button-ghost-active-bg: var(--is-color-tgrey-44);
+  --is-button-secondary-foreground: var(--is-color-off-white);
+  --is-button-destructive: var(--is-color-red-dm);
+  --is-button-destructive-acive: var(--is-color-dark-red-dm);
+  --is-button-disabled-bg: var(--is-color-twhite-36);
+  --is-button-accent: var(--is-color-periwinkle-main-dm);
+  --is-record-feature-wave-default: var(--is-color-off-white);
+  --is-record-feature-wave-playback-play: var(--is-color-periwinkle-main-dm);
+  --is-record-feature-wave-playbacknot-played: var(--is-color-grey-2);
+  --is-checkbox-and-radio-selected-background: var(--is-color-green-dm);
+  --is-shadow-basic-shadow: rgba(0, 0, 0, 0.5);
+  --is-shadow-glow: rgba(84, 121, 255, 0.5);
+  --is-item-positive: var(--is-color-green-dm);
+  --is-previous-note-icons-main-1: #434a51;
+  --is-previous-note-icons-second: var(--is-color-tgrey-22);
+  --is-previous-note-icons-third: var(--is-color-tgrey-12);
+  --is-recording-ring-1: #e24d50;
+  --is-recording-ring-2: rgba(223, 39, 73, 0.2);
+  --is-alert-banner-critical: #e24d50;
+  --is-alert-banner-non-critical: #d1deeb;
+}
+
+/* Roundness */
+:root {
+  --is-roundness-0: 0px;
+  --is-roundness-4: 4px;
+  --is-roundness-8: 8px;
+  --is-roundness-10: 10px;
+  --is-roundness-12: 12px;
+  --is-roundness-16: 16px;
+  --is-roundness-18: 18px;
+  --is-roundness-20: 20px;
+  --is-roundness-24: 24px;
+  --is-roundness-30: 30px;
+  --is-roundness-1000: 1000px;
+  --is-no-round: var(--is-roundness-0);
+  --is-round-xs: var(--is-roundness-4);
+  --is-round-s: var(--is-roundness-8);
+  --is-round-m: var(--is-roundness-10);
+  --is-round-l: var(--is-roundness-12);
+  --is-round-xl: var(--is-roundness-16);
+  --is-round-xxl: var(--is-roundness-20);
+  --is-full-round: var(--is-roundness-1000);
+}
+
+/* Text */
+:root {
+  --is-button-text-mini: 10px;
+  --is-button-text-small: 12px;
+  --is-button-text-regular: 13px;
+  --is-button-text-big: 14px;
+  --is-button-text-xl: 15px;
+  --is-button-text-xxl: 16px;
+}
+
+/* Buttons Dimensions (one set per size mode) */
+:root {
+  /* Mini */
+  --is-button-mini-roundness: var(--is-roundness-8);
+  --is-button-mini-padding: 8px;
+  --is-button-mini-gap: 4px;
+  --is-button-mini-height: 20px;
+  --is-button-mini-font-size: 10px;
+  --is-button-mini-icon-size: 12px;
+  --is-button-mini-icon-size-icon-button: 20px;
+  --is-button-mini-stroke: 1px;
+  /* Small */
+  --is-button-small-roundness: var(--is-roundness-10);
+  --is-button-small-padding: 10px;
+  --is-button-small-gap: 5px;
+  --is-button-small-height: 30px;
+  --is-button-small-font-size: 12px;
+  --is-button-small-icon-size: 14px;
+  --is-button-small-icon-size-icon-button: 20px;
+  --is-button-small-stroke: 1.2px;
+  /* Regular */
+  --is-button-regular-roundness: var(--is-roundness-12);
+  --is-button-regular-padding: 12px;
+  --is-button-regular-gap: 6px;
+  --is-button-regular-height: 40px;
+  --is-button-regular-font-size: 13px;
+  --is-button-regular-icon-size: 16px;
+  --is-button-regular-icon-size-icon-button: 20px;
+  --is-button-regular-stroke: 1.3px;
+  /* Big */
+  --is-button-big-roundness: var(--is-roundness-16);
+  --is-button-big-padding: 16px;
+  --is-button-big-gap: 8px;
+  --is-button-big-height: 50px;
+  --is-button-big-font-size: 14px;
+  --is-button-big-icon-size: 18px;
+  --is-button-big-icon-size-icon-button: 24px;
+  --is-button-big-stroke: 1.4px;
+  /* XL */
+  --is-button-xl-roundness: var(--is-roundness-20);
+  --is-button-xl-padding: 20px;
+  --is-button-xl-gap: 12px;
+  --is-button-xl-height: 60px;
+  --is-button-xl-font-size: 15px;
+  --is-button-xl-icon-size: 22px;
+  --is-button-xl-icon-size-icon-button: 36px;
+  --is-button-xl-stroke: 1.5px;
+  /* XXL */
+  --is-button-xxl-roundness: var(--is-roundness-24);
+  --is-button-xxl-padding: 24px;
+  --is-button-xxl-gap: 14px;
+  --is-button-xxl-height: 80px;
+  --is-button-xxl-font-size: 18px;
+  --is-button-xxl-icon-size: 28px;
+  --is-button-xxl-icon-size-icon-button: 40px;
+  --is-button-xxl-stroke: 1.6px;
+}
+
+/* Labels (one set per size mode) */
+:root {
+  /* Small */
+  --is-label-small-height: 18px;
+  --is-label-small-icon-size: 12px;
+  --is-label-small-font-size: 10px;
+  --is-label-small-padding: 4px;
+  --is-label-small-gap: 2px;
+  /* Medium */
+  --is-label-medium-height: 22px;
+  --is-label-medium-icon-size: 14px;
+  --is-label-medium-font-size: 13px;
+  --is-label-medium-padding: 6px;
+  --is-label-medium-gap: 2px;
+  /* Big */
+  --is-label-big-height: 30px;
+  --is-label-big-icon-size: 18px;
+  --is-label-big-font-size: 15px;
+  --is-label-big-padding: 8px;
+  --is-label-big-gap: 2px;
+}

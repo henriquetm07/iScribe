@@ -25,10 +25,12 @@ Storybook opens at http://localhost:6006.
 .storybook/          Storybook configuration
 src/
   components/        One folder per component: .tsx, .css, .stories.tsx
-  foundations/       Storybook pages for design foundations (Colors)
+  foundations/       Storybook pages for design foundations (Colors, Variables)
   styles/colors.css  Color palette from the SuperConscious Figma design system (--is-color-*)
   styles/colors.ts   The same palette as data, used by the Colors page
-  styles/tokens.css  Semantic design tokens (button colors, spacing, type, light/dark)
+  styles/variables.css  Every Figma variable: semantic colors (light/dark), roundness, text, button and label sizes
+  styles/variables.ts   The same variables as data, used by the Variables page
+  styles/tokens.css  Component tokens (button colors alias the Figma variables), spacing, type
   Introduction.mdx   Storybook landing page
   index.ts           Library exports
 ```

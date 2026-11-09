@@ -1,0 +1,36 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+import { SemanticColorTables, VariableTable } from './VariableTables';
+
+<Meta title="Foundations/Variables" />
+
+# Variables
+
+Every variable from the SuperConscious Figma file, available in code as CSS custom properties from `src/styles/variables.css`. Click a variable name to copy its `var(...)`.
+
+Variables that point to another variable (an alias in Figma) show the name they point to, with the final value underneath. The raw palette they point to is on the [Colors](?path=/docs/foundations-colors--docs) page.
+
+## Semantic Colors
+
+These change with the theme: the Light values apply by default and the Dark values when the page has `data-theme="dark"` (the Theme switch in the toolbar).
+
+<SemanticColorTables />
+
+## Roundness
+
+<VariableTable collection="Roundness" />
+
+## Text
+
+<VariableTable collection="Text" />
+
+## Buttons Dimensions
+
+One set of values per button size. Each cell shows the CSS variable for that size.
+
+<VariableTable collection="Buttons Dimensions" />
+
+## Labels
+
+One set of values per label size.
+
+<VariableTable collection="Labels" />
