@@ -1,0 +1,28 @@
+:root {
+  --is-font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --is-font-serif: 'Georgia', 'Times New Roman', serif;
+
+  --is-ink: #1c1b29;
+  --is-ink-muted: #5d5b72;
+  --is-paper: #fbfaf7;
+  --is-surface: #ffffff;
+  --is-border: #e3e1da;
+  --is-accent: #3b5bdb;
+  --is-accent-hover: #2f4bc0;
+  --is-accent-soft: #e8edff;
+  --is-danger: #c92a2a;
+
+  --is-radius-sm: 6px;
+  --is-radius-md: 10px;
+  --is-space-1: 4px;
+  --is-space-2: 8px;
+  --is-space-3: 12px;
+  --is-space-4: 16px;
+  --is-space-6: 24px;
+}
+
+body {
+  font-family: var(--is-font-sans);
+  color: var(--is-ink);
+  background: var(--is-paper);
+}
