@@ -33,7 +33,7 @@ const states = ['default', 'active', 'focus', 'disabled'] as const;
 const caption = { fontFamily: 'var(--is-font-ui)', fontSize: 12, color: 'var(--is-foreground-low-contrast-primary-foreground)' } as const;
 
 const meta = {
-  title: 'Components/Icon Button',
+  title: 'Simple Components/Icon Button',
   component: IconButton,
   args: {
     onClick: fn(),

@@ -27,7 +27,7 @@ const Screen = ({ device, children, height = 220 }: { device: BottomTabDevice; c
 };
 
 const meta = {
-  title: 'Components/Bottom Tab/Bottom Tab',
+  title: 'Complex Components/Bottom Tab/Bottom Tab',
   component: BottomTab,
   args: {
     device: 'iphone',
