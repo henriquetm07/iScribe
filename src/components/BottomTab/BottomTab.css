@@ -1,0 +1,141 @@
+/*
+ * Bottom Tab — Figma "Bottom Tab" page. Every color comes from the Semantic Colors variables
+ * (src/styles/variables.css), so light and dark mode follow data-theme automatically.
+ * Buttons and the slider knob are the iScribe Button / IconButton components; only the knob's
+ * size and accent color are set here, because Figma draws it at 54px (iPhone) / 70px (iPad).
+ */
+
+/* ---------- Bottom Tab (container) ---------- */
+.is-bottom-tab {
+  box-sizing: border-box;
+  display: flex;
+  width: 100%;
+  background: var(--is-background-elevated-background);
+  border-top: 1px solid var(--is-surface-super-soft-contrast-background);
+  border-radius: 0; /* Figma: No Round */
+  font-family: var(--is-font-ui);
+}
+
+/* iPhone */
+.is-bottom-tab--iphone.is-bottom-tab--slide { align-items: center; padding: 10px 10px 30px; }
+.is-bottom-tab--iphone.is-bottom-tab--alert { justify-content: center; padding: 10px; }
+.is-bottom-tab--iphone.is-bottom-tab--alert-button { flex-direction: column; align-items: center; gap: 20px; padding: 20px 10px 30px; }
+
+/* iPad */
+.is-bottom-tab--ipad.is-bottom-tab--slide { justify-content: center; align-items: center; padding: 40px 10px; }
+.is-bottom-tab--ipad.is-bottom-tab--alert { flex-direction: column; align-items: center; padding: 20px 10px; }
+.is-bottom-tab--ipad.is-bottom-tab--alert-button { flex-direction: column; align-items: center; gap: 20px; padding: 20px 10px 30px; }
+
+/* Slider + Review button row ("Send to EHR + Button") */
+.is-bottom-tab__send {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+.is-bottom-tab--ipad .is-bottom-tab__send {
+  gap: 20px;
+  width: auto;
+}
+
+/* ---------- Send Slider ("Send to EHR Slider") ---------- */
+.is-send-slider {
+  --slider-height: 60px;
+  --slider-pad: 3px;
+  --knob: 54px;
+  --knob-icon: 24px;
+  --slider-font: 15px;
+
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  height: var(--slider-height);
+  padding: var(--slider-pad);
+  border-radius: var(--is-full-round);
+  background: var(--is-surface-soft-contrast-background);
+  font-family: var(--is-font-ui);
+  user-select: none;
+}
+.is-send-slider--ipad {
+  --slider-height: 80px;
+  --slider-pad: 5px;
+  --knob: 70px;
+  --knob-icon: 32px;
+  --slider-font: 16px;
+  flex: 0 0 320px;
+  width: 320px;
+}
+
+.is-send-slider__label {
+  font-size: var(--slider-font);
+  font-weight: 500;
+  color: var(--is-foreground-high-contrast-primary-foreground);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* The knob is an IconButton: same component, resized to Figma's knob and painted Button Accent */
+.is-send-slider .is-button.is-send-slider__knob {
+  --btn-height: var(--knob);
+  --btn-icon: var(--knob-icon);
+  --btn-bg: var(--is-button-accent);
+  --btn-fg: var(--is-color-pure-white);
+  position: absolute;
+  top: var(--slider-pad);
+  left: var(--slider-pad);
+  cursor: grab;
+  touch-action: none;
+  transition:
+    transform 260ms cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 120ms ease;
+}
+.is-send-slider .is-button.is-send-slider__knob:focus-visible {
+  box-shadow: 0 0 0 3px var(--is-labels-accent-2);
+}
+.is-send-slider--dragging .is-button.is-send-slider__knob {
+  cursor: grabbing;
+  transition: none;
+}
+.is-send-slider--sent .is-button.is-send-slider__knob {
+  cursor: default;
+}
+.is-send-slider .is-button.is-send-slider__knob:disabled {
+  --btn-bg: var(--is-button-disabled-bg);
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-send-slider .is-button.is-send-slider__knob {
+    transition: box-shadow 120ms ease;
+  }
+}
+
+/* ---------- Alert ---------- */
+.is-bottom-tab-alert {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin: 0;
+  font-family: var(--is-font-ui);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 20px;
+  color: var(--is-foreground-medium-contrast-primary-foreground);
+}
+.is-bottom-tab-alert__icon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+.is-bottom-tab-alert--ipad {
+  font-size: 16px;
+}
+.is-bottom-tab-alert--ipad .is-bottom-tab-alert__icon {
+  width: 22px;
+  height: 22px;
+}

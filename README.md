@@ -40,4 +40,5 @@ src/
 
 - **Button** — primary, secondary, outline, ghost, destructive and destructive-outline variants; six sizes (Mini–XXL); square or rounded; optional left/right icons; every size and color comes from the Figma variables, with light and dark mode
 - **IconButton** — icon-only, square (or circle) version of the Button with the same variants, states, sizes and hover behaviour; requires a `label` for screen readers and the tooltip
+- **BottomTab** — iOS bottom bar for iPhone and iPad (Figma "Bottom Tab"): `content="slide" | "alert" | "alert-button"`. Reuses Button (Review, Button CTA), IconButton (the slider knob) and Icon (arrow-right, alert-flat); also exports its parts `SendSlider` and `BottomTabAlert`
 - **Icon** — 63 icons from the Figma icon page (the ones drawn as a single "Vector" layer); `<Icon name="trash" size={16} />`, colored with `currentColor`

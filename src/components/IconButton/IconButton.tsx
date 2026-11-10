@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import type { ButtonHTMLAttributes, ReactNode, Ref } from 'react';
 import type { ButtonSize, ButtonVariant } from '../Button/Button';
 import '../Button/Button.css';
 import './IconButton.css';
@@ -17,6 +17,8 @@ export interface IconButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonEle
   size?: ButtonSize;
   /** Fully rounded (circle) instead of the size's default corner radius */
   rounded?: boolean;
+  /** Reference to the underlying <button> (React 19 passes ref as a normal prop) */
+  ref?: Ref<HTMLButtonElement>;
 }
 
 /**
