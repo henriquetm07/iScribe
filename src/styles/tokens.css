@@ -1,7 +1,8 @@
 :root {
-  --is-font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --is-font-serif: 'Georgia', 'Times New Roman', serif;
+  /* Figtree is the only typeface in iScribe; the other names are kept as aliases */
   --is-font-ui: 'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --is-font-sans: var(--is-font-ui);
+  --is-font-serif: var(--is-font-ui);
 
   --is-ink: #1c1b29;
   --is-ink-muted: #5d5b72;
@@ -28,7 +29,7 @@
 }
 
 body {
-  font-family: var(--is-font-sans);
+  font-family: var(--is-font-ui);
   color: var(--is-ink);
   background: var(--is-paper);
 }
