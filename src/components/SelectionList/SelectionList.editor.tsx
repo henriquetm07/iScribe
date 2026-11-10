@@ -28,7 +28,13 @@ export const OptionsEditor = ({
 }) => {
   const listRef = useRef<HTMLOListElement>(null);
   /** While dragging: which row is held and where it would land */
-  const [drag, setDrag] = useState<{ from: number; to: number } | null>(null);
+  const [drag, setDragState] = useState<{ from: number; to: number } | null>(null);
+  // Mirrored in a ref so a fast flick (move/up before React re-renders) still lands
+  const dragRef = useRef(drag);
+  const setDrag = (d: typeof drag) => {
+    dragRef.current = d;
+    setDragState(d);
+  };
   const mids = useRef<number[]>([]);
 
   const update = (i: number, patch: Partial<SelectionListOption>) => onChange(options.map((o, j) => (j === i ? { ...o, ...patch } : o)));
@@ -47,12 +53,15 @@ export const OptionsEditor = ({
     setDrag({ from: i, to: i });
   };
   const onDragMove = (e: ReactPointerEvent<HTMLButtonElement>) => {
-    if (!drag) return;
-    const to = Math.min(options.length - 1, mids.current.filter((m) => e.clientY > m).length - (e.clientY > mids.current[drag.from] ? 1 : 0));
-    if (to !== drag.to) setDrag({ ...drag, to: Math.max(0, to) });
+    const d = dragRef.current;
+    if (!d) return;
+    const to = Math.max(0, Math.min(options.length - 1, mids.current.filter((m) => e.clientY > m).length - (e.clientY > mids.current[d.from] ? 1 : 0)));
+    if (to !== d.to) setDrag({ ...d, to });
   };
-  const endDrag = () => {
-    if (drag && drag.from !== drag.to) onChange(moveItem(options, drag.from, drag.to));
+  const endDrag = (e: ReactPointerEvent<HTMLButtonElement>) => {
+    onDragMove(e);
+    const d = dragRef.current;
+    if (d && d.from !== d.to) onChange(moveItem(options, d.from, d.to));
     setDrag(null);
   };
   /** Keyboard: focus the handle and use the arrow keys */
