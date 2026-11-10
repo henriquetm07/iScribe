@@ -36,7 +36,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /** Drag the knob all the way to the right to send. Keyboard: Tab to the knob, then Enter. */
-export const Playground: Story = {};
+export const IPhone: Story = { name: 'iPhone' };
 
 export const IPad: Story = { name: 'iPad', args: { device: 'ipad' } };
 

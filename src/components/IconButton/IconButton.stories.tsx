@@ -76,9 +76,6 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Change every option from the Controls panel. */
-export const Playground: Story = {};
-
 export const Primary: Story = {};
 
 export const Secondary: Story = { args: { variant: 'secondary', iconName: 'edit', label: 'Edit note' } };

@@ -78,9 +78,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Change every option from the Controls panel. Drag the blue knob to the end to send. */
-export const Playground: Story = {};
-
+/** Drag the blue knob to the end to send. */
 export const IPhoneSlideToSend: Story = { name: 'iPhone · Slide to Send' };
 export const IPhoneAlert: Story = { name: 'iPhone · Alert', args: { content: 'alert' } };
 export const IPhoneAlertButton: Story = { name: 'iPhone · Alert + Button', args: { content: 'alert-button' } };
