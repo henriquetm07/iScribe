@@ -57,7 +57,7 @@ export const selectionListSpecLines = (p: Partial<SelectionListProps>) => {
       : '  Shows every row (set visibleRows to scroll)',
     '  Icons per row: iconLeft and iconRight (optional, Foundations / Icons);',
     (p.selectedIcon ?? 'check') === 'none'
-      ? '  selectedIcon="none": the selected row shows no selection icon (keeps its iconRight)'
+      ? '  selectedIcon="none": the selected row shows no icon on the right'
       : `  the selected row shows <Icon name="${p.selectedIcon ?? 'check'}" /> on the right instead of iconRight (selectedIcon)`,
     '',
     'SCROLLER (only when the rows overflow)',

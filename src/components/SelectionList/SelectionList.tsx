@@ -32,7 +32,7 @@ export interface SelectionListProps {
   device?: SelectionListDevice;
   /** Show this many rows, then scroll. Leave empty to show every row. */
   visibleRows?: number;
-  /** Icon on the right of the selected row (default "check"). Another icon, or "none" for no selection icon. */
+  /** Icon on the right of the selected row (default "check"). Another icon, or "none" for no icon on the right. */
   selectedIcon?: IconName | 'none';
   /** Width of the card (default 300px, as in Figma) */
   width?: number | string;
