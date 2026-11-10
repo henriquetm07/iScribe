@@ -1,0 +1,21 @@
+/* AnimatedIcon — a Lottie animation in an icon-sized box, colored with currentColor */
+.is-animated-icon {
+  display: inline-grid;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+.is-animated-icon > * {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+}
+.is-animated-icon__anim svg {
+  display: block;
+}
+/* Lottie writes colors as attributes; these make every stroke and fill follow the text color */
+.is-animated-icon__anim [stroke]:not([stroke='none']) {
+  stroke: currentColor;
+}
+.is-animated-icon__anim [fill]:not([fill='none']) {
+  fill: currentColor;
+}

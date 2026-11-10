@@ -1,0 +1,27 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+import { AnimatedIconGallery } from './AnimatedIconGallery';
+
+<Meta title="Foundations/Animated Icons" />
+
+# Animated Icons
+
+Icons that move. Each one is a Lottie animation (a JSON file) drawn on the same 12 × 12 grid as the [Icons](?path=/docs/foundations-icons--docs), so it lines up with them and can replace one in place.
+
+Click a preview to replay it. Use the buttons to change the size, loop it, or preview it on the accent color. Click the code to copy it.
+
+```tsx
+import { AnimatedIcon } from 'iscribe';
+
+<AnimatedIcon name="arrow-to-check" size={24} />                       // plays once, stops on the last frame
+<AnimatedIcon name="arrow-to-check" size={24} loop />                  // repeats
+<AnimatedIcon name="arrow-to-check" onMarker={(m) => m === 'check' && showSuccess()} />
+```
+
+- **Color** — like Icons, animated icons use `currentColor`, so they take the text color around them.
+- **Size** — `size` sets width and height. It defaults to `1em`.
+- **Markers** — named moments in the animation (for example `check`, when the check mark starts drawing). `onMarker` tells you when each one is reached, so other UI can change in step with the animation.
+- **Loading** — the Lottie player loads the first time an animated icon is shown. Pass `fallback` (usually the static icon it starts from) to show something meanwhile.
+- **Reduced motion** — when the device asks for less motion, the icon shows its last frame straight away and reports every marker at once.
+- **Adding one** — put the `.json` in `src/icons/animated/` and register it in `src/icons/animatedIcons.ts`.
+
+<AnimatedIconGallery />

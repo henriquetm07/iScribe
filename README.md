@@ -25,8 +25,8 @@ Storybook opens at http://localhost:6006.
 .storybook/          Storybook configuration
 src/
   components/        One folder per component: .tsx, .css, .stories.tsx
-  foundations/       Storybook pages for design foundations (Colors, Variables, Icons)
-  icons/             Icon component and icon data from the Figma icon page
+  foundations/       Storybook pages for design foundations (Colors, Variables, Icons, Animated Icons)
+  icons/             Icon and AnimatedIcon components, icon data, and animated/ (Lottie JSON files)
   styles/colors.css  Color palette from the SuperConscious Figma design system (--is-color-*)
   styles/colors.ts   The same palette as data, used by the Colors page
   styles/variables.css  Every Figma variable: semantic colors (light/dark), roundness, text, button and label sizes
@@ -52,3 +52,4 @@ Storybook groups them in two sections:
 
 - **BottomTab** — iOS bottom bar for iPhone and iPad (Figma "Bottom Tab"): `content="slide" | "alert" | "alert-button"`. Reuses Button (Review, Button CTA), IconButton (the slider knob) and Icon (arrow-right, alert-flat); also exports its parts `SendSlider` and `BottomTabAlert`
 - **Icon** — 63 icons from the Figma icon page (the ones drawn as a single "Vector" layer); `<Icon name="trash" size={16} />`, colored with `currentColor`
+- **AnimatedIcon** — Lottie (JSON) icons on the same 12 × 12 grid, colored with `currentColor`: `<AnimatedIcon name="arrow-to-check" />`, with `loop`, `speed`, `onMarker` and `fallback`. The player (`lottie-web`) loads on first use

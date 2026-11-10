@@ -7,3 +7,5 @@ export { colorGroups, type ColorGroup, type ColorToken } from './styles/colors';
 export { variableCollections, type VariableCollection, type DesignVariable } from './styles/variables';
 export { Icon, type IconProps } from './icons/Icon';
 export { icons, iconNames, type IconName } from './icons/icons';
+export { AnimatedIcon, type AnimatedIconProps } from './icons/AnimatedIcon';
+export { animatedIcons, animatedIconNames, type AnimatedIconName } from './icons/animatedIcons';

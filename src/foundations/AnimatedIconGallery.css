@@ -1,0 +1,150 @@
+.is-anim-gallery {
+  display: grid;
+  gap: 16px;
+  margin: 16px 0 40px;
+  font-family: var(--is-font-ui);
+}
+
+.is-anim-gallery__bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.is-anim-gallery__group {
+  display: flex;
+  gap: 4px;
+}
+.is-anim-gallery__group button {
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--is-color-tgrey-12);
+  border-radius: 8px;
+  background: var(--is-color-pure-white);
+  font: inherit;
+  font-size: 12px;
+  color: var(--is-color-grey-2);
+  cursor: pointer;
+}
+.is-anim-gallery__group button[aria-pressed='true'] {
+  border-color: var(--is-color-periwinkle-main-lm);
+  background: var(--is-color-periwinkle-main-lm);
+  color: var(--is-color-pure-white);
+}
+
+/* ---------- Tile ---------- */
+.is-anim-tile {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 20px;
+  padding: 12px;
+  border: 1px solid var(--is-color-tgrey-6);
+  border-radius: 16px;
+  background: var(--is-color-pure-white);
+}
+@media (max-width: 560px) {
+  .is-anim-tile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.is-anim-tile__stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 160px;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: var(--is-color-off-white);
+  color: var(--is-color-black-1);
+  cursor: pointer;
+}
+.is-anim-tile__stage--dark {
+  background: var(--is-button-accent);
+  color: var(--is-color-pure-white);
+}
+.is-anim-tile__stage:focus-visible {
+  outline: 2px solid var(--is-color-periwinkle-main-lm);
+  outline-offset: 2px;
+}
+.is-anim-tile__replay {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  opacity: 0.6;
+}
+.is-anim-tile__stage:hover .is-anim-tile__replay {
+  opacity: 1;
+}
+
+.is-anim-tile__meta {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-width: 0;
+}
+.is-anim-tile__name {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--is-color-grey-4);
+}
+.is-anim-tile__desc {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--is-color-grey-2);
+}
+.is-anim-tile__facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 12px;
+  margin: 4px 0;
+  font-size: 12px;
+}
+.is-anim-tile__facts dt {
+  color: var(--is-color-grey-2);
+}
+.is-anim-tile__facts dd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: var(--is-color-grey-4);
+}
+.is-anim-tile__markers span {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--is-color-off-white);
+  transition: background 150ms ease, color 150ms ease;
+}
+.is-anim-tile__markers small {
+  color: var(--is-color-grey-2);
+}
+/* Lights up as the playing animation passes each marker */
+.is-anim-tile__markers span.is-active {
+  background: var(--is-color-periwinkle-main-lm);
+  color: var(--is-color-pure-white);
+}
+.is-anim-tile__markers span.is-active small {
+  color: inherit;
+}
+.is-anim-tile__code {
+  justify-self: start;
+  max-width: 100%;
+  padding: 6px 10px;
+  border: 1px solid var(--is-color-tgrey-12);
+  border-radius: 8px;
+  background: var(--is-color-off-white);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  color: var(--is-color-grey-4);
+  text-align: left;
+  overflow-wrap: anywhere;
+  cursor: copy;
+}
