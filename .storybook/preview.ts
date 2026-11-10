@@ -1,5 +1,7 @@
 import type { Preview } from '@storybook/react-vite';
 import { create } from 'storybook/theming';
+import { createElement } from 'react';
+import { Blueprint } from './blueprint/Blueprint';
 import '../src/styles/colors.css';
 import '../src/styles/variables.css';
 import '../src/styles/tokens.css';
@@ -22,6 +24,10 @@ const preview: Preview = {
     },
   },
   globalTypes: {
+    blueprint: {
+      // Toggled by the "Blueprint" toolbar button (.storybook/manager.ts)
+      description: 'Show each story as a blueprint: size, padding, gaps, specs and nested components',
+    },
     theme: {
       description: 'Light or dark tokens',
       toolbar: {
@@ -37,8 +43,11 @@ const preview: Preview = {
   },
   initialGlobals: {
     theme: 'light',
+    blueprint: false,
   },
   decorators: [
+    // Blueprint view: wraps the story and draws its structure (toolbar → Blueprint)
+    (Story, context) => (context.globals.blueprint ? createElement(Blueprint, { title: context.title }, Story()) : Story()),
     (Story, context) => {
       const theme = context.globals.theme === 'dark' ? 'dark' : 'light';
       document.documentElement.setAttribute('data-theme', theme);
