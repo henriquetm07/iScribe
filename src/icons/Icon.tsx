@@ -23,7 +23,6 @@ export const Icon = ({ name, size = '1em', title, ...rest }: IconProps) => {
       aria-hidden={title ? undefined : true}
       aria-label={title}
       focusable="false"
-      data-icon={name}
       {...rest}
     >
       {title && <title>{title}</title>}

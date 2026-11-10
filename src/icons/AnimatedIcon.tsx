@@ -103,7 +103,6 @@ export const AnimatedIcon = ({
     <span
       className={`is-animated-icon${className ? ` ${className}` : ''}`}
       style={{ width: size, height: size }}
-      data-animated-icon={name}
       role={title ? 'img' : undefined}
       aria-label={title}
       aria-hidden={title ? undefined : true}
