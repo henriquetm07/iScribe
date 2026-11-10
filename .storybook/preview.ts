@@ -7,7 +7,7 @@ const preview: Preview = {
   parameters: {
     layout: 'centered',
     options: {
-      storySort: { order: ['Introduction', 'Foundations', ['Colors', 'Variables'], 'Components'] },
+      storySort: { order: ['Introduction', 'Foundations', ['Colors', 'Variables', 'Icons'], 'Components'] },
     },
     controls: {
       matchers: {

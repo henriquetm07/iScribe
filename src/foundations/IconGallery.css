@@ -1,0 +1,99 @@
+.is-icon-gallery {
+  display: grid;
+  gap: 16px;
+  margin: 16px 0 40px;
+  font-family: var(--is-font-ui);
+}
+
+.is-icon-gallery__bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.is-icon-gallery__search {
+  flex: 1 1 220px;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--is-color-tgrey-12);
+  border-radius: 10px;
+  font: inherit;
+  font-size: 14px;
+}
+
+.is-icon-gallery__search:focus-visible {
+  outline: 2px solid var(--is-color-periwinkle-main-lm);
+  outline-offset: 1px;
+}
+
+.is-icon-gallery__sizes {
+  display: flex;
+  gap: 4px;
+}
+
+.is-icon-gallery__sizes button {
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--is-color-tgrey-12);
+  border-radius: 8px;
+  background: var(--is-color-pure-white);
+  font: inherit;
+  font-size: 12px;
+  color: var(--is-color-grey-2);
+  cursor: pointer;
+}
+
+.is-icon-gallery__sizes button[aria-pressed='true'] {
+  border-color: var(--is-color-periwinkle-main-lm);
+  background: var(--is-color-periwinkle-main-lm);
+  color: var(--is-color-pure-white);
+}
+
+.is-icon-gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: 12px;
+}
+
+.is-icon-tile {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 18px 8px 12px;
+  border: 1px solid var(--is-color-tgrey-6);
+  border-radius: 14px;
+  background: var(--is-color-pure-white);
+  color: var(--is-color-black-1);
+  font: inherit;
+  cursor: copy;
+  transition: border-color 120ms ease, color 120ms ease;
+}
+
+.is-icon-tile:hover {
+  border-color: var(--is-color-periwinkle-main-lm);
+  color: var(--is-color-periwinkle-main-lm);
+}
+
+.is-icon-tile:focus-visible {
+  outline: 2px solid var(--is-color-periwinkle-main-lm);
+  outline-offset: 2px;
+}
+
+.is-icon-tile__art {
+  display: grid;
+  place-items: center;
+  height: 32px;
+}
+
+.is-icon-tile__name {
+  font-size: 12px;
+  color: var(--is-color-grey-2);
+  text-align: center;
+  word-break: break-word;
+}
+
+.is-icon-gallery__empty {
+  grid-column: 1 / -1;
+  color: var(--is-color-grey-2);
+}

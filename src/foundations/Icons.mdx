@@ -1,0 +1,23 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+import { IconGallery } from './IconGallery';
+
+<Meta title="Foundations/Icons" />
+
+# Icons
+
+The icon set from the SuperConscious design system. Only the icons drawn as a single **Vector** layer in Figma are included for now.
+
+Click any icon to copy its code. Use the size buttons to preview them larger or smaller.
+
+```tsx
+import { Icon } from 'iscribe';
+
+<Icon name="trash" size={16} />                 // decorative: hidden from screen readers
+<Icon name="search" size={16} title="Search" /> // meaningful: read aloud as "Search"
+```
+
+- **Color** — icons use `currentColor`, so they take the text color of whatever they sit in. Set `color` on a parent, or on the icon itself.
+- **Size** — `size` sets width and height. It defaults to `1em`, so an icon matches the font size around it.
+- **Grid** — most icons are drawn on a 12 × 12 grid. *close*, *meatballs*, *placeholder*, *pause-flat*, *play-flat* and *patient-flat* use a 10 × 10 grid. Every icon scales to the size you give it.
+
+<IconGallery />
