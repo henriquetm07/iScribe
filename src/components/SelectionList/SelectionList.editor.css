@@ -51,6 +51,19 @@
   cursor: grab;
   touch-action: none;
 }
+.is-sl-editor__grip {
+  position: relative;
+  width: 12px;
+  height: 12px;
+}
+.is-sl-editor__grip > * {
+  position: absolute;
+  top: 0;
+  left: -1.75px;
+}
+.is-sl-editor__grip > * + * {
+  left: 1.75px;
+}
 .is-sl-editor__handle:hover {
   background: var(--is-surface-super-soft-contrast-background);
   color: var(--is-foreground-high-contrast-primary-foreground);

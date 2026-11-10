@@ -96,7 +96,11 @@ export const OptionsEditor = ({
               onPointerCancel={() => setDrag(null)}
               onKeyDown={onHandleKey(i)}
             >
-              <Icon name="reorder" size={12} />
+              {/* Grip: two kebab icons side by side (a double-column kebab) */}
+              <span className="is-sl-editor__grip" aria-hidden>
+                <Icon name="kebab" size={12} />
+                <Icon name="kebab" size={12} />
+              </span>
             </button>
             <span className="is-sl-editor__num">{pos + 1}</span>
             <input
