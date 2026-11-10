@@ -1,0 +1,12 @@
+/*
+ * Icon Button — the icon-only version of the Button (Figma "Buttons (Icons)").
+ * Colors, states, sizes, borders and the hover corner change all come from Button.css and the
+ * Figma variables it uses. This file only makes the button square with the icon centred:
+ * width = height = var(--is-button-<size>-height), icon = var(--is-button-<size>-icon-size).
+ */
+.is-button.is-icon-button {
+  width: var(--btn-height);
+  min-width: var(--btn-height);
+  padding: 0;
+  gap: 0;
+}

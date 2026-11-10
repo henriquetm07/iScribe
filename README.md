@@ -38,5 +38,6 @@ src/
 ## Components
 
 - **Button** — primary, secondary, outline, ghost, destructive and destructive-outline variants; six sizes (Mini–XXL); square or rounded; optional left/right icons; every size and color comes from the Figma variables, with light and dark mode
+- **IconButton** — icon-only, square (or circle) version of the Button with the same variants, states, sizes and hover behaviour; requires a `label` for screen readers and the tooltip
 - **TextField** — labelled input with hint, error and disabled states
 - **NoteCard** — note preview with title, date, excerpt, tags and selected state

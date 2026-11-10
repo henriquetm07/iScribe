@@ -65,7 +65,7 @@ export const variantSpecs: Record<ButtonVariant, VariantSpec> = {
   },
 };
 
-const sizeLabel: Record<ButtonSize, string> = { mini: 'Mini', small: 'Small', regular: 'Regular', big: 'Big', xl: 'XL', xxl: 'XXL' };
+export const sizeLabel: Record<ButtonSize, string> = { mini: 'Mini', small: 'Small', regular: 'Regular', big: 'Big', xl: 'XL', xxl: 'XXL' };
 
 // ---- variable lookups -------------------------------------------------------
 
@@ -78,7 +78,7 @@ const shortName = (label: string) => label.split('/').pop() ?? label;
 const hex = (value?: string) => (value ?? '').toUpperCase().replace('RGBA', 'rgba');
 
 /** "var(--is-x) → #1D1C1E Grey 4 · dark #FFFFFF Pure White" */
-const color = (cssVar?: string | null) => {
+export const color = (cssVar?: string | null) => {
   if (!cssVar) return 'none (transparent)';
   const v = semantic.get(cssVar);
   if (!v) return `var(${cssVar})`;
@@ -90,14 +90,14 @@ const color = (cssVar?: string | null) => {
 };
 
 /** Returns { cssVar, px } for a Buttons Dimensions variable in a given size. */
-const dim = (name: string, size: ButtonSize) => {
+export const dim = (name: string, size: ButtonSize) => {
   const entry = dims?.vars.find((v) => v.name === name);
   const value = entry?.values[sizeLabel[size]];
   return { cssVar: value?.cssVar ?? '', px: parseFloat(value?.resolved ?? '0') };
 };
 
-const px = (n: number) => `${Math.round(n * 100) / 100}px`;
-const d = (name: string, size: ButtonSize) => {
+export const px = (n: number) => `${Math.round(n * 100) / 100}px`;
+export const d = (name: string, size: ButtonSize) => {
   const x = dim(name, size);
   return `var(${x.cssVar}) → ${px(x.px)}`;
 };
@@ -166,7 +166,7 @@ export const buttonSpecLines = (props: ButtonProps & { showIconLeft?: boolean; s
   ];
 };
 
-const asComment = (lines: string[]) => ['/*', ...lines.map((l) => (l ? ` * ${l}` : ' *')), ' */'].join('\n');
+export const asComment = (lines: string[]) => ['/*', ...lines.map((l) => (l ? ` * ${l}` : ' *')), ' */'].join('\n');
 
 /** Comment block for a single story, placed above its JSX. */
 export const buttonSpecComment = (props: Parameters<typeof buttonSpecLines>[0]) => asComment(buttonSpecLines(props));
