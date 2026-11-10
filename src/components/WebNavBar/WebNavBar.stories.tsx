@@ -88,7 +88,7 @@ const meta = {
   },
   /* Room below the bar so its menus can open */
   render: ({ barWidth, ...args }) => (
-    <div style={{ padding: '24px 24px 360px', boxSizing: 'border-box', background: 'var(--is-background-base-background, transparent)' }}>
+    <div style={{ minHeight: '100vh', padding: '24px 24px 360px', boxSizing: 'border-box', background: 'var(--is-background-base-background, transparent)' }}>
       <div style={{ width: barWidth ?? '100%', maxWidth: '100%' }}>
         <WebNavBar {...args} />
       </div>
