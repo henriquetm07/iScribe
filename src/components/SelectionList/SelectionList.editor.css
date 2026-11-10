@@ -1,7 +1,8 @@
 /* Story-only rows editor shown next to the Selection List preview */
 
 /* On the Docs page the editor shows only at the top; hide it in the iPhone story further down */
-#anchor--components-selection-list-selection-list--i-phone .is-sl-editor {
+#anchor--components-selection-list-selection-list--i-phone .is-sl-editor,
+#anchor--components-dropdown--i-phone .is-sl-editor {
   display: none;
 }
 .is-sl-editor {

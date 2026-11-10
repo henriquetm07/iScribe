@@ -42,6 +42,7 @@ Storybook lists them all under **Components**.
 
 - **Button** — primary, secondary, outline, ghost, destructive and destructive-outline variants; six sizes (Mini–XXL); square or rounded; optional left/right icons; every size and color comes from the Figma variables, with light and dark mode
 - **SelectionList** / **SelectionListItem** — a card of selectable rows for iPhone, iPad and Web (Figma "Selection List"): one selected value with a check mark, hover, destructive rows, optional icons, keyboard navigation and a scroller after `visibleRows`
+- **Dropdown** / **DropdownField** — a field for Web, iPhone and iPad (Figma "Dropdown") with Default and Active states; when active it opens a **SelectionList** of the options (same device and width). Keyboard: ↓ / Enter / Space open, Escape closes
 - **IconButton** — icon-only, square (or circle) version of the Button with the same variants, states, sizes and hover behaviour; requires a `label` for screen readers and the tooltip
 - **BottomTab** — iOS bottom bar for iPhone and iPad (Figma "Bottom Tab"): `content="slide" | "alert" | "alert-button"`. Reuses Button (Review, Button CTA), IconButton (the slider knob) and Icon (arrow-right, alert-flat); also exports its parts `SendSlider` and `BottomTabAlert`
 - **Icon** — 63 icons from the Figma icon page (the ones drawn as a single "Vector" layer); `<Icon name="trash" size={16} />`, colored with `currentColor`

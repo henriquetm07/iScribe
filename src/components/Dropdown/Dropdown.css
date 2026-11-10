@@ -1,0 +1,87 @@
+/*
+ * Dropdown — Figma "Dropdown" (732:2801). The open menu is the Selection List.
+ * Colors and radii are the Figma variables, so light and dark mode follow data-theme.
+ */
+
+/* ---------- Field ---------- */
+.is-dropdown-field {
+  --dd-icon: 16px;
+
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  height: 50px;
+  padding: 10px 20px;
+  border: 1px solid var(--is-surface-soft-contrast-background);
+  border-radius: var(--is-round-l);
+  background: var(--is-surface-super-soft-contrast-background);
+  color: var(--is-foreground-high-contrast-primary-foreground);
+  font-family: var(--is-font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+.is-dropdown-field--web {
+  --dd-icon: 12px;
+  height: 28px;
+  padding: 5px 12px;
+  border-radius: var(--is-round-m);
+}
+.is-dropdown-field--ipad {
+  --dd-icon: 20px;
+  height: 60px;
+  padding: 15px 20px;
+  border-radius: var(--is-round-xl);
+  font-size: 14px;
+}
+
+/* Active: menu open (Figma State=Active: Medium Contrast Background, chevron up) */
+.is-dropdown-field--active {
+  background: var(--is-surface-medium-contrast-background);
+}
+
+.is-dropdown-field__label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.is-dropdown-field--placeholder .is-dropdown-field__label {
+  color: var(--is-foreground-low-contrast-primary-foreground);
+}
+.is-dropdown-field__icon {
+  flex-shrink: 0;
+  width: var(--dd-icon);
+  height: var(--dd-icon);
+}
+
+.is-dropdown-field:focus-visible {
+  outline: 2px solid var(--is-button-accent);
+  outline-offset: 2px;
+}
+.is-dropdown-field:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ---------- Dropdown (field + menu) ---------- */
+.is-dropdown {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: top;
+}
+.is-dropdown__menu {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+}
