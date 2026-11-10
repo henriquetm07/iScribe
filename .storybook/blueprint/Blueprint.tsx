@@ -159,9 +159,9 @@ const authoredVar = (el: Element, props: string[]): string | null => {
 type Box = { x: number; y: number; w: number; h: number };
 type Band = Box & { value: number; side: 'top' | 'right' | 'bottom' | 'left' };
 type Gap = Box & { value: number };
-type Part = Box & { label: string };
+type Part = Box & { label: string; n?: number };
 type Spec = { label: string; value: string; variable?: string | null };
-type Ref = { label: string; docs: string; size: string; count: number };
+type Ref = { label: string; docs: string; size: string; count: number; n: number };
 type Model = {
   name: string;
   box: Box;
@@ -188,7 +188,8 @@ const measure = (stage: HTMLElement, title: string): Model | null => {
   if (!target) return null;
 
   const sRect = stage.getBoundingClientRect();
-  const scale = sRect.width / stage.offsetWidth || 1;
+  // Storybook's zoom scales the frame; offsetWidth is a whole number, so round the ratio to avoid 390.2-style noise
+  const scale = stage.offsetWidth ? Math.round((sRect.width / stage.offsetWidth) * 100) / 100 || 1 : 1;
   const rel = (r: DOMRect): Box => ({ x: (r.left - sRect.left) / scale, y: (r.top - sRect.top) / scale, w: r.width / scale, h: r.height / scale });
 
   const box = rel(target.getBoundingClientRect());
@@ -251,8 +252,10 @@ const measure = (stage: HTMLElement, title: string): Model | null => {
     const r = e.getBoundingClientRect();
     const existing = refMap.get(label);
     if (existing) existing.count++;
-    else refMap.set(label, { label, docs: k.docs, size: `${fmt(r.width / scale)} × ${fmt(r.height / scale)}`, count: 1 });
+    else refMap.set(label, { label, docs: k.docs, size: `${fmt(r.width / scale)} × ${fmt(r.height / scale)}`, count: 1, n: refMap.size + 1 });
   }
+  // Outlined parts carry the same number as their entry in "Built from"
+  for (const p of parts) p.n = refMap.get(p.label)?.n;
   const others = top.slice(1).map((e) => ({ ...rel(e.getBoundingClientRect()), label: labelOf(e) }));
 
   // Specs of the component itself
@@ -334,8 +337,18 @@ const Chip = ({ x, y, text, anchor = 'middle', tone = 'line' }: { x: number; y: 
 
 const Overlay = ({ m }: { m: Model }) => {
   const { box } = m;
-  const topY = box.y - 22;
-  const leftX = box.x - 22;
+  // Overall size markers sit further out, leaving room for padding values placed just outside thin bands
+  const topY = box.y - 36;
+  const leftX = box.x - 48;
+  const THIN = 16;
+  const padChip = (p: Band) => {
+    const thick = p.side === 'top' || p.side === 'bottom' ? p.h : p.w;
+    if (thick >= THIN) return { x: p.x + p.w / 2, y: p.y + p.h / 2, anchor: 'middle' as const };
+    if (p.side === 'top') return { x: p.x + p.w / 2, y: p.y - 11, anchor: 'middle' as const };
+    if (p.side === 'bottom') return { x: p.x + p.w / 2, y: p.y + p.h + 11, anchor: 'middle' as const };
+    if (p.side === 'left') return { x: p.x - 4, y: p.y + p.h / 2, anchor: 'end' as const };
+    return { x: p.x + p.w + 4, y: p.y + p.h / 2, anchor: 'start' as const };
+  };
   return (
     <svg className="bp-overlay" aria-hidden="true">
       <defs>
@@ -356,9 +369,7 @@ const Overlay = ({ m }: { m: Model }) => {
       {m.padding.map((p, i) => (
         <g key={`p${i}`}>
           <rect x={p.x} y={p.y} width={p.w} height={p.h} className="bp-pad" />
-          {p.w > 0 && p.h > 0 && (
-            <Chip x={p.x + p.w / 2} y={p.y + p.h / 2} text={fmt(p.value)} tone="pad" />
-          )}
+          {p.w > 0 && p.h > 0 && <Chip {...padChip(p)} text={fmt(p.value)} tone="pad" />}
         </g>
       ))}
 
@@ -366,15 +377,21 @@ const Overlay = ({ m }: { m: Model }) => {
       {m.gaps.map((g, i) => (
         <g key={`g${i}`}>
           <rect x={g.x} y={g.y} width={g.w} height={g.h} className="bp-gap" />
-          <Chip x={g.x + g.w / 2} y={g.y + g.h / 2} text={fmt(g.value)} tone="gap" />
+          {/* Narrow gaps get their value just above the gap so it doesn't cover the content */}
+          <Chip x={g.x + g.w / 2} y={Math.min(g.w, g.h) >= THIN ? g.y + g.h / 2 : g.w < g.h ? g.y - 11 : g.y + g.h / 2} text={fmt(g.value)} tone="gap" />
         </g>
       ))}
 
-      {/* Nested components */}
+      {/* Nested components: dashed outline + numbered badge (matches "Built from") */}
       {m.parts.map((p, i) => (
         <g key={`c${i}`}>
           <rect x={p.x} y={p.y} width={p.w} height={p.h} className="bp-part" />
-          <Chip x={p.x} y={p.y - 10} text={`${p.label} · ${fmt(p.w)}×${fmt(p.h)}`} anchor="start" tone="part" />
+          <g className="bp-badge">
+            <circle cx={p.x} cy={p.y} r={8} />
+            <text x={p.x} y={p.y + 3.5} textAnchor="middle">
+              {p.n ?? '•'}
+            </text>
+          </g>
         </g>
       ))}
 
@@ -388,7 +405,7 @@ const Overlay = ({ m }: { m: Model }) => {
       <line x1={leftX - 5} y1={box.y} x2={leftX + 5} y2={box.y} className="bp-dim" />
       <line x1={leftX - 5} y1={box.y + box.h} x2={leftX + 5} y2={box.y + box.h} className="bp-dim" />
       <Chip x={leftX} y={box.y + box.h / 2} text={`${fmt(box.h)}`} />
-      {m.radius > 0 && <Chip x={box.x + box.w + 8} y={box.y - 10} text={m.radius >= 500 ? 'r full' : `r ${fmt(m.radius)}`} anchor="start" />}
+      {m.radius > 0 && <Chip x={box.x + box.w + 8} y={topY} text={m.radius >= 500 ? 'r full' : `r ${fmt(m.radius)}`} anchor="start" />}
     </svg>
   );
 };
@@ -416,6 +433,7 @@ const Panel = ({ m }: { m: Model }) => (
         <ul>
           {m.refs.map((r) => (
             <li key={r.label}>
+              <b className="bp-panel__num">{r.n}</b>
               <a href={`/?path=/docs/${r.docs}`} target="_top">
                 {r.label} ↗
               </a>
@@ -464,6 +482,7 @@ export const Blueprint = ({ children, title }: { children: ReactNode; title: str
     window.addEventListener('resize', update);
     // Fonts and lazy content (Lottie) can change sizes after the first paint
     const t = window.setTimeout(update, 400);
+    const t2 = window.setTimeout(update, 1200);
     document.fonts?.ready.then(update);
     return () => {
       ro.disconnect();
@@ -471,6 +490,7 @@ export const Blueprint = ({ children, title }: { children: ReactNode; title: str
       el.removeEventListener('transitionend', update, true);
       window.removeEventListener('resize', update);
       window.clearTimeout(t);
+      window.clearTimeout(t2);
       cancelAnimationFrame(frame.current);
     };
   }, [update]);
