@@ -95,13 +95,20 @@ export const SendSlider = ({
   };
 
   const x = progress !== undefined ? progress * max : sent ? max : offset;
+  // "Send to EHR" fades out as the knob travels (1 at the start → 0 at the end); the sent message is always fully opaque.
+  const labelOpacity = sent ? 1 : max > 0 ? 1 - Math.min(1, x / max) : 1;
 
   return (
     <div
       ref={trackRef}
       className={`is-send-slider is-send-slider--${device}${sent ? ' is-send-slider--sent' : ''}${dragging ? ' is-send-slider--dragging' : ''}`}
     >
-      <span className="is-send-slider__label" aria-live="polite">
+      <span
+        key={sent ? 'sent' : 'send'}
+        className={`is-send-slider__label${sent ? ' is-send-slider__label--sent' : ''}`}
+        aria-live="polite"
+        style={{ opacity: labelOpacity }}
+      >
         {sent ? sentLabel : label}
       </span>
       <IconButton

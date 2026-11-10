@@ -76,6 +76,20 @@
   color: var(--is-foreground-high-contrast-primary-foreground);
   white-space: nowrap;
   pointer-events: none;
+  /* Opacity follows the knob while dragging; this eases it back when the knob springs home */
+  transition: opacity 260ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.is-send-slider--dragging .is-send-slider__label {
+  transition: none;
+}
+/* The success message fades in to full opacity once sent */
+.is-send-slider__label--sent {
+  animation: is-send-slider-sent-in 220ms ease-out;
+}
+@keyframes is-send-slider-sent-in {
+  from {
+    opacity: 0;
+  }
 }
 
 /* The knob is an IconButton: same component, resized to Figma's knob and painted Button Accent */
@@ -111,6 +125,12 @@
 @media (prefers-reduced-motion: reduce) {
   .is-send-slider .is-button.is-send-slider__knob {
     transition: box-shadow 120ms ease;
+  }
+  .is-send-slider__label {
+    transition: none;
+  }
+  .is-send-slider__label--sent {
+    animation: none;
   }
 }
 
