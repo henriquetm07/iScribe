@@ -1,0 +1,121 @@
+/*
+ * Selection List — Figma "Selection List" (743:6526). Colors and radii are the Figma variables
+ * (src/styles/variables.css), so light and dark mode follow data-theme.
+ */
+
+/* ---------- Selection List Item ---------- */
+.is-selection-list-item {
+  --sli-height: 40px;
+  --sli-icon: 18px;
+
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  min-height: var(--sli-height);
+  padding: 10px 12px;
+  border: 0;
+  border-radius: var(--is-round-l);
+  background: transparent;
+  color: var(--is-foreground-high-contrast-primary-foreground);
+  font-family: var(--is-font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+.is-selection-list-item--ipad {
+  --sli-height: 50px;
+  --sli-icon: 20px;
+}
+.is-selection-list-item--web {
+  --sli-height: 36px;
+  --sli-icon: 16px;
+}
+
+.is-selection-list-item__main {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.is-selection-list-item__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.is-selection-list-item__icon {
+  flex-shrink: 0;
+  width: var(--sli-icon);
+  height: var(--sli-icon);
+}
+
+/* Hover (Figma "Hover": Super Soft Contrast Background) */
+.is-selection-list-item:hover:not(:disabled),
+.is-selection-list-item[data-state='hover'] {
+  background: var(--is-surface-super-soft-contrast-background);
+}
+/* Selected (Figma "Selected": Soft Selection) */
+.is-selection-list-item--selected,
+.is-selection-list-item--selected:hover:not(:disabled) {
+  background: var(--is-surface-soft-selection);
+}
+/* Destructive (Figma "Destructive": Status / Foreground / Alert) */
+.is-selection-list-item--destructive {
+  color: var(--is-status-foreground-alert);
+}
+.is-selection-list-item:focus-visible {
+  outline: 2px solid var(--is-button-accent);
+  outline-offset: -2px;
+}
+.is-selection-list-item:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ---------- Selection List (card) ---------- */
+.is-selection-list {
+  box-sizing: border-box;
+  display: flex;
+  max-width: 100%;
+  padding: 4px;
+  border: 1px solid var(--is-surface-soft-contrast-background);
+  border-radius: var(--is-round-xl);
+  background: var(--is-background-elevated-background);
+  box-shadow: 0 0 20px 0 var(--is-shadow-basic-shadow);
+}
+.is-selection-list__items {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  /* Figma "Scroller": 10px pill in Soft Contrast Background, 5px from the items */
+  scrollbar-width: thin;
+  scrollbar-color: var(--is-surface-soft-contrast-background) transparent;
+}
+.is-selection-list--scrolls .is-selection-list__items {
+  padding-right: 5px;
+}
+.is-selection-list__items::-webkit-scrollbar {
+  width: 10px;
+}
+.is-selection-list__items::-webkit-scrollbar-track {
+  background: transparent;
+}
+.is-selection-list__items::-webkit-scrollbar-thumb {
+  border-radius: var(--is-full-round);
+  background: var(--is-surface-soft-contrast-background);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-selection-list-item {
+    transition: none;
+  }
+}

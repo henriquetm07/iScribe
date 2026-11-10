@@ -15,6 +15,12 @@ const KINDS: Kind[] = [
   { name: 'Bottom Tab', docs: 'complex-components-bottom-tab-bottom-tab--docs', match: (e) => e.classList.contains('is-bottom-tab') },
   { name: 'Send Slider', docs: 'complex-components-bottom-tab-send-slider--docs', match: (e) => e.classList.contains('is-send-slider') },
   { name: 'Bottom Tab Alert', docs: 'complex-components-bottom-tab-alert--docs', match: (e) => e.classList.contains('is-bottom-tab-alert') },
+  { name: 'Selection List', docs: 'simple-components-selection-list-selection-list--docs', match: (e) => e.classList.contains('is-selection-list') },
+  {
+    name: 'Selection List Item',
+    docs: 'simple-components-selection-list-selection-list-item--docs',
+    match: (e) => e.classList.contains('is-selection-list-item'),
+  },
   { name: 'Icon Button', docs: 'simple-components-icon-button--docs', match: (e) => e.classList.contains('is-icon-button') },
   {
     name: 'Button',
@@ -34,7 +40,8 @@ const KINDS: Kind[] = [
     detail: (e) => e.getAttribute('data-icon'),
   },
 ];
-const KIND_SELECTOR = '.is-bottom-tab, .is-send-slider, .is-bottom-tab-alert, .is-button, [data-animated-icon], svg[data-icon]';
+const KIND_SELECTOR =
+  '.is-bottom-tab, .is-send-slider, .is-bottom-tab-alert, .is-selection-list, .is-selection-list-item, .is-button, [data-animated-icon], svg[data-icon]';
 const kindOf = (el: Element) => KINDS.find((k) => k.match(el)) ?? null;
 const labelOf = (el: Element) => {
   const k = kindOf(el);

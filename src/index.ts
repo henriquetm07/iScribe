@@ -1,5 +1,7 @@
 export { Button, type ButtonProps } from './components/Button/Button';
 export { IconButton, type IconButtonProps } from './components/IconButton/IconButton';
+export { SelectionList, type SelectionListProps, type SelectionListOption } from './components/SelectionList/SelectionList';
+export { SelectionListItem, type SelectionListItemProps, type SelectionListDevice } from './components/SelectionList/SelectionListItem';
 export { BottomTab, type BottomTabProps, type BottomTabContent } from './components/BottomTab/BottomTab';
 export { SendSlider, type SendSliderProps, type BottomTabDevice } from './components/BottomTab/SendSlider';
 export { BottomTabAlert, type BottomTabAlertProps } from './components/BottomTab/BottomTabAlert';

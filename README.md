@@ -40,12 +40,13 @@ src/
 
 Storybook groups them in two sections:
 
-- **Simple Components** — basic building blocks with a single structure, using only the foundations (colors, variables, icons): Button, IconButton
+- **Simple Components** — basic building blocks with a single structure, using only the foundations (colors, variables, icons): Button, IconButton, SelectionList
 - **Complex Components** — built by combining simple components and foundations: BottomTab (with its parts SendSlider and BottomTabAlert)
 
 ### Simple
 
 - **Button** — primary, secondary, outline, ghost, destructive and destructive-outline variants; six sizes (Mini–XXL); square or rounded; optional left/right icons; every size and color comes from the Figma variables, with light and dark mode
+- **SelectionList** / **SelectionListItem** — a card of selectable rows for iPhone, iPad and Web (Figma "Selection List"): one selected value with a check mark, hover, destructive rows, optional icons, keyboard navigation and a scroller after `visibleRows`
 - **IconButton** — icon-only, square (or circle) version of the Button with the same variants, states, sizes and hover behaviour; requires a `label` for screen readers and the tooltip
 
 ### Complex
