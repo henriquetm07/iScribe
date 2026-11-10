@@ -62,6 +62,8 @@ export interface DropdownProps {
   device?: DropdownDevice;
   /** Width of the field and its menu (default 305px, as in Figma) */
   width?: number | string;
+  /** Width of the open menu when it should differ from the field (e.g. a wider list of long names) */
+  menuWidth?: number | string;
   /** Open state (controlled). Leave undefined to let the dropdown manage it. */
   open?: boolean;
   /** Start open when uncontrolled */
@@ -89,6 +91,7 @@ export const Dropdown = ({
   placeholder = 'Select…',
   device = 'iphone',
   width = 305,
+  menuWidth,
   open,
   defaultOpen = false,
   onOpenChange,
@@ -170,7 +173,12 @@ export const Dropdown = ({
         {current?.label ?? placeholder}
       </DropdownField>
       {isOpen && (
-        <div id={menuId} className="is-dropdown__menu" onKeyDown={onMenuKeyDown}>
+        <div
+          id={menuId}
+          className="is-dropdown__menu"
+          style={menuWidth !== undefined ? { width: menuWidth, right: 'auto' } : undefined}
+          onKeyDown={onMenuKeyDown}
+        >
           {/* The open menu is the Selection List (Components / Selection List) */}
           <SelectionList
             options={options}

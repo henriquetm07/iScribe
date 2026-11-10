@@ -29,7 +29,7 @@ export const dropdownSpecLines = (p: Partial<DropdownProps>) => {
     `  Icon        ${s.icon}px, <Icon name="chevron-down" /> · <Icon name="chevron-up" /> when active`,
     '',
     'MENU (when active) → <SelectionList /> (see Components / Selection List)',
-    `  Same device and width as the field, 6px below it`,
+    `  Same device as the field, ${p.menuWidth !== undefined ? `${typeof p.menuWidth === 'number' ? `${p.menuWidth}px` : p.menuWidth} wide` : 'same width'}, 6px below it`,
     `  Shows ${p.visibleRows ?? 5} rows, then scrolls; selected row icon: ${p.selectedIcon ?? 'check'}`,
     '',
     'BEHAVIOUR',

@@ -3,6 +3,7 @@ export { IconButton, type IconButtonProps } from './components/IconButton/IconBu
 export { SelectionList, type SelectionListProps, type SelectionListOption } from './components/SelectionList/SelectionList';
 export { SelectionListItem, type SelectionListItemProps, type SelectionListDevice } from './components/SelectionList/SelectionListItem';
 export { Dropdown, DropdownField, type DropdownProps, type DropdownFieldProps, type DropdownDevice } from './components/Dropdown/Dropdown';
+export { WebNavBar, type WebNavBarProps, type WebNavBarItem, type WebNavBarAvatar, type WebNavBarMenuMode } from './components/WebNavBar/WebNavBar';
 export { BottomTab, type BottomTabProps, type BottomTabContent } from './components/BottomTab/BottomTab';
 export { SendSlider, type SendSliderProps, type BottomTabDevice } from './components/BottomTab/SendSlider';
 export { BottomTabAlert, type BottomTabAlertProps } from './components/BottomTab/BottomTabAlert';
@@ -10,5 +11,7 @@ export { colorGroups, type ColorGroup, type ColorToken } from './styles/colors';
 export { variableCollections, type VariableCollection, type DesignVariable } from './styles/variables';
 export { Icon, type IconProps } from './icons/Icon';
 export { icons, iconNames, type IconName } from './icons/icons';
+export { Logo, type LogoProps } from './icons/Logo';
+export { ChromeIcon } from './icons/ChromeIcon';
 export { AnimatedIcon, type AnimatedIconProps } from './icons/AnimatedIcon';
 export { animatedIcons, animatedIconNames, type AnimatedIconName } from './icons/animatedIcons';
