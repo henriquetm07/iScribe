@@ -1,0 +1,90 @@
+/* Story-only rows editor shown next to the Selection List preview */
+.is-sl-editor {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+  width: 300px;
+  padding: 12px;
+  border: 1px dashed var(--is-surface-soft-contrast-background);
+  border-radius: var(--is-round-xl);
+  font-family: var(--is-font-ui);
+  color: var(--is-foreground-high-contrast-primary-foreground);
+}
+.is-sl-editor__head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.is-sl-editor__count {
+  padding: 0 6px;
+  border-radius: var(--is-full-round);
+  background: var(--is-surface-super-soft-contrast-background);
+  color: var(--is-foreground-low-contrast-primary-foreground);
+  font-size: 11px;
+}
+.is-sl-editor__rows {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.is-sl-editor__row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.is-sl-editor__num {
+  width: 16px;
+  font-size: 11px;
+  color: var(--is-foreground-low-contrast-primary-foreground);
+  text-align: right;
+}
+.is-sl-editor__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid var(--is-surface-soft-contrast-background);
+  border-radius: 8px;
+  background: var(--is-background-elevated-background);
+  color: inherit;
+  font: inherit;
+  font-size: 12px;
+}
+.is-sl-editor__input:focus-visible {
+  outline: 2px solid var(--is-button-accent);
+  outline-offset: -1px;
+}
+.is-sl-editor__input--destructive {
+  color: var(--is-status-foreground-alert);
+}
+.is-sl-editor__toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  color: var(--is-foreground-low-contrast-primary-foreground);
+  cursor: pointer;
+}
+.is-sl-editor__toggle input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.is-sl-editor__toggle:has(input:checked) {
+  background: var(--is-status-foreground-alert);
+  color: var(--is-color-pure-white);
+}
+.is-sl-editor__toggle:has(input:focus-visible) {
+  outline: 2px solid var(--is-button-accent);
+}
+.is-sl-editor__hint {
+  margin: 0;
+  font-size: 11px;
+  color: var(--is-foreground-low-contrast-primary-foreground);
+}
