@@ -86,9 +86,9 @@ const meta = {
       },
     },
   },
-  /* Room below the bar so its menus can open */
+  /* Room below the bar for its tallest menu: the practice list ends 328px below the bar, plus 24px like the top */
   render: ({ barWidth, ...args }) => (
-    <div style={{ minHeight: '100vh', padding: '24px 24px 360px', boxSizing: 'border-box', background: 'var(--is-background-base-background, transparent)' }}>
+    <div style={{ padding: '24px 24px 352px', boxSizing: 'border-box', background: 'var(--is-background-base-background, transparent)' }}>
       <div style={{ width: barWidth ?? '100%', maxWidth: '100%' }}>
         <WebNavBar {...args} />
       </div>
