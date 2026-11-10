@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
 import { Icon } from '../../icons/Icon';
 import { IconButton } from '../IconButton/IconButton';
+import { ArrowToCheck } from './ArrowToCheck';
 import './BottomTab.css';
 
 export type BottomTabDevice = 'iphone' | 'ipad';
@@ -27,6 +28,7 @@ const SEND_THRESHOLD = 0.85;
 /**
  * "Send to EHR Slider" from the Figma Bottom Tab page: a slide-to-confirm control.
  * The knob is the iScribe IconButton (rounded, arrow-right icon) recolored to Button Accent.
+ * Once sent, the knob's arrow plays the "arrow to check" animation and ends as a check mark.
  */
 export const SendSlider = ({
   device = 'iphone',
@@ -114,7 +116,7 @@ export const SendSlider = ({
       <IconButton
         ref={knobRef}
         className="is-send-slider__knob"
-        icon={<Icon name="arrow-right" />}
+        icon={sent ? <ArrowToCheck /> : <Icon name="arrow-right" />}
         label={sent ? sentLabel : `${label} — drag to the end, or press Enter`}
         variant="primary"
         size={device === 'ipad' ? 'xxl' : 'xl'}
