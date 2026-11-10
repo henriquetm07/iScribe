@@ -7,8 +7,9 @@
 .is-sl-editor {
   display: grid;
   gap: 10px;
+  grid-template-columns: minmax(0, 1fr);
   justify-items: start;
-  width: 300px;
+  width: 360px;
   padding: 12px;
   border: 1px dashed var(--is-surface-soft-contrast-background);
   border-radius: var(--is-round-xl);
@@ -31,6 +32,7 @@
 }
 .is-sl-editor__rows {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 4px;
   width: 100%;
   margin: 0;
@@ -42,6 +44,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 4px;
+  min-width: 0;
   padding-bottom: 4px;
 }
 /* Second line of a row: left / right icon pickers, lined up under the label input */
@@ -49,6 +52,8 @@
   display: flex;
   gap: 8px;
   flex-basis: 100%;
+  box-sizing: border-box;
+  min-width: 0;
   padding-left: 44px;
 }
 .is-sl-editor__icon-pick {
