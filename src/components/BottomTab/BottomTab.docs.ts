@@ -28,8 +28,8 @@ export const sendSliderSpecLines = (p: Partial<SendSliderProps>) => {
     'BEHAVIOUR',
     '  While dragging, the text fades with the knob: fully visible at the start, invisible at the end',
     '  Drag the knob to the end (85% or more) and let go → sends, calls onSend, knob stays at the end',
-    `  Once sent → "${p.sentLabel ?? 'Sent to EHR'}" fades in to full opacity (220ms)`,
-    '              and the knob arrow animates into a check mark (arrow-to-check.json, Lottie, about 2s)',
+    '  Once sent → the knob arrow turns into a spinner, then a check mark (arrow-to-check.json, Lottie, about 2s)',
+    `              "${p.sentLabel ?? 'Sent to EHR'}" stays hidden while it spins and fades in with the check mark (320ms)`,
     '  Let go earlier → knob slides back and the text fades back in (260ms)',
     '  Keyboard: focus the knob and press Enter or Space to send',
   ];

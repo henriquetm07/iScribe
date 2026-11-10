@@ -82,14 +82,9 @@
 .is-send-slider--dragging .is-send-slider__label {
   transition: none;
 }
-/* The success message fades in to full opacity once sent */
+/* The success message fades in together with the knob's check mark (which draws in ~320ms) */
 .is-send-slider__label--sent {
-  animation: is-send-slider-sent-in 220ms ease-out;
-}
-@keyframes is-send-slider-sent-in {
-  from {
-    opacity: 0;
-  }
+  transition-duration: 320ms;
 }
 
 /* The knob is an IconButton: same component, resized to Figma's knob and painted Button Accent */
@@ -128,9 +123,6 @@
   }
   .is-send-slider__label {
     transition: none;
-  }
-  .is-send-slider__label--sent {
-    animation: none;
   }
 }
 

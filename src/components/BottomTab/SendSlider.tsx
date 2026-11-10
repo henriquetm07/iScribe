@@ -28,7 +28,8 @@ const SEND_THRESHOLD = 0.85;
 /**
  * "Send to EHR Slider" from the Figma Bottom Tab page: a slide-to-confirm control.
  * The knob is the iScribe IconButton (rounded, arrow-right icon) recolored to Button Accent.
- * Once sent, the knob's arrow plays the "arrow to check" animation and ends as a check mark.
+ * Once sent, the knob's arrow plays the "arrow to check" animation and ends as a check mark;
+ * the success message fades in at the same moment as the check mark.
  */
 export const SendSlider = ({
   device = 'iphone',
@@ -47,6 +48,11 @@ export const SendSlider = ({
   const [dragging, setDragging] = useState(false);
   const [max, setMax] = useState(0);
   const sent = sentProp ?? sentState;
+  // The success message waits for the knob's check mark, then fades in with it.
+  const [checkShown, setCheckShown] = useState(false);
+  useEffect(() => {
+    if (!sent) setCheckShown(false);
+  }, [sent]);
 
   // Measure how far the knob can travel (track width − knob − padding on both sides).
   useEffect(() => {
@@ -97,8 +103,9 @@ export const SendSlider = ({
   };
 
   const x = progress !== undefined ? progress * max : sent ? max : offset;
-  // "Send to EHR" fades out as the knob travels (1 at the start → 0 at the end); the sent message is always fully opaque.
-  const labelOpacity = sent ? 1 : max > 0 ? 1 - Math.min(1, x / max) : 1;
+  // "Send to EHR" fades out as the knob travels (1 at the start → 0 at the end).
+  // Once sent, the track stays empty while the knob spins; the success message appears with the check mark.
+  const labelOpacity = sent ? (checkShown ? 1 : 0) : max > 0 ? 1 - Math.min(1, x / max) : 1;
 
   return (
     <div
@@ -116,7 +123,7 @@ export const SendSlider = ({
       <IconButton
         ref={knobRef}
         className="is-send-slider__knob"
-        icon={sent ? <ArrowToCheck /> : <Icon name="arrow-right" />}
+        icon={sent ? <ArrowToCheck onCheck={() => setCheckShown(true)} /> : <Icon name="arrow-right" />}
         label={sent ? sentLabel : `${label} — drag to the end, or press Enter`}
         variant="primary"
         size={device === 'ipad' ? 'xxl' : 'xl'}
