@@ -7,7 +7,7 @@ import { selectionListItemSpecComment } from './SelectionList.docs';
 const caption = { fontFamily: 'var(--is-font-ui)', fontSize: 12, color: 'var(--is-foreground-low-contrast-primary-foreground)' } as const;
 
 const meta = {
-  title: 'Simple Components/Selection List/Selection List Item',
+  title: 'Components/Selection List/Selection List Item',
   component: SelectionListItem,
   args: {
     children: 'Selection List Item',

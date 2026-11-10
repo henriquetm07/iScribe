@@ -17,7 +17,7 @@ const microphones: SelectionListOption[] = [
 ];
 
 const meta = {
-  title: 'Simple Components/Selection List/Selection List',
+  title: 'Components/Selection List/Selection List',
   component: SelectionList,
   args: {
     options: microphones,

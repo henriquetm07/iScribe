@@ -49,7 +49,7 @@ const variantLabel: Record<ButtonVariant, string> = {
 const label = { fontFamily: 'var(--is-font-ui)', fontSize: 12, color: 'var(--is-foreground-low-contrast-primary-foreground)' } as const;
 
 const meta = {
-  title: 'Simple Components/Button',
+  title: 'Components/Button',
   component: Button,
   args: {
     onClick: fn(),

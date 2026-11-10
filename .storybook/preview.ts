@@ -12,7 +12,10 @@ const preview: Preview = {
       theme: create({ base: 'light', fontBase: "'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif" }),
     },
     options: {
-      storySort: { order: ['Introduction', 'Foundations', ['Colors', 'Variables', 'Icons', 'Animated Icons'], 'Simple Components', 'Complex Components'] },
+      storySort: { order: [
+        'Introduction', 'Foundations', ['Colors', 'Variables', 'Icons', 'Animated Icons'],
+        'Components', ['Bottom Tab', ['Bottom Tab', 'Alert', 'Send Slider'], 'Button', 'Icon Button', 'Selection List', ['Selection List', 'Selection List Item']],
+      ] },
     },
     controls: {
       matchers: {

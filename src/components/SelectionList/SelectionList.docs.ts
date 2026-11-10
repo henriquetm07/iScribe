@@ -48,7 +48,7 @@ export const selectionListSpecLines = (p: Partial<SelectionListProps>) => {
     '  Border      1px var(--is-surface-soft-contrast-background)',
     '  Shadow      0 0 20px var(--is-shadow-basic-shadow)',
     '',
-    'ROWS → <SelectionListItem /> (see Simple Components / Selection List / Selection List Item)',
+    'ROWS → <SelectionListItem /> (see Components / Selection List / Selection List Item)',
     `  ${rowHeight[d]}px each, stacked with no gap`,
     p.visibleRows
       ? `  Shows ${p.visibleRows} rows (${p.visibleRows * rowHeight[d]}px), then scrolls`

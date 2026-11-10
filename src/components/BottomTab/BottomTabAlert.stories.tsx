@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { BottomTabAlert } from './BottomTabAlert';
 
 const meta = {
-  title: 'Complex Components/Bottom Tab/Alert',
+  title: 'Components/Bottom Tab/Alert',
   component: BottomTabAlert,
   args: { children: 'Patient not checked in', device: 'iphone' },
   argTypes: {

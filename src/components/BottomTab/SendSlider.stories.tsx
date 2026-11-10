@@ -6,7 +6,7 @@ import { sendSliderSpecComment } from './BottomTab.docs';
 const caption = { fontFamily: 'var(--is-font-ui)', fontSize: 12, color: 'var(--is-foreground-low-contrast-primary-foreground)' } as const;
 
 const meta = {
-  title: 'Complex Components/Bottom Tab/Send Slider',
+  title: 'Components/Bottom Tab/Send Slider',
   component: SendSlider,
   args: { device: 'iphone', label: 'Send to EHR', sentLabel: 'Sent to EHR', disabled: false, onSend: fn() },
   argTypes: {
