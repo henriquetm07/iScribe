@@ -24,6 +24,7 @@ export const dropdownSpecLines = (p: Partial<DropdownProps>) => {
     `  Corners     ${s.radius}`,
     '  Border      1px var(--is-surface-soft-contrast-background)',
     '  Background  Default: var(--is-surface-super-soft-contrast-background)',
+    '              Hover: var(--is-button-secondary-active-bg), corners + 1/8 of the height (as the secondary Button)',
     '              Active (open): var(--is-surface-medium-contrast-background)',
     `  Text        Figtree Medium ${s.text}px / 18px, var(--is-foreground-high-contrast-primary-foreground)`,
     `  Icon        ${s.icon}px, <Icon name="chevron-down" /> · <Icon name="chevron-up" /> when active`,
