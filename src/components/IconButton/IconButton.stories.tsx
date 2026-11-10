@@ -1,35 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import type { ReactNode } from 'react';
 import { fn } from 'storybook/test';
+import { Icon } from '../../icons/Icon';
+import { iconNames, type IconName } from '../../icons/icons';
 import type { ButtonSize, ButtonVariant } from '../Button/Button';
 import { variantSpecs } from '../Button/Button.docs';
 import { IconButton, type IconButtonProps } from './IconButton';
 import { iconAllVariantsSpec, iconButtonSpecComment, iconSizesSpec } from './IconButton.docs';
 
-/** Simple demo icons (16×16, currentColor) — pass your own icon in real code. */
-const svg = (children: ReactNode) => (
-  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    {children}
-  </svg>
-);
-const icons = {
-  placeholder: svg(<circle cx="8" cy="8" r="6" strokeDasharray="2.5 2" />),
-  plus: svg(<path d="M8 3v10M3 8h10" />),
-  pencil: svg(<path d="M10.5 2.5l3 3L6 13H3v-3z" />),
-  trash: svg(<path d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.6 8.5h5.8l.6-8.5" />),
-  mic: svg(<path d="M8 2a2 2 0 0 1 2 2v4a2 2 0 0 1-4 0V4a2 2 0 0 1 2-2zM4 7.5a4 4 0 0 0 8 0M8 11.5V14" />),
-  more: svg(
-    <>
-      <circle cx="3.5" cy="8" r="0.6" fill="currentColor" />
-      <circle cx="8" cy="8" r="0.6" fill="currentColor" />
-      <circle cx="12.5" cy="8" r="0.6" fill="currentColor" />
-    </>,
-  ),
-};
-type IconName = keyof typeof icons;
+/** The icon picker lists every icon from Foundations / Icons. */
+const iconOptions = iconNames;
 
-/** In "Show code", swap the demo SVG for a placeholder so the snippet stays short. */
-const hideIconMarkup = (code: string) => {
+/** In "Show code", replace the rendered icon markup with the matching <Icon name="…" /> call. */
+const showIconMarkup = (code: string, iconName: IconName) => {
   const start = code.indexOf('icon={');
   if (start < 0) return code;
   let depth = 0;
@@ -38,12 +20,12 @@ const hideIconMarkup = (code: string) => {
     if (code[end] === '{') depth++;
     else if (code[end] === '}' && --depth === 0) break;
   }
-  return `${code.slice(0, start)}icon={<YourIcon />}${code.slice(end + 1)}`;
+  return `${code.slice(0, start)}icon={<Icon name="${iconName}" />}${code.slice(end + 1)}`;
 };
 
 /** Story args: pick an icon by name; the story turns it into the real `icon` prop. */
 type StoryArgs = Omit<IconButtonProps, 'icon'> & { iconName: IconName };
-const toProps = ({ iconName, ...props }: StoryArgs): IconButtonProps => ({ ...props, icon: icons[iconName] });
+const toProps = ({ iconName, ...props }: StoryArgs): IconButtonProps => ({ ...props, icon: <Icon name={iconName} /> });
 
 const variants = Object.keys(variantSpecs) as ButtonVariant[];
 const sizes: ButtonSize[] = ['mini', 'small', 'regular', 'big', 'xl', 'xxl'];
@@ -65,9 +47,9 @@ const meta = {
   argTypes: {
     iconName: {
       name: 'icon',
-      description: 'Demo icon for the story. In code, pass any icon element to `icon`.',
+      description: 'Any icon from Foundations / Icons. In code: `icon={<Icon name="…" />}`.',
       control: 'select',
-      options: Object.keys(icons),
+      options: iconOptions,
     },
     icon: { control: false, table: { disable: true } },
     label: { control: 'text' },
@@ -83,7 +65,7 @@ const meta = {
         transform: (code: string, ctx: { id: string; args: StoryArgs }) => {
           if (ctx.id.endsWith('--all-variants-and-states')) return iconAllVariantsSpec();
           if (ctx.id.endsWith('--sizes')) return iconSizesSpec();
-          const jsx = hideIconMarkup(code.replace(/^(\s*\/\*[\s\S]*?\*\/\s*)+/, '')).replace(/\n\s*onClick=\{[^}]*\}\}?/g, '');
+          const jsx = showIconMarkup(code.replace(/^(\s*\/\*[\s\S]*?\*\/\s*)+/, ''), ctx.args.iconName ?? 'placeholder').replace(/\n\s*onClick=\{[^}]*\}\}?/g, '');
           return `${iconButtonSpecComment(ctx.args)}\n${jsx}`;
         },
       },
@@ -99,9 +81,9 @@ export const Playground: Story = {};
 
 export const Primary: Story = {};
 
-export const Secondary: Story = { args: { variant: 'secondary', iconName: 'pencil', label: 'Edit note' } };
+export const Secondary: Story = { args: { variant: 'secondary', iconName: 'edit', label: 'Edit note' } };
 
-export const Outline: Story = { args: { variant: 'outline', iconName: 'more', label: 'More options' } };
+export const Outline: Story = { args: { variant: 'outline', iconName: 'meatballs', label: 'More options' } };
 
 export const Ghost: Story = { args: { variant: 'ghost', iconName: 'mic', label: 'Start recording' } };
 
@@ -116,7 +98,7 @@ export const DestructiveOutline: Story = {
   args: { variant: 'destructive-outline', iconName: 'trash', label: 'Delete note' },
 };
 
-export const Rounded: Story = { name: 'Rounded (circle)', args: { rounded: true, iconName: 'plus' } };
+export const Rounded: Story = { name: 'Rounded (circle)', args: { rounded: true, iconName: 'add' } };
 
 export const Disabled: Story = { args: { disabled: true } };
 

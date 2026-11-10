@@ -1,27 +1,37 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
+import { Icon } from '../../icons/Icon';
+import { iconNames, type IconName } from '../../icons/icons';
 import { Button, type ButtonProps, type ButtonSize, type ButtonVariant } from './Button';
 import { allVariantsSpec, buttonSpecComment, sizesSpec } from './Button.docs';
 
-/** Simple 16×16 placeholder icon for the stories; scales with the button size. */
-const PlaceholderIcon = () => (
-  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-    <circle cx="8" cy="8" r="6" strokeDasharray="2.5 2" />
-  </svg>
-);
-
-/** Story-only toggles that switch the left and right icons on and off independently. */
+/** Story-only controls: switch each icon on or off, and pick it from Foundations / Icons. */
 type StoryArgs = ButtonProps & {
   showIconLeft: boolean;
   showIconRight: boolean;
+  iconLeftName: IconName;
+  iconRightName: IconName;
 };
 
 /** Turns the story args into real Button props, adding or removing each icon. */
-const toButtonProps = ({ showIconLeft, showIconRight, ...props }: StoryArgs): ButtonProps => ({
+const toButtonProps = ({ showIconLeft, showIconRight, iconLeftName, iconRightName, ...props }: StoryArgs): ButtonProps => ({
   ...props,
-  iconLeft: showIconLeft ? props.iconLeft ?? <PlaceholderIcon /> : undefined,
-  iconRight: showIconRight ? props.iconRight ?? <PlaceholderIcon /> : undefined,
+  iconLeft: showIconLeft ? <Icon name={iconLeftName} /> : undefined,
+  iconRight: showIconRight ? <Icon name={iconRightName} /> : undefined,
 });
+
+/** In "Show code", replace the rendered icon markup with the matching <Icon name="…" /> call. */
+const showIconMarkup = (code: string, prop: 'iconLeft' | 'iconRight', name: IconName) => {
+  const start = code.indexOf(`${prop}={`);
+  if (start < 0) return code;
+  let depth = 0;
+  let end = start + prop.length + 1;
+  for (; end < code.length; end++) {
+    if (code[end] === '{') depth++;
+    else if (code[end] === '}' && --depth === 0) break;
+  }
+  return `${code.slice(0, start)}${prop}={<Icon name="${name}" />}${code.slice(end + 1)}`;
+};
 
 const variants: ButtonVariant[] = ['primary', 'secondary', 'outline', 'ghost', 'destructive', 'destructive-outline'];
 const sizes: ButtonSize[] = ['mini', 'small', 'regular', 'big', 'xl', 'xxl'];
@@ -50,6 +60,8 @@ const meta = {
     disabled: false,
     showIconLeft: true,
     showIconRight: true,
+    iconLeftName: 'placeholder',
+    iconRightName: 'placeholder',
   },
   argTypes: {
     showIconLeft: {
@@ -62,8 +74,24 @@ const meta = {
       control: 'boolean',
       table: { category: 'Icons' },
     },
-    iconLeft: { control: false, table: { category: 'Icons' } },
-    iconRight: { control: false, table: { category: 'Icons' } },
+    iconLeftName: {
+      name: 'icon left',
+      description: 'Any icon from Foundations / Icons. In code: `iconLeft={<Icon name="…" />}`.',
+      control: 'select',
+      options: iconNames,
+      if: { arg: 'showIconLeft' },
+      table: { category: 'Icons' },
+    },
+    iconRightName: {
+      name: 'icon right',
+      description: 'Any icon from Foundations / Icons. In code: `iconRight={<Icon name="…" />}`.',
+      control: 'select',
+      options: iconNames,
+      if: { arg: 'showIconRight' },
+      table: { category: 'Icons' },
+    },
+    iconLeft: { control: false, table: { disable: true } },
+    iconRight: { control: false, table: { disable: true } },
     variant: { control: 'select', options: variants },
     size: { control: 'inline-radio', options: sizes },
     rounded: { control: 'boolean' },
@@ -80,11 +108,11 @@ const meta = {
           if (ctx.id.endsWith('--all-variants-and-states')) return allVariantsSpec();
           if (ctx.id.endsWith('--sizes')) return sizesSpec();
           // Storybook can run this more than once on the same snippet, so drop any spec added earlier.
-          const jsx = code
-            .replace(/^(\s*\/\*[\s\S]*?\*\/\s*)+/, '')
-            // Production builds minify names: show the icon slot and drop the Storybook click spy.
-            .replace(/(icon(?:Left|Right))=\{<\w+ \/>\}/g, '$1={<YourIcon />}')
-            .replace(/\n\s*onClick=\{[^}]*\}\}?/g, '');
+          let jsx = code.replace(/^(\s*\/\*[\s\S]*?\*\/\s*)+/, '');
+          // Production builds minify names: show each icon as <Icon name="…" /> and drop the Storybook click spy.
+          jsx = showIconMarkup(jsx, 'iconLeft', ctx.args.iconLeftName ?? 'placeholder');
+          jsx = showIconMarkup(jsx, 'iconRight', ctx.args.iconRightName ?? 'placeholder');
+          jsx = jsx.replace(/\n\s*onClick=\{[^}]*\}\}?/g, '');
           return `${buttonSpecComment(ctx.args)}\n${jsx}`;
         },
       },
@@ -123,7 +151,7 @@ export const WithoutIcons: Story = { args: { showIconLeft: false, showIconRight:
 /** Every variant in every state, square and rounded — mirrors the Figma component sheet. Use the showIconLeft / showIconRight controls to change the whole sheet. */
 export const AllVariantsAndStates: Story = {
   name: 'All variants & states',
-  parameters: { layout: 'padded', controls: { include: ['showIconLeft', 'showIconRight', 'children', 'size'] } },
+  parameters: { layout: 'padded', controls: { include: ['showIconLeft', 'iconLeftName', 'showIconRight', 'iconRightName', 'children', 'size'] } },
   render: (args) => {
     const buttonProps = toButtonProps(args);
     return (
@@ -156,7 +184,7 @@ export const AllVariantsAndStates: Story = {
 
 /** Mini 20 · Small 30 · Regular 40 · Big 50 · XL 60 · XXL 80 — square and rounded. */
 export const Sizes: Story = {
-  parameters: { layout: 'padded', controls: { include: ['showIconLeft', 'showIconRight', 'variant', 'children'] } },
+  parameters: { layout: 'padded', controls: { include: ['showIconLeft', 'iconLeftName', 'showIconRight', 'iconRightName', 'variant', 'children'] } },
   render: (args) => {
     const buttonProps = toButtonProps(args);
     return (
