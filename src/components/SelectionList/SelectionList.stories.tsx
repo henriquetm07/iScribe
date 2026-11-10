@@ -69,7 +69,6 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** The Figma example: pick a microphone. Five rows show, the rest scroll. Try the arrow keys. */
 export const IPhone: Story = { name: 'iPhone' };
 
 export const IPad: Story = { name: 'iPad', args: { device: 'ipad' } };

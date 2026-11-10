@@ -1,4 +1,9 @@
 /* Story-only rows editor shown next to the Selection List preview */
+
+/* On the Docs page the editor shows only at the top; hide it in the iPhone story further down */
+#anchor--simple-components-selection-list-selection-list--i-phone .is-sl-editor {
+  display: none;
+}
 .is-sl-editor {
   display: grid;
   gap: 10px;
