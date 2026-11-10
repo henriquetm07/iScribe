@@ -31,7 +31,12 @@ const meta = {
   argTypes: {
     device: { control: 'inline-radio', options: ['iphone', 'ipad', 'web'] },
     visibleRows: { control: { type: 'number', min: 1, max: 12 } },
-    value: { control: false },
+    // Hidden from the Controls / props tables (rows are edited in the editor beside the list)
+    options: { table: { disable: true } },
+    value: { table: { disable: true } },
+    defaultValue: { table: { disable: true } },
+    onChange: { table: { disable: true } },
+    'aria-label': { table: { disable: true } },
   },
   parameters: {
     docs: {
