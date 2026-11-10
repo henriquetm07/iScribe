@@ -1,5 +1,5 @@
 import type { SVGProps } from 'react';
-import { icons, type IconName } from './icons';
+import { ICON_GRID, icons, type IconName } from './icons';
 
 export interface IconProps extends Omit<SVGProps<SVGSVGElement>, 'name'> {
   /** Which icon to draw. See Foundations / Icons for the full set. */
@@ -13,10 +13,9 @@ export interface IconProps extends Omit<SVGProps<SVGSVGElement>, 'name'> {
 /** An iScribe icon. Colored with `currentColor`, so it takes the text color around it. */
 export const Icon = ({ name, size = '1em', title, ...rest }: IconProps) => {
   const icon = icons[name];
-  const s = icon.size;
   return (
     <svg
-      viewBox={`0 0 ${s} ${s}`}
+      viewBox={`0 0 ${ICON_GRID} ${ICON_GRID}`}
       width={size}
       height={size}
       fill="currentColor"
