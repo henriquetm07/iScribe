@@ -29,7 +29,9 @@ export const selectionListItemSpecLines = (p: Partial<SelectionListItemProps>) =
     'STATES',
     '  Default     no background',
     '  Hover       var(--is-surface-super-soft-contrast-background)',
-    '  Selected    var(--is-surface-soft-selection) + <Icon name="check" /> on the right',
+    `  Selected    var(--is-surface-soft-selection) + ${
+      (p.selectedIcon ?? 'check') === 'none' || p.showCheck === false ? 'no selection icon' : `<Icon name="${p.selectedIcon ?? 'check'}" /> on the right`
+    }`,
     '  Destructive text in var(--is-status-foreground-alert)',
     '  Focus       2px var(--is-button-accent) outline (keyboard)',
   ];
@@ -54,7 +56,9 @@ export const selectionListSpecLines = (p: Partial<SelectionListProps>) => {
       ? `  Shows ${p.visibleRows} rows (${p.visibleRows * rowHeight[d]}px), then scrolls`
       : '  Shows every row (set visibleRows to scroll)',
     '  Icons per row: iconLeft and iconRight (optional, Foundations / Icons);',
-    '  the selected row shows the check mark on the right instead of iconRight',
+    (p.selectedIcon ?? 'check') === 'none'
+      ? '  selectedIcon="none": the selected row shows no selection icon (keeps its iconRight)'
+      : `  the selected row shows <Icon name="${p.selectedIcon ?? 'check'}" /> on the right instead of iconRight (selectedIcon)`,
     '',
     'SCROLLER (only when the rows overflow)',
     '  10px pill, var(--is-surface-soft-contrast-background), 5px from the rows',

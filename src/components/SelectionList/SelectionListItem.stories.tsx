@@ -14,7 +14,7 @@ const meta = {
     device: 'iphone',
     selected: false,
     destructive: false,
-    showCheck: true,
+    selectedIcon: 'check',
     onClick: fn(),
   },
   argTypes: {
@@ -22,6 +22,8 @@ const meta = {
     children: { name: 'label', control: 'text' },
     iconLeft: { control: 'select', options: [undefined, ...iconNames] },
     iconRight: { control: 'select', options: [undefined, ...iconNames] },
+    selectedIcon: { control: 'select', options: ['none', ...iconNames] },
+    showCheck: { table: { disable: true } },
   },
   decorators: [
     // Items fill their list, so preview them at the Figma list width (300px); sheets opt out with fullWidth

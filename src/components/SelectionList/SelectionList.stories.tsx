@@ -4,6 +4,7 @@ import { fn } from 'storybook/test';
 import { SelectionList, type SelectionListOption, type SelectionListProps } from './SelectionList';
 import { selectionListSpecComment } from './SelectionList.docs';
 import { OptionsEditor } from './SelectionList.editor';
+import { iconNames } from '../../icons/icons';
 
 /** The example from the Figma "Light Mode" / "Dark Mode" frames, plus two rows so it scrolls. */
 const microphones: SelectionListOption[] = [
@@ -24,6 +25,7 @@ const meta = {
     defaultValue: 'macbook',
     device: 'iphone',
     visibleRows: 5,
+    selectedIcon: 'check',
     width: 300,
     'aria-label': 'Microphone',
     onChange: fn(),
@@ -31,6 +33,7 @@ const meta = {
   argTypes: {
     device: { control: 'inline-radio', options: ['iphone', 'ipad', 'web'] },
     visibleRows: { control: { type: 'number', min: 1, max: 12 } },
+    selectedIcon: { control: 'select', options: ['none', ...iconNames] },
     // Hidden from the Controls / props tables (rows are edited in the editor beside the list)
     options: { table: { disable: true } },
     value: { table: { disable: true } },
@@ -60,7 +63,14 @@ const meta = {
     return (
       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>
         <SelectionList {...args} />
-        {showEditor && <OptionsEditor options={args.options} onChange={(options) => updateArgs({ options })} />}
+        {showEditor && (
+          <OptionsEditor
+            options={args.options}
+            onChange={(options) => updateArgs({ options })}
+            selectedIcon={args.selectedIcon}
+            onSelectedIconChange={(selectedIcon) => updateArgs({ selectedIcon })}
+          />
+        )}
       </div>
     );
   },

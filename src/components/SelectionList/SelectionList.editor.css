@@ -23,6 +23,17 @@
   font-size: 12px;
   font-weight: 600;
 }
+/* "Selected row" picker above the rows */
+.is-sl-editor__selected {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--is-surface-soft-contrast-background);
+}
+.is-sl-editor__selected .is-sl-editor__icon-pick {
+  max-width: 220px;
+}
 .is-sl-editor__count {
   padding: 0 6px;
   border-radius: var(--is-full-round);

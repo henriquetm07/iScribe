@@ -32,6 +32,8 @@ export interface SelectionListProps {
   device?: SelectionListDevice;
   /** Show this many rows, then scroll. Leave empty to show every row. */
   visibleRows?: number;
+  /** Icon on the right of the selected row (default "check"). Another icon, or "none" for no selection icon. */
+  selectedIcon?: IconName | 'none';
   /** Width of the card (default 300px, as in Figma) */
   width?: number | string;
   /** Accessible name, e.g. "Microphone" */
@@ -52,6 +54,7 @@ export const SelectionList = ({
   onChange,
   device = 'iphone',
   visibleRows,
+  selectedIcon = 'check',
   width = 300,
   'aria-label': ariaLabel,
 }: SelectionListProps) => {
@@ -130,6 +133,7 @@ export const SelectionList = ({
             destructive={option.destructive}
             iconLeft={option.iconLeft ?? option.icon}
             iconRight={option.iconRight}
+            selectedIcon={selectedIcon}
             disabled={option.disabled}
             tabIndex={i === focusIndex ? 0 : -1}
             onFocus={() => setFocusIndex(i)}

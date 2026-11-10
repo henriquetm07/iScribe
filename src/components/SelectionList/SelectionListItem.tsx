@@ -18,7 +18,12 @@ export interface SelectionListItemProps extends Omit<ButtonHTMLAttributes<HTMLBu
   iconLeft?: IconName;
   /** Optional icon on the right. When the item is selected the check mark is shown instead, unless showCheck is false. */
   iconRight?: IconName;
-  /** Show the check mark on the right when selected (default true) */
+  /**
+   * Icon on the right when selected (default "check"). Pick another icon, or "none" to show no selection icon
+   * (the row then keeps its own iconRight).
+   */
+  selectedIcon?: IconName | 'none';
+  /** @deprecated Use selectedIcon="none". Show the check mark on the right when selected (default true) */
   showCheck?: boolean;
   ref?: Ref<HTMLButtonElement>;
 }
@@ -34,12 +39,14 @@ export const SelectionListItem = ({
   destructive = false,
   iconLeft,
   iconRight,
+  selectedIcon = 'check',
   showCheck = true,
   className,
   type = 'button',
   ...rest
 }: SelectionListItemProps) => {
-  const right = selected && showCheck ? 'check' : iconRight;
+  const selectionIcon = showCheck && selectedIcon !== 'none' ? selectedIcon : undefined;
+  const right = selected && selectionIcon ? selectionIcon : iconRight;
   const classes = [
     'is-selection-list-item',
     `is-selection-list-item--${device}`,

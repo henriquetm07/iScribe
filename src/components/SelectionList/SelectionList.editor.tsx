@@ -20,12 +20,39 @@ const moveItem = <T,>(list: T[], from: number, to: number) => {
   return next;
 };
 
+/** "None" plus every icon, as in the Selection List Item icon controls */
+const IconSelect = ({
+  value,
+  noneLabel = 'None',
+  label,
+  onChange,
+}: {
+  value?: string;
+  noneLabel?: string;
+  label: string;
+  onChange: (name: IconName | undefined) => void;
+}) => (
+  <select value={value ?? ''} aria-label={label} onChange={(e) => onChange((e.target.value || undefined) as IconName | undefined)}>
+    <option value="">{noneLabel}</option>
+    {iconNames.map((n) => (
+      <option key={n} value={n}>
+        {n}
+      </option>
+    ))}
+  </select>
+);
+
 export const OptionsEditor = ({
   options,
   onChange,
+  selectedIcon = 'check',
+  onSelectedIconChange,
 }: {
   options: SelectionListOption[];
   onChange: (next: SelectionListOption[]) => void;
+  /** How the selected row is marked: an icon on the right, or "none" */
+  selectedIcon?: IconName | 'none';
+  onSelectedIconChange?: (next: IconName | 'none') => void;
 }) => {
   const listRef = useRef<HTMLOListElement>(null);
   /** While dragging: which row is held and where it would land */
@@ -79,6 +106,24 @@ export const OptionsEditor = ({
 
   return (
     <section className="is-sl-editor" aria-label="Edit rows">
+      {onSelectedIconChange && (
+        <div className="is-sl-editor__selected">
+          <span className="is-sl-editor__head">Selected row</span>
+          {/* Same picker as a row's icons: the icon shown on the right of the selected row (default check) */}
+          <label className="is-sl-editor__icon-pick">
+            <span>Icon</span>
+            <span className="is-sl-editor__icon-preview" aria-hidden>
+              {selectedIcon !== 'none' && <Icon name={selectedIcon} size={12} />}
+            </span>
+            <IconSelect
+              value={selectedIcon === 'none' ? undefined : selectedIcon}
+              noneLabel="No icon"
+              label="Selected row icon"
+              onChange={(name) => onSelectedIconChange(name ?? 'none')}
+            />
+          </label>
+        </div>
+      )}
       <header className="is-sl-editor__head">
         <span>Rows</span>
         <span className="is-sl-editor__count">{options.length}</span>
@@ -129,21 +174,11 @@ export const OptionsEditor = ({
                     <span className="is-sl-editor__icon-preview" aria-hidden>
                       {current && <Icon name={current} size={12} />}
                     </span>
-                    <select
-                      value={current ?? ''}
-                      aria-label={`Row ${pos + 1} ${side === 'iconLeft' ? 'left' : 'right'} icon`}
-                      onChange={(e) => {
-                        const name = (e.target.value || undefined) as IconName | undefined;
-                        update(i, side === 'iconLeft' ? { iconLeft: name, icon: undefined } : { iconRight: name });
-                      }}
-                    >
-                      <option value="">None</option>
-                      {iconNames.map((n) => (
-                        <option key={n} value={n}>
-                          {n}
-                        </option>
-                      ))}
-                    </select>
+                    <IconSelect
+                      value={current}
+                      label={`Row ${pos + 1} ${side === 'iconLeft' ? 'left' : 'right'} icon`}
+                      onChange={(name) => update(i, side === 'iconLeft' ? { iconLeft: name, icon: undefined } : { iconRight: name })}
+                    />
                   </label>
                 );
               })}
