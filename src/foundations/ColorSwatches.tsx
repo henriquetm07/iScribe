@@ -42,9 +42,12 @@ const Group = ({ group }: { group: ColorGroup }) => (
   </section>
 );
 
-/** Renders every color group in one section (Neutrals, Periwinkles or Status). */
+/**
+ * Renders every color group in one section (Neutrals, Periwinkles or Status).
+ * `sb-unstyled` stops Storybook's docs typography (its h3 and span styles) from overriding the swatch styles.
+ */
 export const ColorSection = ({ section }: { section: ColorGroup['section'] }) => (
-  <div className="is-swatch-section">
+  <div className="is-swatch-section sb-unstyled">
     {colorGroups
       .filter((g) => g.section === section)
       .map((g) => (

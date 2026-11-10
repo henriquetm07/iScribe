@@ -20,7 +20,7 @@ export const IconGallery = () => {
   };
 
   return (
-    <div className="is-icon-gallery">
+    <div className="is-icon-gallery sb-unstyled">
       <div className="is-icon-gallery__bar">
         <input
           className="is-icon-gallery__search"
