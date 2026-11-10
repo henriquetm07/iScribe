@@ -8,13 +8,17 @@ import { create } from 'storybook/theming';
  */
 const dark = typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches;
 
+const logo = dark ? './logo-white.svg' : './logo-black.svg';
+/** Logo width in the sidebar: 105px (70% of the 150px it filled before). */
+const LOGO_WIDTH = 105;
+
 addons.setConfig({
   theme: create({
     base: dark ? 'dark' : 'light',
-    brandTitle: 'iScribe',
+    // brandTitle accepts HTML; an explicit width keeps the logo smaller than the sidebar allows
+    brandTitle: `<img src="${logo}" alt="iScribe" width="${LOGO_WIDTH}" style="display:block;width:${LOGO_WIDTH}px;height:auto" />`,
     brandUrl: './',
     brandTarget: '_self',
-    brandImage: dark ? './logo-white.svg' : './logo-black.svg',
     fontBase: "'Figtree', system-ui, sans-serif",
   }),
 });
