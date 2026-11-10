@@ -53,6 +53,8 @@ export const selectionListSpecLines = (p: Partial<SelectionListProps>) => {
     p.visibleRows
       ? `  Shows ${p.visibleRows} rows (${p.visibleRows * rowHeight[d]}px), then scrolls`
       : '  Shows every row (set visibleRows to scroll)',
+    '  Icons per row: iconLeft and iconRight (optional, Foundations / Icons);',
+    '  the selected row shows the check mark on the right instead of iconRight',
     '',
     'SCROLLER (only when the rows overflow)',
     '  10px pill, var(--is-surface-soft-contrast-background), 5px from the rows',

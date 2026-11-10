@@ -85,10 +85,10 @@ export const WithDestructive: Story = {
     visibleRows: undefined,
     defaultValue: 'airpods',
     options: [
-      { value: 'macbook', label: 'MacBook Pro Microphone', icon: 'mic' },
-      { value: 'airpods', label: 'AirPods Pro', icon: 'mic' },
-      { value: 'settings', label: 'Sound settings…', icon: 'settings' },
-      { value: 'remove', label: 'Remove device', icon: 'trash', destructive: true },
+      { value: 'macbook', label: 'MacBook Pro Microphone', iconLeft: 'mic' },
+      { value: 'airpods', label: 'AirPods Pro', iconLeft: 'mic' },
+      { value: 'settings', label: 'Sound settings…', iconLeft: 'settings', iconRight: 'chevron-right' },
+      { value: 'remove', label: 'Remove device', iconLeft: 'trash', destructive: true },
     ],
   },
 };

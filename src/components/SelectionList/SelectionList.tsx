@@ -10,7 +10,11 @@ export interface SelectionListOption {
   label: string;
   /** Red text (e.g. "Remove device") */
   destructive?: boolean;
-  /** Optional icon before the label */
+  /** Optional icon before the label (from Foundations / Icons) */
+  iconLeft?: IconName;
+  /** Optional icon on the right. On the selected row the check mark is shown instead, as in Selection List Item. */
+  iconRight?: IconName;
+  /** @deprecated Use iconLeft */
   icon?: IconName;
   disabled?: boolean;
 }
@@ -124,7 +128,8 @@ export const SelectionList = ({
             device={device}
             selected={option.value === selected}
             destructive={option.destructive}
-            iconLeft={option.icon}
+            iconLeft={option.iconLeft ?? option.icon}
+            iconRight={option.iconRight}
             disabled={option.disabled}
             tabIndex={i === focusIndex ? 0 : -1}
             onFocus={() => setFocusIndex(i)}

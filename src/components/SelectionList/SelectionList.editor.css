@@ -39,8 +39,50 @@
 }
 .is-sl-editor__row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 4px;
+  padding-bottom: 4px;
+}
+/* Second line of a row: left / right icon pickers, lined up under the label input */
+.is-sl-editor__icons {
+  display: flex;
+  gap: 8px;
+  flex-basis: 100%;
+  padding-left: 44px;
+}
+.is-sl-editor__icon-pick {
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  font-size: 11px;
+  color: var(--is-foreground-low-contrast-primary-foreground);
+}
+.is-sl-editor__icon-preview {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--is-foreground-high-contrast-primary-foreground);
+}
+.is-sl-editor__icon-pick select {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 22px;
+  padding: 0 4px;
+  border: 1px solid var(--is-surface-soft-contrast-background);
+  border-radius: 6px;
+  background: var(--is-background-elevated-background);
+  color: var(--is-foreground-high-contrast-primary-foreground);
+  font: inherit;
+  font-size: 11px;
+}
+.is-sl-editor__icon-pick select:focus-visible {
+  outline: 2px solid var(--is-button-accent);
+  outline-offset: -1px;
 }
 .is-sl-editor__handle {
   display: inline-grid;

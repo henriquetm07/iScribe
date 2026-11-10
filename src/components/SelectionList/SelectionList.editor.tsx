@@ -6,6 +6,7 @@ import { useRef, useState, type PointerEvent as ReactPointerEvent, type Keyboard
 import { Button } from '../Button/Button';
 import { IconButton } from '../IconButton/IconButton';
 import { Icon } from '../../icons/Icon';
+import { iconNames, type IconName } from '../../icons/icons';
 import type { SelectionListOption } from './SelectionList';
 import './SelectionList.editor.css';
 
@@ -118,13 +119,42 @@ export const OptionsEditor = ({
               <Icon name="alert" size={12} />
             </label>
             <IconButton icon={<Icon name="trash" />} label={`Remove row ${pos + 1}`} variant="ghost" size="mini" onClick={() => remove(i)} />
+            {/* Icons, as in Selection List Item: optional left and right (the selected row shows the check on the right) */}
+            <div className="is-sl-editor__icons">
+              {(['iconLeft', 'iconRight'] as const).map((side) => {
+                const current = side === 'iconLeft' ? (o.iconLeft ?? o.icon) : o.iconRight;
+                return (
+                  <label key={side} className="is-sl-editor__icon-pick">
+                    <span>{side === 'iconLeft' ? 'Left' : 'Right'}</span>
+                    <span className="is-sl-editor__icon-preview" aria-hidden>
+                      {current && <Icon name={current} size={12} />}
+                    </span>
+                    <select
+                      value={current ?? ''}
+                      aria-label={`Row ${pos + 1} ${side === 'iconLeft' ? 'left' : 'right'} icon`}
+                      onChange={(e) => {
+                        const name = (e.target.value || undefined) as IconName | undefined;
+                        update(i, side === 'iconLeft' ? { iconLeft: name, icon: undefined } : { iconRight: name });
+                      }}
+                    >
+                      <option value="">None</option>
+                      {iconNames.map((n) => (
+                        <option key={n} value={n}>
+                          {n}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                );
+              })}
+            </div>
           </li>
         ))}
       </ol>
       <Button variant="secondary" size="small" rounded iconLeft={<Icon name="add" />} onClick={add}>
         Add row
       </Button>
-      <p className="is-sl-editor__hint">Drag the handle to reorder. Press Enter in a row to add another. The alert toggle makes a row destructive.</p>
+      <p className="is-sl-editor__hint">Drag the handle to reorder. Press Enter in a row to add another. The alert toggle makes a row destructive. Left and Right pick each row's icons.</p>
     </section>
   );
 };
