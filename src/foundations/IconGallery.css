@@ -16,7 +16,7 @@
   flex: 1 1 220px;
   height: 36px;
   padding: 0 12px;
-  border: 1px solid var(--is-color-tgrey-12);
+  border: 1px solid var(--is-surface-medium-contrast-background);
   border-radius: 10px;
   font: inherit;
   font-size: 14px;
@@ -35,12 +35,12 @@
 .is-icon-gallery__sizes button {
   height: 32px;
   padding: 0 10px;
-  border: 1px solid var(--is-color-tgrey-12);
+  border: 1px solid var(--is-surface-medium-contrast-background);
   border-radius: 8px;
-  background: var(--is-color-pure-white);
+  background: var(--is-background-elevated-background);
   font: inherit;
   font-size: 12px;
-  color: var(--is-color-grey-2);
+  color: var(--is-foreground-low-contrast-primary-foreground);
   cursor: pointer;
 }
 
@@ -61,10 +61,10 @@
   justify-items: center;
   gap: 10px;
   padding: 18px 8px 12px;
-  border: 1px solid var(--is-color-tgrey-6);
+  border: 1px solid var(--is-surface-soft-contrast-background);
   border-radius: 14px;
-  background: var(--is-color-pure-white);
-  color: var(--is-color-black-1);
+  background: var(--is-background-elevated-background);
+  color: var(--is-foreground-high-contrast-primary-foreground);
   font: inherit;
   cursor: copy;
   transition: border-color 120ms ease, color 120ms ease;
@@ -88,12 +88,12 @@
 
 .is-icon-tile__name {
   font-size: 12px;
-  color: var(--is-color-grey-2);
+  color: var(--is-foreground-low-contrast-primary-foreground);
   text-align: center;
   word-break: break-word;
 }
 
 .is-icon-gallery__empty {
   grid-column: 1 / -1;
-  color: var(--is-color-grey-2);
+  color: var(--is-foreground-low-contrast-primary-foreground);
 }

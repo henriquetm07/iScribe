@@ -17,12 +17,12 @@
 .is-anim-gallery__group button {
   height: 32px;
   padding: 0 10px;
-  border: 1px solid var(--is-color-tgrey-12);
+  border: 1px solid var(--is-surface-medium-contrast-background);
   border-radius: 8px;
-  background: var(--is-color-pure-white);
+  background: var(--is-background-elevated-background);
   font: inherit;
   font-size: 12px;
-  color: var(--is-color-grey-2);
+  color: var(--is-foreground-low-contrast-primary-foreground);
   cursor: pointer;
 }
 .is-anim-gallery__group button[aria-pressed='true'] {
@@ -37,9 +37,9 @@
   grid-template-columns: 200px 1fr;
   gap: 20px;
   padding: 12px;
-  border: 1px solid var(--is-color-tgrey-6);
+  border: 1px solid var(--is-surface-soft-contrast-background);
   border-radius: 16px;
-  background: var(--is-color-pure-white);
+  background: var(--is-background-elevated-background);
 }
 @media (max-width: 560px) {
   .is-anim-tile {
@@ -55,8 +55,8 @@
   padding: 0;
   border: 0;
   border-radius: 12px;
-  background: var(--is-color-off-white);
-  color: var(--is-color-black-1);
+  background: var(--is-surface-super-soft-contrast-background);
+  color: var(--is-foreground-high-contrast-primary-foreground);
   cursor: pointer;
 }
 .is-anim-tile__stage--dark {
@@ -91,13 +91,13 @@
   margin: 0;
   font-size: 16px;
   font-weight: 600;
-  color: var(--is-color-grey-4);
+  color: var(--is-foreground-high-contrast-primary-foreground);
 }
 .is-anim-tile__desc {
   margin: 0;
   font-size: 13px;
   line-height: 1.45;
-  color: var(--is-color-grey-2);
+  color: var(--is-foreground-low-contrast-primary-foreground);
 }
 .is-anim-tile__facts {
   display: grid;
@@ -107,7 +107,7 @@
   font-size: 12px;
 }
 .is-anim-tile__facts dt {
-  color: var(--is-color-grey-2);
+  color: var(--is-foreground-low-contrast-primary-foreground);
 }
 .is-anim-tile__facts dd {
   display: flex;
@@ -115,16 +115,16 @@
   align-items: center;
   gap: 6px;
   margin: 0;
-  color: var(--is-color-grey-4);
+  color: var(--is-foreground-high-contrast-primary-foreground);
 }
 .is-anim-tile__markers span {
   padding: 2px 8px;
   border-radius: 999px;
-  background: var(--is-color-off-white);
+  background: var(--is-surface-super-soft-contrast-background);
   transition: background 150ms ease, color 150ms ease;
 }
 .is-anim-tile__markers small {
-  color: var(--is-color-grey-2);
+  color: var(--is-foreground-low-contrast-primary-foreground);
 }
 /* Lights up as the playing animation passes each marker */
 .is-anim-tile__markers span.is-active {
@@ -138,12 +138,12 @@
   justify-self: start;
   max-width: 100%;
   padding: 6px 10px;
-  border: 1px solid var(--is-color-tgrey-12);
+  border: 1px solid var(--is-surface-medium-contrast-background);
   border-radius: 8px;
-  background: var(--is-color-off-white);
+  background: var(--is-surface-super-soft-contrast-background);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 12px;
-  color: var(--is-color-grey-4);
+  color: var(--is-foreground-high-contrast-primary-foreground);
   text-align: left;
   overflow-wrap: anywhere;
   cursor: copy;
