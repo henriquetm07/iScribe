@@ -100,7 +100,22 @@
 }
 /* While recording, each bar rises and falls, out of step with its neighbours */
 .is-rec-waves--live > i {
-  animation: is-rec-wave 0.7s ease-in-out infinite alternate;
+  animation: is-rec-wave var(--dur, 0.7s) ease-in-out var(--delay, 0s) infinite alternate;
+}
+/* Recording just started: every bar begins as a dot and grows into the waveform (centre first),
+   then its loop starts from that full height */
+.is-rec-waves--live.is-rec-waves--intro > i {
+  animation:
+    is-rec-wave-in var(--in-dur, 0.45s) cubic-bezier(0.2, 0.8, 0.2, 1) var(--in-delay, 0s) both,
+    is-rec-wave var(--dur, 0.7s) ease-in-out var(--delay, 0s) infinite alternate;
+}
+@keyframes is-rec-wave-in {
+  from {
+    height: 2px;
+  }
+  to {
+    height: var(--h);
+  }
 }
 @keyframes is-rec-wave {
   from {

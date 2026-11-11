@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react';
 import { Icon } from '../../icons/Icon';
 import type { IconName } from '../../icons/icons';
 import './Record.css';
@@ -174,23 +174,25 @@ export interface WavesProps {
   bars?: number;
   /** Bars move while recording */
   live?: boolean;
+  /** Start as dots and grow into the waveform (used when recording starts) */
+  intro?: boolean;
   className?: string;
   style?: CSSProperties;
 }
 
 /** Recording waveform (Figma "Waves"): 2px red bars, 3px apart */
-export const Waves = ({ size = 'default', device = 'iphone', bars, live = true, className = '', style }: WavesProps) => {
+export const Waves = ({ size = 'default', device = 'iphone', bars, live = true, intro = false, className = '', style }: WavesProps) => {
   if (size === 'mini') {
     const heights = device === 'ipad' ? [17, 28, 17, 35, 17] : [8, 13, 8, 16, 8];
     return (
       <span className={`is-rec-waves is-rec-waves--mini is-rec-waves--${device}${live ? ' is-rec-waves--live' : ''} ${className}`} style={style} aria-hidden="true">
         {heights.map((h, i) => (
-          <i key={i} style={{ '--h': `${h}px`, animationDelay: `${-i * 0.11}s` } as CSSProperties} />
+          <i key={i} style={{ '--h': `${h}px`, '--delay': `${-i * 0.11}s` } as CSSProperties} />
         ))}
       </span>
     );
   }
-  return <WaveBars bars={bars} live={live} className={className} style={style} />;
+  return <WaveBars bars={bars} live={live} intro={intro} className={className} style={style} />;
 };
 
 /** Bar pitch: 2px bar + 3px gap */
@@ -201,10 +203,15 @@ const PITCH = 5;
  * bars near the centre are tall, swing over a wide range and move fast; towards each end they get
  * shorter, move less and slow down.
  */
-const WaveBars = ({ bars, live, className, style }: { bars?: number; live: boolean; className: string; style?: CSSProperties }) => {
+/** Intro: each bar grows from a dot in this time, the centre first and the ends a little later */
+const INTRO = 0.45;
+const INTRO_SPREAD = 0.3;
+
+const WaveBars = ({ bars, live, intro, className, style }: { bars?: number; live: boolean; intro: boolean; className: string; style?: CSSProperties }) => {
   const ref = useRef<HTMLSpanElement>(null);
   const [fit, setFit] = useState(bars ?? 60);
-  useEffect(() => {
+  // Measure before the first paint, so the intro runs once on the final set of bars
+  useLayoutEffect(() => {
     if (bars !== undefined || !ref.current) return;
     const el = ref.current;
     const measure = () => setFit(Math.max(5, Math.floor((el.clientWidth + 3) / PITCH)));
@@ -216,7 +223,9 @@ const WaveBars = ({ bars, live, className, style }: { bars?: number; live: boole
   const count = bars ?? fit;
 
   return (
-    <span ref={ref} className={`is-rec-waves is-rec-waves--long${live ? ' is-rec-waves--live' : ''} ${className}`} style={style} aria-hidden="true">
+    <span
+      ref={ref}
+      className={`is-rec-waves is-rec-waves--long${live ? ' is-rec-waves--live' : ''}${intro ? ' is-rec-waves--intro' : ''} ${className}`} style={style} aria-hidden="true">
       {Array.from({ length: count }, (_, i) => {
         // 0 at the ends → 1 in the centre
         const t = count > 1 ? i / (count - 1) : 0.5;
@@ -224,6 +233,8 @@ const WaveBars = ({ bars, live, className, style }: { bars?: number; live: boole
         const tall = 8 + centre * (0.55 * 39 + 0.45 * WAVE[i % WAVE.length] - 8);
         const low = Math.max(4, tall * (1 - 0.82 * centre));
         const speed = 1.15 - 0.7 * centre;
+        // With the intro, the bar grows from a dot to its full height, then the loop carries on from there
+        const growAt = (1 - centre) * INTRO_SPREAD;
         return (
           <i
             key={i}
@@ -231,8 +242,10 @@ const WaveBars = ({ bars, live, className, style }: { bars?: number; live: boole
               {
                 '--h': `${tall.toFixed(1)}px`,
                 '--lo': `${low.toFixed(1)}px`,
-                animationDuration: `${speed.toFixed(2)}s`,
-                animationDelay: `${-((i * 0.29) % speed).toFixed(2)}s`,
+                '--dur': `${speed.toFixed(2)}s`,
+                '--delay': intro ? `${(growAt + INTRO).toFixed(2)}s` : `${-((i * 0.29) % speed).toFixed(2)}s`,
+                '--in-delay': `${growAt.toFixed(2)}s`,
+                '--in-dur': `${INTRO}s`,
               } as CSSProperties
             }
           />

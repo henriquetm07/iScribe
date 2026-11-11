@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import { useState, type CSSProperties } from 'react';
 import {
   Playback,
   RecordRoundButton,
@@ -88,18 +88,24 @@ export const RecordWidget = ({
 }: RecordWidgetProps) => {
   const rec = useRecorder({ initialState, initialDuration: duration, initialPosition: position, onStateChange });
   const s = size[device];
+  // After Start Recording, the waves begin as dots and grow into shape
+  const [started, setStarted] = useState(false);
+  const startRecording = () => {
+    setStarted(true);
+    rec.start();
+  };
 
   if (rec.state === 'idle')
     return (
       <div className={`is-rec is-rec-widget is-rec-widget--${device} ${className}`} style={{ width, justifyContent: 'center', ...style }}>
-        <RecordStartButton device={device} onClick={rec.start} />
+        <RecordStartButton device={device} onClick={startRecording} />
       </div>
     );
 
   if (rec.state === 'recording')
     return (
       <div className={`is-rec is-rec-widget is-rec-widget--${device} ${className}`} style={{ width, ...style }} aria-live="off">
-        <Waves style={{ maxWidth: s.waves }} />
+        <Waves intro={started} style={{ maxWidth: s.waves }} />
         <RecordTime seconds={rec.duration} device={device} size="small" recording />
         <RecordRoundButton icon="stop-flat" label="Stop recording" variant="destructive" size={s.round} iconSize={s.icon} onClick={rec.stop} />
       </div>
@@ -116,7 +122,10 @@ export const RecordWidget = ({
         onClick={playing ? rec.pause : rec.play}
       />
       <Playback position={rec.position} duration={rec.duration} device={device} onSeek={rec.seek} />
-      <RecordTextButton height={s.resumeH} fontSize={s.resumeFont} radius={1000} paddingX={s.resumePad} gap={6} onClick={rec.resume}>
+      <RecordTextButton height={s.resumeH} fontSize={s.resumeFont} radius={1000} paddingX={s.resumePad} gap={6} onClick={() => {
+          setStarted(false);
+          rec.resume();
+        }}>
         Resume
       </RecordTextButton>
       {showDelete && (
