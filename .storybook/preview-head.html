@@ -212,4 +212,26 @@
   .docblock-argstable td {
     border-color: var(--is-surface-soft-contrast-background) !important;
   }
+
+  /* Args table: 30px rounded corners (Storybook rounds the four corner cells) */
+  .docblock-argstable tbody tr:first-child > :first-child {
+    border-top-left-radius: 30px !important;
+  }
+  .docblock-argstable tbody tr:first-child > :last-child {
+    border-top-right-radius: 30px !important;
+  }
+  .docblock-argstable tbody tr:last-child > :first-child {
+    border-bottom-left-radius: 30px !important;
+  }
+  .docblock-argstable tbody tr:last-child > :last-child {
+    border-bottom-right-radius: 30px !important;
+  }
+
+  /* Args table: TGrey 3 (Super Soft Contrast Background) instead of Storybook's soft blue —
+     section rows (e.g. "Icons"), the False / True toggles and the "Set object" buttons */
+  .docblock-argstable tbody tr[title] > td,
+  .docblock-argstable label:has(> input[role='switch']),
+  .docblock-argstable button[id^='set-'] {
+    background: var(--is-surface-super-soft-contrast-background) !important;
+  }
 </style>
