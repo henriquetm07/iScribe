@@ -63,13 +63,15 @@
 </style>
 <style>
   /*
-   * Story previews on the docs pages: no box around them, and only the reload button
-   * (zoom in, zoom out, reset zoom and open-in-new-tab are hidden). Reload uses the iScribe "reload" icon.
+   * Story previews on the docs pages: a TGrey 3 panel (no border or shadow), and only the reload button
+   * (zoom in, zoom out, reset zoom and open-in-new-tab are hidden). Reload uses the iScribe "reload" icon,
+   * has a "Reload" label, and sits under the preview, before "Show code".
+   * Super Soft Contrast Background is TGrey 3 in light mode, with its dark-mode counterpart in dark mode.
    */
   .sbdocs-preview {
     border: 0 !important;
-    border-radius: 0 !important;
-    background: transparent !important;
+    border-radius: var(--is-round-l) !important;
+    background: var(--is-surface-super-soft-contrast-background) !important;
     box-shadow: none !important;
   }
   .sbdocs-preview > [role='toolbar'] {
@@ -86,11 +88,63 @@
   .sbdocs-preview [aria-label='Open canvas in new tab'] {
     display: none !important;
   }
+  /* Move the toolbar (now just Reload) into the row under the preview, left of "Show code" */
+  .sb-anchor:has(> .sbdocs-preview > [role='toolbar']) {
+    position: relative;
+  }
+  .sb-anchor > .sbdocs-preview:has(> [role='toolbar']) {
+    position: static !important;
+  }
+  .sbdocs-preview > [role='toolbar'] {
+    position: absolute !important;
+    z-index: 2;
+    top: auto !important;
+    right: auto !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: auto !important;
+    background: transparent !important;
+    display: flex;
+    align-items: center;
+    height: 40px;
+    min-height: 0 !important;
+    padding: 0 !important;
+  }
+  .sbdocs-preview > [role='toolbar'] > div,
+  .sbdocs-preview > [role='toolbar'] > div > div {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    padding: 0 !important;
+  }
+  .sb-anchor:has(> .sbdocs-preview > [role='toolbar']) > .sbdocs-preview-actions {
+    padding-left: 88px;
+  }
+  /* Reload: icon + "Reload", styled like "Show code" */
+  .sbdocs-preview [aria-label='Reload story'] {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 6px;
+    width: auto !important;
+    height: 28px !important;
+    padding: 0 10px !important;
+    font-family: 'Figtree', system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: #5c6570 !important;
+  }
+  html[data-theme='dark'] .sbdocs-preview [aria-label='Reload story'] {
+    color: #9ba3ac !important;
+  }
+  .sbdocs-preview [aria-label='Reload story']::after {
+    content: 'Reload';
+  }
   .sbdocs-preview [aria-label='Reload story'] svg {
     display: none;
   }
   .sbdocs-preview [aria-label='Reload story']::before {
     content: '';
+    flex: none;
     width: 14px;
     height: 14px;
     background: currentColor;
