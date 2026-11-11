@@ -94,6 +94,8 @@
   }
   .sb-anchor > .sbdocs-preview:has(> [role='toolbar']) {
     position: static !important;
+    /* Storybook keeps 40px on top for the toolbar; it now sits below, so the example is centered */
+    padding-top: 0 !important;
   }
   .sbdocs-preview > [role='toolbar'] {
     position: absolute !important;
