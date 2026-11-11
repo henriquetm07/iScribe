@@ -47,23 +47,24 @@ export const useRecorder = ({ initialState = 'idle', initialDuration = 0, initia
     notify.current?.(next);
   }, []);
 
-  // One clock: recording grows the duration, playing moves the position
+  // One clock, updated every animation frame so the playback bar glides instead of stepping:
+  // recording grows the duration, playing moves the position
+  const durationRef = useRef(duration);
+  durationRef.current = duration;
   useEffect(() => {
     if (state !== 'recording' && state !== 'playing') return;
     let last = performance.now();
-    const id = window.setInterval(() => {
-      const now = performance.now();
-      const step = (now - last) / 1000;
+    let frame = 0;
+    const tick = (now: number) => {
+      const step = Math.max(0, (now - last) / 1000);
       last = now;
       if (state === 'recording') setDuration((d) => d + step);
-      else
-        setPosition((p) => {
-          const next = p + step;
-          return next >= duration ? duration : next;
-        });
-    }, 100);
-    return () => window.clearInterval(id);
-  }, [state, duration]);
+      else setPosition((p) => Math.min(durationRef.current, p + step));
+      frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [state]);
 
   // Playback stops at the end
   useEffect(() => {
