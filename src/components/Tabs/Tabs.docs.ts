@@ -16,8 +16,9 @@ const itemLines = (d: TabsDevice) => [
   `  Height      ${item[d].height}px, var(--is-full-round) corners, 8px between label and badge`,
   `  Text        Figtree Medium ${item[d].text}px, var(--is-foreground-high-contrast-primary-foreground)`,
   '  Default     no background',
-  '  Selected    glass: var(--is-color-tperiwinkle-20) + white sheen, bright 1px edge, inner shade,',
-  '              soft glow and backdrop blur(12px)',
+  '  Selected    var(--is-color-tperiwinkle-20) + 1px var(--is-surface-soft-contrast-background)',
+  '              + Figma Glass (frost 4, refraction 0.8, depth 20, light -45° 0.8): blur(4px),',
+  '              bright top-left rim, softer bottom-right rim, faint inner glow',
   '  Badge       16px pill, var(--is-status-foreground-positive-pw), white 9px numbers',
 ];
 
