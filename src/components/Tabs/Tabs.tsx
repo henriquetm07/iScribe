@@ -15,7 +15,10 @@ export interface TabItemProps extends Omit<ButtonHTMLAttributes<HTMLButtonElemen
   ref?: Ref<HTMLButtonElement>;
 }
 
-/** One tab (Figma "Tab item"): a pill that is periwinkle glass when selected, with an optional count badge. */
+/**
+ * One tab (Figma "Tab item"): a pill that is periwinkle glass when selected, with an optional count badge.
+ * iOS: the selected pill must use the native iOS glass effect (see Tabs below), not this CSS imitation.
+ */
 export const TabItem = ({ children, device = 'iphone', selected = false, count, className, type = 'button', ...rest }: TabItemProps) => (
   <button
     type={type}
@@ -113,6 +116,15 @@ interface IndicatorBox {
  * Tabs (Figma "Tab"): a rounded bar of equal-width Tab items with one selected.
  * The glass selection indicator slides to the tab the user picks and works like a lens: the labels it
  * passes over bend at its edges. Keyboard: ← / → move and select, Home / End jump.
+ *
+ * iOS (iPhone and iPad apps): do NOT port this web glass. Build the selection indicator with the native
+ * iOS glass effect (Liquid Glass, iOS 26+) so it gets the system's real refraction, lighting and motion:
+ *   SwiftUI — wrap the tabs in GlassEffectContainer and give the indicator
+ *             .glassEffect(.regular.tint(<T Periwinkle 20>).interactive(), in: .capsule),
+ *             moving it between tabs with .glassEffectID(_:in:) so the system morphs it.
+ *   UIKit   — a UIVisualEffectView with UIGlassEffect (tintColor = T Periwinkle 20, isInteractive = true).
+ * Keep the sizes, colors and the Soft Contrast border from Figma; let the system draw the glass itself.
+ * This web version (CSS + SVG lens) is only for the browser.
  */
 export const Tabs = ({ options, value, defaultValue, onChange, device = 'iphone', width = '100%', 'aria-label': ariaLabel }: TabsProps) => {
   const [inner, setInner] = useState(defaultValue ?? options[0]?.value);

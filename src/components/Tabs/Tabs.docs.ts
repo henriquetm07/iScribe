@@ -19,6 +19,7 @@ const itemLines = (d: TabsDevice) => [
   '  Selected    var(--is-color-tperiwinkle-20) + 1px var(--is-surface-soft-contrast-background)',
   '              + Figma Glass (frost 4, refraction 0.8, depth 20, light -45° 0.8): blur(4px),',
   '              bright top-left rim, softer bottom-right rim, faint inner glow',
+  '              (web only — on iOS use the native glass effect, see Tabs)',
   '  Badge       16px pill, var(--is-status-foreground-positive-pw), white 9px numbers',
 ];
 
@@ -45,6 +46,14 @@ export const tabsSpecLines = (p: Partial<TabsProps>) => {
     '  The glass indicator slides to the selected tab (420ms, ease-out; instant with reduced motion)',
     '  and works like a lens: labels it passes over bend at its edges (SVG displacement, up to ~5px at the rim)',
     '  Keyboard: ← → move and select, Home / End jump',
+    '',
+    'iOS (iPhone and iPad apps)',
+    '  Use the native iOS glass effect (Liquid Glass, iOS 26+) for the selection, not this web version:',
+    '  SwiftUI  GlassEffectContainer { … indicator',
+    '             .glassEffect(.regular.tint(T Periwinkle 20).interactive(), in: .capsule)',
+    '             .glassEffectID("selection", in: namespace) }  — the system morphs it between tabs',
+    '  UIKit    UIVisualEffectView(effect: UIGlassEffect) — tintColor T Periwinkle 20, isInteractive = true',
+    '  Keep the Figma sizes, colors and Soft Contrast border; the system draws the glass',
   ];
 };
 

@@ -42,6 +42,10 @@
  *   refraction  → a softer rim on the opposite, bottom-right edge
  *   depth       → a faint inner glow around the edge
  * Used by a standalone Tab Item and by the sliding indicator of Tabs.
+ *
+ * iOS: this is a web imitation. In the iPhone and iPad apps, use the native iOS glass effect instead
+ * (SwiftUI .glassEffect(.regular.tint(T Periwinkle 20).interactive(), in: .capsule) inside a
+ * GlassEffectContainer, or UIKit UIVisualEffectView + UIGlassEffect). See Tabs.tsx.
  */
 .is-tab-item--selected,
 .is-tabs__indicator {
