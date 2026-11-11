@@ -115,18 +115,54 @@
 .is-tabs--web {
   padding: 4px;
 }
-.is-tabs > .is-tab-item {
-  position: relative;
-  z-index: 1;
+.is-tabs__items {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+.is-tabs__items > .is-tab-item {
   flex: 1 0 0;
 }
 
-/* Sliding selection: one glass indicator behind the labels moves to the selected tab */
+/*
+ * Sliding glass: one indicator moves to the selected tab and works like a lens.
+ * - The real labels are hidden where the glass sits (a mask on the row that moves with it).
+ * - Inside the glass, a copy of the labels stays lined up with the real ones and is bent at the
+ *   edges by an SVG displacement filter (the lens), so text warps at the rim as the glass passes.
+ */
+@property --is-tabs-glass-x {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+@property --is-tabs-glass-w {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
 .is-tabs {
   position: relative;
   isolation: isolate;
 }
-.is-tabs--has-indicator > .is-tab-item--selected {
+.is-tabs--has-indicator .is-tabs__items {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    #000 calc(var(--is-tabs-glass-x) + 1px),
+    transparent calc(var(--is-tabs-glass-x) + 4px),
+    transparent calc(var(--is-tabs-glass-x) + var(--is-tabs-glass-w) - 4px),
+    #000 calc(var(--is-tabs-glass-x) + var(--is-tabs-glass-w) - 1px)
+  );
+  mask-image: linear-gradient(
+    to right,
+    #000 calc(var(--is-tabs-glass-x) + 1px),
+    transparent calc(var(--is-tabs-glass-x) + 4px),
+    transparent calc(var(--is-tabs-glass-x) + var(--is-tabs-glass-w) - 4px),
+    #000 calc(var(--is-tabs-glass-x) + var(--is-tabs-glass-w) - 1px)
+  );
+}
+.is-tabs--has-indicator .is-tabs__items > .is-tab-item--selected {
   border-color: transparent;
   background: transparent;
   box-shadow: none;
@@ -136,20 +172,57 @@
 .is-tabs__indicator {
   box-sizing: border-box;
   position: absolute;
-  z-index: 0;
+  z-index: 2;
   top: 0;
   left: 0;
+  overflow: hidden;
   border-radius: var(--is-full-round);
   pointer-events: none;
 }
-.is-tabs__indicator--animate {
+.is-tabs__lens {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+.is-tabs__lens-row {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.is-tabs__lens-row > .is-tab-item {
+  flex: 1 0 0;
+  cursor: inherit;
+}
+.is-tabs__filters {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* Everything that moves with the glass shares one timing, so the copy stays aligned with the real labels */
+.is-tabs--animate .is-tabs__indicator {
   transition:
     transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
     width 420ms cubic-bezier(0.22, 1, 0.36, 1),
     height 420ms cubic-bezier(0.22, 1, 0.36, 1);
 }
+.is-tabs--animate .is-tabs__lens-row {
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.is-tabs--animate .is-tabs__items {
+  transition:
+    --is-tabs-glass-x 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    --is-tabs-glass-w 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
 @media (prefers-reduced-motion: reduce) {
-  .is-tabs__indicator--animate {
+  .is-tabs--animate .is-tabs__indicator,
+  .is-tabs--animate .is-tabs__lens-row,
+  .is-tabs--animate .is-tabs__items {
     transition: none;
   }
 }

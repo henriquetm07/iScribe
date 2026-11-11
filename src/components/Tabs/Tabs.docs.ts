@@ -43,6 +43,7 @@ export const tabsSpecLines = (p: Partial<TabsProps>) => {
     'BEHAVIOUR',
     '  Click a tab → it becomes selected and onChange(value) is called',
     '  The glass indicator slides to the selected tab (420ms, ease-out; instant with reduced motion)',
+    '  and works like a lens: labels it passes over bend at its edges (SVG displacement, up to ~5px at the rim)',
     '  Keyboard: ← → move and select, Home / End jump',
   ];
 };
