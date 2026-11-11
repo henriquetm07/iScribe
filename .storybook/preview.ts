@@ -102,7 +102,7 @@ const preview: Preview = {
     options: {
       storySort: { order: [
         'Introduction', 'Foundations', ['Colors', 'Variables', 'Icons', 'Animated Icons'],
-        'Components', ['Bottom Tab', ['Bottom Tab', 'Alert', 'Send Slider'], 'Button', 'Dropdown', 'Icon Button', 'Selection List', ['Selection List', 'Selection List Item'], 'Tabs', ['Tabs', 'Tab Item'], 'Web Nav Bar'],
+        'Components', ['Bottom Tab', ['Bottom Tab', 'Alert', 'Send Slider'], 'Button', 'Dropdown', 'Icon Button', 'Selection List', ['Selection List', 'Selection List Item'], 'Tabs', ['Tabs', 'Tab Item'], 'Toggle', 'Web Nav Bar'],
       ] },
     },
     controls: {

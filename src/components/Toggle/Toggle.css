@@ -1,0 +1,71 @@
+/*
+ * Toggle — Figma "Toggles" (674:5045). Colors are the Figma Toggle variables, so light and dark mode
+ * follow data-theme. The knob sits 1px inside the 1px stroke and slides to the right when on.
+ */
+.is-toggle {
+  --is-toggle-w: 24px;
+  --is-toggle-h: 14px;
+  --is-toggle-knob: 12px;
+  position: relative;
+  box-sizing: border-box;
+  display: inline-block;
+  flex: none;
+  width: var(--is-toggle-w);
+  height: var(--is-toggle-h);
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--is-toggle-stroke);
+  border-radius: 20px;
+  background: var(--is-toggle-background-off);
+  cursor: pointer;
+  vertical-align: middle;
+  transition: background-color 200ms ease;
+}
+.is-toggle--big {
+  --is-toggle-w: 30px;
+  --is-toggle-h: 16px;
+  --is-toggle-knob: 14px;
+}
+.is-toggle--xl {
+  --is-toggle-w: 44px;
+  --is-toggle-h: 22px;
+  --is-toggle-knob: 20px;
+}
+
+.is-toggle__knob {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--is-toggle-knob);
+  height: var(--is-toggle-knob);
+  border-radius: 50%;
+  background: var(--is-toggle-foreground-off);
+  transition:
+    transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 200ms ease;
+}
+
+.is-toggle--on {
+  background: var(--is-toggle-background-on);
+}
+.is-toggle--on .is-toggle__knob {
+  /* track width − 2px of stroke − knob */
+  transform: translateX(calc(var(--is-toggle-w) - 2px - var(--is-toggle-knob)));
+  background: var(--is-toggle-foreground-on);
+}
+
+.is-toggle:focus-visible {
+  outline: 2px solid var(--is-button-accent);
+  outline-offset: 2px;
+}
+.is-toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-toggle,
+  .is-toggle__knob {
+    transition: none;
+  }
+}
