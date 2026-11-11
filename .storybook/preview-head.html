@@ -20,3 +20,25 @@
     color: var(--is-foreground-high-contrast-primary-foreground);
   }
 </style>
+<style>
+  /* While switching Light / Dark, colors fade instead of jumping (the class is on for ~0.4s, see preview.ts) */
+  html.is-mode-switching,
+  html.is-mode-switching *,
+  html.is-mode-switching *::before,
+  html.is-mode-switching *::after {
+    transition:
+      background-color 300ms ease,
+      color 300ms ease,
+      border-color 300ms ease,
+      fill 300ms ease,
+      stroke 300ms ease,
+      box-shadow 300ms ease !important;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html.is-mode-switching *,
+    html.is-mode-switching *::before,
+    html.is-mode-switching *::after {
+      transition: none !important;
+    }
+  }
+</style>

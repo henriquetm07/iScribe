@@ -8,9 +8,10 @@ import '../src/styles/variables.css';
 import '../src/styles/tokens.css';
 
 /*
- * Light / Dark mode for the whole board, not only the components:
- * the "theme" global (switched by the toggle in the top bar, see manager.ts) sets data-theme on the page,
- * which flips every --is- variable, and the docs pages switch to a matching light or dark docs theme.
+ * Light / Dark mode for the whole board, not only the components.
+ * The toggle in the top bar (manager.ts) saves the mode in the browser and tells this page; we set
+ * data-theme on the page, which flips every --is- variable, and re-theme the docs. Nothing is reloaded or
+ * re-rendered from scratch, and colors fade smoothly (preview-head.html, .is-mode-switching).
  */
 type Mode = 'light' | 'dark';
 const font = "'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif";
@@ -37,31 +38,55 @@ const docsThemes = {
   }),
 };
 
+/** Shared with manager.ts: where the mode is saved, and the message the toggle sends */
+const STORAGE_KEY = 'iscribe-mode';
+const MODE_EVENT = 'iscribe/mode';
+const asMode = (value: unknown): Mode => (value === 'dark' ? 'dark' : 'light');
+const readSavedMode = (): Mode => {
+  try {
+    return asMode(localStorage.getItem(STORAGE_KEY));
+  } catch {
+    return 'light';
+  }
+};
 const applyMode = (mode: Mode) => {
   if (typeof document !== 'undefined') document.documentElement.setAttribute('data-theme', mode);
 };
-const modeOf = (globals?: Record<string, unknown>): Mode => (globals?.theme === 'dark' ? 'dark' : 'light');
+
+// Start in the saved mode before anything renders, so there is no flash of the other mode
+let currentMode: Mode = readSavedMode();
+applyMode(currentMode);
+
+const listeners = new Set<(mode: Mode) => void>();
+let fadeTimer: ReturnType<typeof setTimeout> | undefined;
+const switchMode = (next: Mode) => {
+  if (next === currentMode) return;
+  currentMode = next;
+  // Fade colors for a moment while switching (see preview-head.html)
+  const root = document.documentElement;
+  root.classList.add('is-mode-switching');
+  clearTimeout(fadeTimer);
+  fadeTimer = setTimeout(() => root.classList.remove('is-mode-switching'), 400);
+  applyMode(next);
+  listeners.forEach((listener) => listener(next));
+};
 
 // Follow the toggle on every page, including docs pages that have no stories (Introduction, Foundations)
-const channel = addons.getChannel();
-let currentMode: Mode = 'light';
-const onGlobals = ({ globals }: { globals?: Record<string, unknown> }) => {
-  currentMode = modeOf(globals);
-  applyMode(currentMode);
-};
-channel.on('setGlobals', onGlobals);
-channel.on('globalsUpdated', onGlobals);
+addons.getChannel().on(MODE_EVENT, (mode: unknown) => switchMode(asMode(mode)));
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', (e) => {
+    if (e.key === STORAGE_KEY) switchMode(asMode(e.newValue));
+  });
+}
 
-/** Docs pages: re-themed when the mode changes */
+/** Docs pages: re-themed in place when the mode changes (no reload) */
 const ThemedDocsContainer = (props: ComponentProps<typeof DocsContainer>) => {
   const [mode, setMode] = useState<Mode>(currentMode);
   useEffect(() => {
-    const on = ({ globals }: { globals?: Record<string, unknown> }) => setMode(modeOf(globals));
-    channel.on('globalsUpdated', on);
-    channel.on('setGlobals', on);
+    listeners.add(setMode);
+    setMode(currentMode);
     return () => {
-      channel.off('globalsUpdated', on);
-      channel.off('setGlobals', on);
+      listeners.delete(setMode);
     };
   }, []);
   return createElement(DocsContainer, { ...props, theme: docsThemes[mode] });
@@ -87,18 +112,10 @@ const preview: Preview = {
       },
     },
   },
-  globalTypes: {
-    // Switched by the Light / Dark toggle in the top bar (manager.ts)
-    theme: {
-      description: 'Light or dark mode',
-    },
-  },
-  initialGlobals: {
-    theme: 'light',
-  },
   decorators: [
-    (Story, context) => {
-      applyMode(modeOf(context.globals));
+    // Every story renders in the current mode
+    (Story) => {
+      applyMode(currentMode);
       return Story();
     },
   ],

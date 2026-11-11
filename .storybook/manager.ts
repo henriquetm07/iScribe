@@ -1,5 +1,5 @@
-import { createElement as h, type KeyboardEvent } from 'react';
-import { addons, types, useGlobals } from 'storybook/manager-api';
+import { createElement as h, useState, type KeyboardEvent } from 'react';
+import { addons, types } from 'storybook/manager-api';
 import { create } from 'storybook/theming';
 
 /*
@@ -67,18 +67,37 @@ addons.setConfig({
 
 /*
  * Light / Dark toggle in the top bar, modelled on the Tabs component: two equal options in a pill,
- * with a periwinkle glass selection that slides to the picked mode. It sets the "theme" global,
- * which switches the whole board (see preview.ts). Styles are in manager-head.html.
+ * with a periwinkle glass selection that slides to the picked mode. It saves the mode in the browser and
+ * tells the page (preview.ts), which switches its colors in place — no reload. Styles are in manager-head.html.
  */
+const STORAGE_KEY = 'iscribe-mode';
+const MODE_EVENT = 'iscribe/mode';
+type Mode = 'light' | 'dark';
+const savedMode = (): Mode => {
+  try {
+    return localStorage.getItem(STORAGE_KEY) === 'dark' ? 'dark' : 'light';
+  } catch {
+    return 'light';
+  }
+};
+
 const MODES = [
   { value: 'light', label: 'Light' },
   { value: 'dark', label: 'Dark' },
 ] as const;
 
 const ModeToggle = () => {
-  const [globals, updateGlobals] = useGlobals();
-  const mode = globals.theme === 'dark' ? 'dark' : 'light';
-  const set = (value: string) => updateGlobals({ theme: value });
+  const [mode, setMode] = useState<Mode>(savedMode);
+  const set = (value: Mode) => {
+    if (value === mode) return;
+    setMode(value);
+    try {
+      localStorage.setItem(STORAGE_KEY, value);
+    } catch {
+      // Private windows can block storage; the switch still works for this visit
+    }
+    addons.getChannel().emit(MODE_EVENT, value);
+  };
   const onKeyDown = (e: KeyboardEvent) => {
     if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) {
       e.preventDefault();
