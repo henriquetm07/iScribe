@@ -109,7 +109,8 @@ const ModeToggle = () => {
 
 addons.register('iscribe/mode', () => {
   addons.add('iscribe/mode/toggle', {
-    type: types.TOOL,
+    // TOOLEXTRA = the right-hand end of the top bar
+    type: types.TOOLEXTRA,
     title: 'Light / Dark',
     match: () => true,
     render: () => h(ModeToggle),
