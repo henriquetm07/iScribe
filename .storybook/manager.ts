@@ -1,4 +1,5 @@
-import { addons } from 'storybook/manager-api';
+import { createElement as h, type KeyboardEvent } from 'react';
+import { addons, types, useGlobals } from 'storybook/manager-api';
 import { create } from 'storybook/theming';
 
 /*
@@ -49,10 +50,68 @@ addons.setConfig({
     inputTextColor: brand.bright,
     inputBorderRadius: 6,
   }),
+  // Top bar: hide Storybook's own tools; only the Light / Dark toggle below stays
+  toolbar: {
+    zoom: { hidden: true },
+    eject: { hidden: true },
+    copy: { hidden: true },
+    fullscreen: { hidden: true },
+  },
   sidebar: {
     filters: {
       // Components list only their Main (docs) page; their stories still show on that page
       patterns: (item) => !(item.type === 'story' && item.title.startsWith('Components/')),
     },
   },
+});
+
+/*
+ * Light / Dark toggle in the top bar, modelled on the Tabs component: two equal options in a pill,
+ * with a periwinkle glass selection that slides to the picked mode. It sets the "theme" global,
+ * which switches the whole board (see preview.ts). Styles are in manager-head.html.
+ */
+const MODES = [
+  { value: 'light', label: 'Light' },
+  { value: 'dark', label: 'Dark' },
+] as const;
+
+const ModeToggle = () => {
+  const [globals, updateGlobals] = useGlobals();
+  const mode = globals.theme === 'dark' ? 'dark' : 'light';
+  const set = (value: string) => updateGlobals({ theme: value });
+  const onKeyDown = (e: KeyboardEvent) => {
+    if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) {
+      e.preventDefault();
+      set(e.key === 'Home' ? 'light' : e.key === 'End' ? 'dark' : mode === 'light' ? 'dark' : 'light');
+    }
+  };
+  return h(
+    'div',
+    { className: 'is-mode-toggle', role: 'radiogroup', 'aria-label': 'Color mode', 'data-mode': mode, onKeyDown },
+    h('span', { className: 'is-mode-toggle__glass', 'aria-hidden': true }),
+    ...MODES.map((m) =>
+      h(
+        'button',
+        {
+          key: m.value,
+          type: 'button',
+          role: 'radio',
+          'aria-checked': mode === m.value,
+          tabIndex: mode === m.value ? 0 : -1,
+          className: `is-mode-toggle__option${mode === m.value ? ' is-mode-toggle__option--on' : ''}`,
+          onClick: () => set(m.value),
+        },
+        m.label,
+      ),
+    ),
+  );
+};
+
+addons.register('iscribe/mode', () => {
+  addons.add('iscribe/mode/toggle', {
+    type: types.TOOL,
+    title: 'Light / Dark',
+    match: () => true,
+    render: () => h(ModeToggle),
+  });
 });

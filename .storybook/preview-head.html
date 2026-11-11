@@ -10,3 +10,13 @@
     font-family: 'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif;
   }
 </style>
+<style>
+  /* Dark mode covers the whole board: page background and text, not only the components */
+  html[data-theme='dark'] {
+    color-scheme: dark;
+  }
+  html[data-theme='dark'] body {
+    background: var(--is-background-elevated-background);
+    color: var(--is-foreground-high-contrast-primary-foreground);
+  }
+</style>

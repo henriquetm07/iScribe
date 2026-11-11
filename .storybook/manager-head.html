@@ -80,3 +80,69 @@
     border-bottom: 1px solid #232527;
   }
 </style>
+
+<!-- Light / Dark toggle in the top bar (manager.ts), styled after the Tabs component, on the dark top bar -->
+<style>
+  .is-mode-toggle {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    margin: 0 4px;
+    padding: 3px;
+    border-radius: 1000px;
+    background: rgba(255, 255, 255, 0.04);
+    font-family: 'Figtree', system-ui, sans-serif;
+  }
+  .is-mode-toggle__option {
+    position: relative;
+    z-index: 1;
+    width: 64px;
+    height: 24px;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 1000px;
+    background: none;
+    color: #9ba3ac;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 200ms ease;
+  }
+  .is-mode-toggle__option:hover,
+  .is-mode-toggle__option--on {
+    color: #f0f2f4;
+  }
+  .is-mode-toggle__option:focus-visible {
+    outline: 2px solid #3966ff;
+    outline-offset: 1px;
+  }
+  /* The selection: Tabs' periwinkle glass (dark mode values), sliding between the two options */
+  .is-mode-toggle__glass {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 64px;
+    height: 24px;
+    box-sizing: border-box;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1000px;
+    background: rgba(57, 102, 255, 0.2);
+    box-shadow:
+      inset 1.5px 1.5px 1px -0.5px rgba(255, 255, 255, 0.42),
+      inset -1.5px -1.5px 1px -0.5px rgba(255, 255, 255, 0.26),
+      inset 0 0 8px rgba(255, 255, 255, 0.06);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .is-mode-toggle[data-mode='dark'] .is-mode-toggle__glass {
+    transform: translateX(66px);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .is-mode-toggle__glass {
+      transition: none;
+    }
+  }
+</style>
