@@ -228,6 +228,34 @@
   flex: 1 1 auto;
 }
 
+/* After Stop: Play slides in from the left, Resume (and Delete) from the right, the bar fades in */
+.is-rec-enter-left {
+  animation: is-rec-enter-left 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.is-rec-enter-right {
+  animation: is-rec-enter-right 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.is-rec-enter-left ~ .is-rec-playback {
+  animation: is-rec-fade-in 380ms ease-out both;
+}
+@keyframes is-rec-enter-left {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+}
+@keyframes is-rec-enter-right {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+@keyframes is-rec-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
 /* ---------- Mini Record Widget ---------- */
 .is-rec-mini {
   display: inline-flex;
@@ -287,5 +315,10 @@
   }
   .is-rec-btn {
     transition: none;
+  }
+  .is-rec-enter-left,
+  .is-rec-enter-right,
+  .is-rec-enter-left ~ .is-rec-playback {
+    animation: none;
   }
 }

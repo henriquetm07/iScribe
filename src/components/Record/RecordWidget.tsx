@@ -90,6 +90,12 @@ export const RecordWidget = ({
   const s = size[device];
   // After Start Recording, the waves begin as dots and grow into shape
   const [started, setStarted] = useState(false);
+  // After Stop, Play slides in from the left and Resume (and Delete) from the right
+  const [stopped, setStopped] = useState(false);
+  const stopRecording = () => {
+    setStopped(true);
+    rec.stop();
+  };
   const startRecording = () => {
     setStarted(true);
     rec.start();
@@ -107,7 +113,7 @@ export const RecordWidget = ({
       <div className={`is-rec is-rec-widget is-rec-widget--${device} ${className}`} style={{ width, ...style }} aria-live="off">
         <Waves intro={started} style={{ maxWidth: s.waves }} />
         <RecordTime seconds={rec.duration} device={device} size="small" recording />
-        <RecordRoundButton icon="stop-flat" label="Stop recording" variant="destructive" size={s.round} iconSize={s.icon} onClick={rec.stop} />
+        <RecordRoundButton icon="stop-flat" label="Stop recording" variant="destructive" size={s.round} iconSize={s.icon} onClick={stopRecording} />
       </div>
     );
 
@@ -120,9 +126,17 @@ export const RecordWidget = ({
         size={s.round}
         iconSize={s.icon}
         onClick={playing ? rec.pause : rec.play}
+        className={stopped ? 'is-rec-enter-left' : ''}
       />
       <Playback position={rec.position} duration={rec.duration} device={device} onSeek={rec.seek} />
-      <RecordTextButton height={s.resumeH} fontSize={s.resumeFont} radius={1000} paddingX={s.resumePad} gap={6} onClick={() => {
+      <RecordTextButton
+        height={s.resumeH}
+        fontSize={s.resumeFont}
+        radius={1000}
+        paddingX={s.resumePad}
+        gap={6}
+        className={stopped ? 'is-rec-enter-right' : ''}
+        onClick={() => {
           setStarted(false);
           rec.resume();
         }}>
@@ -138,6 +152,7 @@ export const RecordWidget = ({
           radius={s.deleteRadius}
           paddingX={s.resumePad}
           gap={device === 'ipad' ? 12 : 6}
+          className={stopped ? 'is-rec-enter-right' : ''}
           onClick={rec.discard}
         >
           Delete

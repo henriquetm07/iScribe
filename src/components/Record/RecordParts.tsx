@@ -114,13 +114,14 @@ export interface RecordRoundButtonProps {
   /** Color of the icon when it differs from the variant (Figma Delete uses the Alert red) */
   iconColor?: string;
   onClick?: () => void;
+  className?: string;
 }
 
 /** Round icon button used for record, stop, play, pause and delete */
-export const RecordRoundButton = ({ icon, label, variant = 'secondary', size, iconSize, iconColor, onClick }: RecordRoundButtonProps) => (
+export const RecordRoundButton = ({ icon, label, variant = 'secondary', size, iconSize, iconColor, onClick, className = '' }: RecordRoundButtonProps) => (
   <button
     type="button"
-    className={`is-rec-btn is-rec-btn--${variant} is-rec-btn--round`}
+    className={`is-rec-btn is-rec-btn--${variant} is-rec-btn--round ${className}`}
     style={{ width: size, height: size, color: iconColor }}
     aria-label={label}
     title={label}
@@ -146,13 +147,14 @@ export interface RecordTextButtonProps {
   block?: boolean;
   minWidth?: number;
   onClick?: () => void;
+  className?: string;
 }
 
 /** Text button (Start Recording, Resume, Delete) */
-export const RecordTextButton = ({ children, icon, variant = 'secondary', height, fontSize, iconSize, radius, paddingX, gap, block, minWidth, onClick }: RecordTextButtonProps) => (
+export const RecordTextButton = ({ children, icon, variant = 'secondary', height, fontSize, iconSize, radius, paddingX, gap, block, minWidth, onClick, className = '' }: RecordTextButtonProps) => (
   <button
     type="button"
-    className={`is-rec-btn is-rec-btn--${variant}${block ? ' is-rec-btn--block' : ''}`}
+    className={`is-rec-btn is-rec-btn--${variant}${block ? ' is-rec-btn--block' : ''} ${className}`}
     style={{ height, fontSize, borderRadius: radius, padding: `0 ${paddingX}px`, gap, minWidth }}
     onClick={onClick}
   >
