@@ -190,12 +190,54 @@ export const Waves = ({ size = 'default', device = 'iphone', bars, live = true, 
       </span>
     );
   }
-  const count = bars ?? 110;
+  return <WaveBars bars={bars} live={live} className={className} style={style} />;
+};
+
+/** Bar pitch: 2px bar + 3px gap */
+const PITCH = 5;
+
+/**
+ * The long waveform. It fits as many bars as the width allows, then shapes them like a voice:
+ * bars near the centre are tall, swing over a wide range and move fast; towards each end they get
+ * shorter, move less and slow down.
+ */
+const WaveBars = ({ bars, live, className, style }: { bars?: number; live: boolean; className: string; style?: CSSProperties }) => {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [fit, setFit] = useState(bars ?? 60);
+  useEffect(() => {
+    if (bars !== undefined || !ref.current) return;
+    const el = ref.current;
+    const measure = () => setFit(Math.max(5, Math.floor((el.clientWidth + 3) / PITCH)));
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [bars]);
+  const count = bars ?? fit;
+
   return (
-    <span className={`is-rec-waves${live ? ' is-rec-waves--live' : ''} ${className}`} style={style} aria-hidden="true">
-      {Array.from({ length: count }, (_, i) => (
-        <i key={i} style={{ '--h': `${WAVE[i % WAVE.length]}px`, animationDelay: `${-((i * 0.23) % 0.7).toFixed(2)}s` } as CSSProperties} />
-      ))}
+    <span ref={ref} className={`is-rec-waves is-rec-waves--long${live ? ' is-rec-waves--live' : ''} ${className}`} style={style} aria-hidden="true">
+      {Array.from({ length: count }, (_, i) => {
+        // 0 at the ends → 1 in the centre
+        const t = count > 1 ? i / (count - 1) : 0.5;
+        const centre = Math.max(0.12, Math.sin(Math.PI * t) ** 1.3);
+        const tall = 8 + centre * (0.55 * 39 + 0.45 * WAVE[i % WAVE.length] - 8);
+        const low = Math.max(4, tall * (1 - 0.82 * centre));
+        const speed = 1.15 - 0.7 * centre;
+        return (
+          <i
+            key={i}
+            style={
+              {
+                '--h': `${tall.toFixed(1)}px`,
+                '--lo': `${low.toFixed(1)}px`,
+                animationDuration: `${speed.toFixed(2)}s`,
+                animationDelay: `${-((i * 0.29) % speed).toFixed(2)}s`,
+              } as CSSProperties
+            }
+          />
+        );
+      })}
     </span>
   );
 };

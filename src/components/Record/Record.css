@@ -107,7 +107,8 @@
     height: var(--h);
   }
   to {
-    height: max(4px, calc(var(--h) * 0.45));
+    /* Long waves set --lo per bar (wide range in the centre, narrow at the ends) */
+    height: var(--lo, max(4px, calc(var(--h) * 0.45)));
   }
 }
 

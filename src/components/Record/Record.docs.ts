@@ -17,7 +17,9 @@ const stateName: Record<RecordState, string> = {
 
 const sharedLines = [
   'SHARED PARTS',
-  '  Waves       2px red bars (var(--is-labels-alert)), 3px apart, up to 39px tall; they pulse while recording',
+  '  Waves       2px red bars (var(--is-labels-alert)), 3px apart, up to 39px tall, round caps',
+  '              while recording: centre bars tall, wide range, fast (~0.45s);',
+  '              towards the ends shorter, narrow range, slower (~1.1s)',
   '  Time        Relative Mono 10 Pitch; red (var(--is-status-foreground-alert)) while recording',
   '  Playback    track var(--is-surface-soft-contrast-background), radius 10px;',
   '              progress var(--is-status-foreground-positive-pw);',
