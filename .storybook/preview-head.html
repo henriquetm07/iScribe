@@ -200,3 +200,16 @@
     background: var(--is-color-tperiwinkle-20, rgba(57, 102, 255, 0.2));
   }
 </style>
+<style>
+  /* Props table (Name / Description / Default / Control): no drop shadow, TGrey 6 strokes
+     (Soft Contrast Background — TGrey 6 in light mode, its counterpart in dark mode) */
+  .docblock-argstable tbody {
+    filter: none !important;
+    box-shadow: none !important;
+  }
+  .docblock-argstable tr,
+  .docblock-argstable th,
+  .docblock-argstable td {
+    border-color: var(--is-surface-soft-contrast-background) !important;
+  }
+</style>
