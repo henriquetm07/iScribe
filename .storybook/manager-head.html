@@ -57,7 +57,10 @@
   #storybook-explorer-tree .sidebar-item:hover button {
     color: #f0f2f4 !important;
   }
-  /* Muted icons instead of Storybook's colored ones */
+  /* No page or folder icons next to the items; the expand arrows stay, muted */
+  #storybook-explorer-tree .sidebar-item svg[type] {
+    display: none !important;
+  }
   #storybook-explorer-tree .sidebar-item svg {
     color: #6d747c !important;
   }
