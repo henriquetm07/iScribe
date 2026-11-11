@@ -148,41 +148,8 @@
     width 420ms cubic-bezier(0.22, 1, 0.36, 1),
     height 420ms cubic-bezier(0.22, 1, 0.36, 1);
 }
-/*
- * Settle: as the indicator reaches the picked tab it inflates very slightly (3%) and eases back.
- * Starts 220ms into the 420ms slide, when the indicator is ~90% of the way there.
- * Two identical keyframes so every new pick restarts the animation.
- */
-@keyframes is-tabs-settle-a {
-  0%,
-  100% {
-    scale: 1;
-  }
-  45% {
-    scale: 1.03;
-  }
-}
-@keyframes is-tabs-settle-b {
-  0%,
-  100% {
-    scale: 1;
-  }
-  45% {
-    scale: 1.03;
-  }
-}
-.is-tabs__indicator--settle-a {
-  animation: is-tabs-settle-a 380ms cubic-bezier(0.33, 0, 0.2, 1) 220ms both;
-}
-.is-tabs__indicator--settle-b {
-  animation: is-tabs-settle-b 380ms cubic-bezier(0.33, 0, 0.2, 1) 220ms both;
-}
 @media (prefers-reduced-motion: reduce) {
   .is-tabs__indicator--animate {
     transition: none;
-  }
-  .is-tabs__indicator--settle-a,
-  .is-tabs__indicator--settle-b {
-    animation: none;
   }
 }

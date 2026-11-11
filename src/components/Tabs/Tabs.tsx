@@ -85,14 +85,6 @@ export const Tabs = ({ options, value, defaultValue, onChange, device = 'iphone'
     const id = requestAnimationFrame(() => setAnimate(true));
     return () => cancelAnimationFrame(id);
   }, [indicator, animate]);
-  // Each new selection plays a small "settle": the indicator inflates a touch as it arrives, then eases back
-  const [settle, setSettle] = useState(0);
-  const lastSelected = useRef(selected);
-  useEffect(() => {
-    if (lastSelected.current === selected) return;
-    lastSelected.current = selected;
-    if (animate) setSettle((n) => n + 1);
-  }, [selected, animate]);
 
   const pick = (next: string) => {
     if (value === undefined) setInner(next);
@@ -126,9 +118,7 @@ export const Tabs = ({ options, value, defaultValue, onChange, device = 'iphone'
     >
       {indicator && (
         <span
-          className={`is-tabs__indicator${animate ? ' is-tabs__indicator--animate' : ''}${
-            settle ? ` is-tabs__indicator--settle-${settle % 2 ? 'a' : 'b'}` : ''
-          }`}
+          className={`is-tabs__indicator${animate ? ' is-tabs__indicator--animate' : ''}`}
           aria-hidden="true"
           style={{ width: indicator.w, height: indicator.h, transform: `translate(${indicator.x}px, ${indicator.y}px)` }}
         />
