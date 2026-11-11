@@ -1,4 +1,4 @@
-import { useRef, useState, type ButtonHTMLAttributes, type KeyboardEvent, type ReactNode, type Ref } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type ButtonHTMLAttributes, type KeyboardEvent, type ReactNode, type Ref } from 'react';
 import './Tabs.css';
 
 export type TabsDevice = 'iphone' | 'ipad' | 'web';
@@ -15,7 +15,7 @@ export interface TabItemProps extends Omit<ButtonHTMLAttributes<HTMLButtonElemen
   ref?: Ref<HTMLButtonElement>;
 }
 
-/** One tab (Figma "Tab item"): a pill that is periwinkle when selected, with an optional count badge. */
+/** One tab (Figma "Tab item"): a pill that is periwinkle glass when selected, with an optional count badge. */
 export const TabItem = ({ children, device = 'iphone', selected = false, count, className, type = 'button', ...rest }: TabItemProps) => (
   <button
     type={type}
@@ -58,12 +58,33 @@ export interface TabsProps {
 
 /**
  * Tabs (Figma "Tab"): a rounded bar of equal-width Tab items with one selected.
- * Keyboard: ← / → move and select, Home / End jump.
+ * The glass selection indicator slides to the tab the user picks. Keyboard: ← / → move and select, Home / End jump.
  */
 export const Tabs = ({ options, value, defaultValue, onChange, device = 'iphone', width = '100%', 'aria-label': ariaLabel }: TabsProps) => {
   const [inner, setInner] = useState(defaultValue ?? options[0]?.value);
   const selected = value !== undefined ? value : inner;
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
+  const bar = useRef<HTMLDivElement>(null);
+
+  // The selection indicator: measured from the selected tab, and moved there with a transition
+  const [indicator, setIndicator] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
+  const [animate, setAnimate] = useState(false);
+  useLayoutEffect(() => {
+    const measure = () => {
+      const el = refs.current[options.findIndex((o) => o.value === selected)];
+      setIndicator(el ? { x: el.offsetLeft, y: el.offsetTop, w: el.offsetWidth, h: el.offsetHeight } : null);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (bar.current) ro.observe(bar.current);
+    return () => ro.disconnect();
+  }, [selected, options, device, width]);
+  // Start animating only after the first position is drawn, so it doesn't slide in on load
+  useEffect(() => {
+    if (!indicator || animate) return;
+    const id = requestAnimationFrame(() => setAnimate(true));
+    return () => cancelAnimationFrame(id);
+  }, [indicator, animate]);
 
   const pick = (next: string) => {
     if (value === undefined) setInner(next);
@@ -87,7 +108,21 @@ export const Tabs = ({ options, value, defaultValue, onChange, device = 'iphone'
   };
 
   return (
-    <div className={`is-tabs is-tabs--${device}`} role="tablist" aria-label={ariaLabel} style={{ width }} onKeyDown={onKeyDown}>
+    <div
+      ref={bar}
+      className={`is-tabs is-tabs--${device}${indicator ? ' is-tabs--has-indicator' : ''}`}
+      role="tablist"
+      aria-label={ariaLabel}
+      style={{ width }}
+      onKeyDown={onKeyDown}
+    >
+      {indicator && (
+        <span
+          className={`is-tabs__indicator${animate ? ' is-tabs__indicator--animate' : ''}`}
+          aria-hidden="true"
+          style={{ width: indicator.w, height: indicator.h, transform: `translate(${indicator.x}px, ${indicator.y}px)` }}
+        />
+      )}
       {options.map((o, i) => (
         <TabItem
           key={o.value}

@@ -34,10 +34,36 @@
   font-size: 12px;
 }
 
-/* Selected (Figma State=Selected): T Periwinkle 20 with a Soft Contrast border */
-.is-tab-item--selected {
-  border-color: var(--is-surface-soft-contrast-background);
-  background: var(--is-color-tperiwinkle-20);
+/*
+ * Selected (Figma State=Selected): T Periwinkle 20, as glass — a light sheen from the top, bright edges,
+ * a soft inner shade and a gentle glow, over a blur of whatever sits behind it.
+ * Used by a standalone Tab Item and by the sliding indicator of Tabs.
+ */
+.is-tab-item--selected,
+.is-tabs__indicator {
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.12) 55%, rgba(255, 255, 255, 0.04) 100%),
+    var(--is-color-tperiwinkle-20);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.8),
+    inset 0 -1px 2px rgba(57, 102, 255, 0.18),
+    0 1px 2px rgba(29, 28, 30, 0.06),
+    0 4px 12px rgba(57, 102, 255, 0.14);
+  -webkit-backdrop-filter: blur(12px) saturate(1.6);
+  backdrop-filter: blur(12px) saturate(1.6);
+}
+/* Dark mode: quieter highlights so the glass doesn't glare */
+[data-theme='dark'] .is-tab-item--selected,
+[data-theme='dark'] .is-tabs__indicator {
+  border-color: rgba(255, 255, 255, 0.18);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.04) 55%, rgba(255, 255, 255, 0) 100%),
+    var(--is-color-tperiwinkle-20);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.28),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.2),
+    0 4px 14px rgba(57, 102, 255, 0.18);
 }
 
 .is-tab-item__label {
@@ -91,5 +117,40 @@
   padding: 4px;
 }
 .is-tabs > .is-tab-item {
+  position: relative;
+  z-index: 1;
   flex: 1 0 0;
+}
+
+/* Sliding selection: one glass indicator behind the labels moves to the selected tab */
+.is-tabs {
+  position: relative;
+  isolation: isolate;
+}
+.is-tabs--has-indicator > .is-tab-item--selected {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.is-tabs__indicator {
+  box-sizing: border-box;
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  border-radius: var(--is-full-round);
+  pointer-events: none;
+}
+.is-tabs__indicator--animate {
+  transition:
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    width 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    height 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-tabs__indicator--animate {
+    transition: none;
+  }
 }

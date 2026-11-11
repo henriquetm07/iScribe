@@ -16,7 +16,8 @@ const itemLines = (d: TabsDevice) => [
   `  Height      ${item[d].height}px, var(--is-full-round) corners, 8px between label and badge`,
   `  Text        Figtree Medium ${item[d].text}px, var(--is-foreground-high-contrast-primary-foreground)`,
   '  Default     no background',
-  '  Selected    var(--is-color-tperiwinkle-20) + 1px var(--is-surface-soft-contrast-background)',
+  '  Selected    glass: var(--is-color-tperiwinkle-20) + white sheen, bright 1px edge, inner shade,',
+  '              soft glow and backdrop blur(12px)',
   '  Badge       16px pill, var(--is-status-foreground-positive-pw), white 9px numbers',
 ];
 
@@ -40,6 +41,7 @@ export const tabsSpecLines = (p: Partial<TabsProps>) => {
     '',
     'BEHAVIOUR',
     '  Click a tab → it becomes selected and onChange(value) is called',
+    '  The glass indicator slides to the selected tab (420ms, ease-out; instant with reduced motion)',
     '  Keyboard: ← → move and select, Home / End jump',
   ];
 };
