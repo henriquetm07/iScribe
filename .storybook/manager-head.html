@@ -13,7 +13,7 @@
   .sidebar-header {
     min-height: 56px;
     margin: -8px -10px 8px !important;
-    padding: 8px 10px 0;
+    padding: 0 8px 10px !important;
     border-bottom: 1px solid #232527;
   }
   .sidebar-header > div:has(a[href="./"]) {
@@ -75,9 +75,13 @@
     font-weight: 500 !important;
   }
 
-  /* Top bar: same near-black as the sidebar, with a divider under it */
+  /* Top bar: same near-black as the sidebar, with a divider under it (no extra shadow line), 50px tall */
   .sb-bar {
     border-bottom: 1px solid #232527;
+    box-shadow: none !important;
+  }
+  .sb-bar > [role='toolbar'] {
+    height: 50px !important;
   }
 </style>
 
