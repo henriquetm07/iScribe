@@ -121,23 +121,62 @@
     padding: 0 !important;
   }
   .sb-anchor:has(> .sbdocs-preview > [role='toolbar']) > .sbdocs-preview-actions {
-    padding-left: 88px;
+    padding-left: 82px; /* Reload's width + the same 6px gap as between Show code and Copy code */
   }
-  /* Reload: icon + "Reload", styled like "Show code" */
-  .sbdocs-preview [aria-label='Reload story'] {
+  /*
+   * Reload, Show code and Copy code use the Ghost button style from Components / Button, size Small:
+   * 30px tall, 10px padding, 5px gap, 14px icon, Figtree SemiBold 12px, high-contrast text, no background;
+   * hover and press add the Ghost active background (TGrey 6) and ease the corners rounder; keyboard focus
+   * shows the accent ring. Everything uses the Figma variables, so it follows light and dark mode.
+   */
+  .sbdocs-preview [aria-label='Reload story'],
+  .sbdocs-preview-actions button {
+    box-sizing: border-box;
     display: inline-flex !important;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    gap: var(--is-button-small-gap) !important;
     width: auto !important;
-    height: 28px !important;
-    padding: 0 10px !important;
-    font-family: 'Figtree', system-ui, sans-serif;
-    font-size: 12px;
-    font-weight: 700;
-    color: #5c6570 !important;
+    height: var(--is-button-small-height) !important;
+    padding: 0 calc(var(--is-button-small-padding) - var(--is-button-small-stroke)) !important;
+    border: var(--is-button-small-stroke) solid transparent !important;
+    border-radius: var(--is-button-small-roundness) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: var(--is-foreground-high-contrast-primary-foreground) !important;
+    font-family: 'Figtree', system-ui, sans-serif !important;
+    font-size: var(--is-button-small-font-size) !important;
+    font-weight: 600 !important;
+    line-height: normal !important;
+    cursor: pointer;
+    transition:
+      background-color 120ms ease,
+      border-color 120ms ease,
+      color 120ms ease,
+      border-radius 220ms cubic-bezier(0.4, 0, 0.2, 1);
   }
-  html[data-theme='dark'] .sbdocs-preview [aria-label='Reload story'] {
-    color: #9ba3ac !important;
+  .sbdocs-preview [aria-label='Reload story']:is(:hover, :active, :focus-visible),
+  .sbdocs-preview-actions button:is(:hover, :active, :focus-visible) {
+    background: var(--is-button-ghost-active-bg) !important;
+  }
+  .sbdocs-preview [aria-label='Reload story']:hover,
+  .sbdocs-preview-actions button:hover {
+    border-radius: calc(var(--is-button-small-roundness) + var(--is-button-small-height) / 8) !important;
+  }
+  .sbdocs-preview [aria-label='Reload story']:focus-visible,
+  .sbdocs-preview-actions button:focus-visible {
+    outline: none !important;
+    border-color: var(--is-button-accent) !important;
+  }
+  .sbdocs-preview-actions button svg {
+    width: var(--is-button-small-icon-size);
+    height: var(--is-button-small-icon-size);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sbdocs-preview [aria-label='Reload story'],
+    .sbdocs-preview-actions button {
+      transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+    }
   }
   .sbdocs-preview [aria-label='Reload story']::after {
     content: 'Reload';
@@ -148,8 +187,8 @@
   .sbdocs-preview [aria-label='Reload story']::before {
     content: '';
     flex: none;
-    width: 14px;
-    height: 14px;
+    width: var(--is-button-small-icon-size);
+    height: var(--is-button-small-icon-size);
     background: currentColor;
     -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M9.48 2C9.75 2 9.98 2.22 9.98 2.5V4.5C9.98 4.78 9.75 5 9.48 5H7.48C7.2 5 6.98 4.78 6.98 4.5C6.98 4.22 7.2 4 7.48 4H8.25C7.7 3.39 6.91 3 6.02 3C4.37 3 3.02 4.34 3.02 6C3.02 7.66 4.37 9 6.02 9C7.22 9 8.26 8.29 8.74 7.27C8.85 7.02 9.12 6.86 9.39 6.93C9.66 7 9.82 7.28 9.71 7.54C9.11 8.98 7.69 10 6.02 10C3.81 10 2.02 8.21 2.02 6C2.02 3.79 3.81 2 6.02 2C7.19 2 8.25 2.5 8.98 3.31V2.5C8.98 2.22 9.2 2 9.48 2Z'/%3E%3C/svg%3E") center / contain no-repeat;
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M9.48 2C9.75 2 9.98 2.22 9.98 2.5V4.5C9.98 4.78 9.75 5 9.48 5H7.48C7.2 5 6.98 4.78 6.98 4.5C6.98 4.22 7.2 4 7.48 4H8.25C7.7 3.39 6.91 3 6.02 3C4.37 3 3.02 4.34 3.02 6C3.02 7.66 4.37 9 6.02 9C7.22 9 8.26 8.29 8.74 7.27C8.85 7.02 9.12 6.86 9.39 6.93C9.66 7 9.82 7.28 9.71 7.54C9.11 8.98 7.69 10 6.02 10C3.81 10 2.02 8.21 2.02 6C2.02 3.79 3.81 2 6.02 2C7.19 2 8.25 2.5 8.98 3.31V2.5C8.98 2.22 9.2 2 9.48 2Z'/%3E%3C/svg%3E") center / contain no-repeat;
