@@ -21,4 +21,10 @@ addons.setConfig({
     brandTarget: '_self',
     fontBase: "'Figtree', system-ui, sans-serif",
   }),
+  sidebar: {
+    filters: {
+      // Components list only their Main (docs) page; their stories still show on that page
+      patterns: (item) => !(item.type === 'story' && item.title.startsWith('Components/')),
+    },
+  },
 });
