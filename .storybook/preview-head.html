@@ -42,3 +42,22 @@
     }
   }
 </style>
+<style>
+  /*
+   * Page titles (the big H1 at the top of every docs page) in Season Mix Regular, as in the brand.
+   * Season Mix is a licensed font that isn't bundled with the site yet: it shows wherever it is installed
+   * on the viewer's computer, and falls back to Figtree elsewhere. To make it show for everyone, add the
+   * web font files (e.g. .storybook/public/fonts/SeasonMix-Regular.woff2) and a url(...) line below.
+   */
+  @font-face {
+    font-family: 'Season Mix';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: local('Season Mix'), local('Season Mix Regular'), local('SeasonMix-Regular');
+  }
+  .sbdocs-content h1 {
+    font-family: 'Season Mix', 'Figtree', system-ui, sans-serif !important;
+    font-weight: 400 !important;
+  }
+</style>
