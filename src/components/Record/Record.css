@@ -256,6 +256,37 @@
   }
 }
 
+/* After Resume: Play/Pause slides out to the left, Resume (and Delete) to the right, the bar fades out */
+.is-rec-exit-left {
+  animation: is-rec-exit-left 300ms cubic-bezier(0.55, 0, 0.75, 0.2) both;
+}
+.is-rec-exit-right {
+  animation: is-rec-exit-right 300ms cubic-bezier(0.55, 0, 0.75, 0.2) both;
+}
+.is-rec-exit-left ~ .is-rec-playback {
+  animation: is-rec-fade-out 300ms ease-in both;
+}
+.is-rec-widget--leaving {
+  pointer-events: none;
+}
+@keyframes is-rec-exit-left {
+  to {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+}
+@keyframes is-rec-exit-right {
+  to {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+@keyframes is-rec-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
 /* ---------- Mini Record Widget ---------- */
 .is-rec-mini {
   display: inline-flex;
@@ -318,7 +349,10 @@
   }
   .is-rec-enter-left,
   .is-rec-enter-right,
-  .is-rec-enter-left ~ .is-rec-playback {
+  .is-rec-enter-left ~ .is-rec-playback,
+  .is-rec-exit-left,
+  .is-rec-exit-right,
+  .is-rec-exit-left ~ .is-rec-playback {
     animation: none;
   }
 }

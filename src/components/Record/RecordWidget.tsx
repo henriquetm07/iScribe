@@ -1,4 +1,4 @@
-import { useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import {
   Playback,
   RecordRoundButton,
@@ -65,6 +65,9 @@ export interface RecordWidgetProps {
   style?: CSSProperties;
 }
 
+/** Length of the slide-out after Resume, in ms (matches .is-rec-exit-* in Record.css) */
+const EXIT_MS = 300;
+
 const size = {
   iphone: { round: 40, icon: 16, resumeH: 40, resumeFont: 13, resumePad: 12, deleteRadius: 12, waves: 300 },
   ipad: { round: 60, icon: 22, resumeH: 60, resumeFont: 15, resumePad: 20, deleteRadius: 20, waves: 100 },
@@ -100,6 +103,20 @@ export const RecordWidget = ({
     setStarted(true);
     rec.start();
   };
+  // On Resume, Play/Pause slides out to the left and Resume (and Delete) to the right, then recording continues
+  const [leaving, setLeaving] = useState(false);
+  const leaveTimer = useRef(0);
+  useEffect(() => () => window.clearTimeout(leaveTimer.current), []);
+  const resumeRecording = () => {
+    if (leaving) return;
+    if (rec.state === 'playing') rec.pause();
+    setLeaving(true);
+    leaveTimer.current = window.setTimeout(() => {
+      setLeaving(false);
+      setStarted(false);
+      rec.resume();
+    }, EXIT_MS);
+  };
 
   if (rec.state === 'idle')
     return (
@@ -118,15 +135,20 @@ export const RecordWidget = ({
     );
 
   const playing = rec.state === 'playing';
+  const left = leaving ? 'is-rec-exit-left' : stopped ? 'is-rec-enter-left' : '';
+  const right = leaving ? 'is-rec-exit-right' : stopped ? 'is-rec-enter-right' : '';
   return (
-    <div className={`is-rec is-rec-widget is-rec-widget--${device} ${className}`} style={{ width, ...style }}>
+    <div
+      className={`is-rec is-rec-widget is-rec-widget--${device}${leaving ? ' is-rec-widget--leaving' : ''} ${className}`}
+      style={{ width, ...style }}
+    >
       <RecordRoundButton
         icon={playing ? 'pause-flat' : 'play-flat'}
         label={playing ? 'Pause' : 'Play'}
         size={s.round}
         iconSize={s.icon}
         onClick={playing ? rec.pause : rec.play}
-        className={stopped ? 'is-rec-enter-left' : ''}
+        className={left}
       />
       <Playback position={rec.position} duration={rec.duration} device={device} onSeek={rec.seek} />
       <RecordTextButton
@@ -135,11 +157,9 @@ export const RecordWidget = ({
         radius={1000}
         paddingX={s.resumePad}
         gap={6}
-        className={stopped ? 'is-rec-enter-right' : ''}
-        onClick={() => {
-          setStarted(false);
-          rec.resume();
-        }}>
+        className={right}
+        onClick={resumeRecording}
+      >
         Resume
       </RecordTextButton>
       {showDelete && (
@@ -152,7 +172,7 @@ export const RecordWidget = ({
           radius={s.deleteRadius}
           paddingX={s.resumePad}
           gap={device === 'ipad' ? 12 : 6}
-          className={stopped ? 'is-rec-enter-right' : ''}
+          className={right}
           onClick={rec.discard}
         >
           Delete
