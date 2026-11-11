@@ -156,4 +156,10 @@
   ::selection {
     background: rgba(57, 102, 255, 0.2);
   }
+
+  /* Sidebar: rows with a chevron (groups) line their text up with rows without one */
+  .sidebar-item[data-nodetype='group'] > button > div:first-child,
+  .sidebar-item[data-nodetype='component'] > button > div:first-child {
+    margin-left: 6px;
+  }
 </style>

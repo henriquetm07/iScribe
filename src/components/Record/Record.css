@@ -1,0 +1,274 @@
+/*
+ * Record Feature — Figma "--Record Feature" (706:6705). Colors are the Figma variables, so light and dark
+ * mode follow data-theme. Times use Relative Mono 10 Pitch, as in Figma (with system monospace as fallback).
+ */
+.is-rec {
+  --is-rec-mono: 'Relative Mono Pro 10 Pitch', 'Relative Mono 10 Pitch', ui-monospace, 'SF Mono', SFMono-Regular, Menlo, monospace;
+  box-sizing: border-box;
+  font-family: var(--is-font-ui);
+  color: var(--is-foreground-high-contrast-primary-foreground);
+}
+.is-rec *,
+.is-rec *::before,
+.is-rec *::after {
+  box-sizing: border-box;
+}
+
+/* ---------- Buttons ---------- */
+.is-rec-btn {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: 1px solid transparent;
+  background: var(--rec-btn-bg);
+  color: var(--rec-btn-fg);
+  font-family: var(--is-font-ui);
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+.is-rec-btn--round {
+  border-radius: 50%;
+}
+.is-rec-btn--block {
+  width: 100%;
+}
+/* Primary: Button Primary Default BG, light text (hover = Primary Active, as in Button) */
+.is-rec-btn--primary {
+  --rec-btn-bg: var(--is-button-primary-default-bg);
+  --rec-btn-fg: var(--is-foreground-high-contrast-secondary-foreground);
+}
+.is-rec-btn--primary:is(:hover, :active, :focus-visible) {
+  --rec-btn-bg: var(--is-button-primary-active-bg);
+}
+/* Secondary: Elevated Background with the Secondary Stroke (hover = Secondary Active) */
+.is-rec-btn--secondary {
+  --rec-btn-bg: var(--is-background-elevated-background);
+  --rec-btn-fg: var(--is-foreground-high-contrast-primary-foreground);
+  border-color: var(--is-button-secondarystroke);
+}
+.is-rec-btn--secondary:is(:hover, :active, :focus-visible) {
+  --rec-btn-bg: var(--is-button-secondary-active-bg);
+}
+/* Destructive: stop and delete (hover = Destructive Active) */
+.is-rec-btn--destructive {
+  --rec-btn-bg: var(--is-button-destructive);
+  --rec-btn-fg: var(--is-foreground-high-contrast-secondary-foreground-2);
+}
+.is-rec-btn--destructive:is(:hover, :active, :focus-visible) {
+  --rec-btn-bg: var(--is-button-destructive-acive);
+}
+.is-rec-btn:focus-visible {
+  outline: 2px solid var(--is-button-accent);
+  outline-offset: 2px;
+}
+
+/* ---------- Waves ---------- */
+.is-rec-waves {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+  height: 40px;
+  overflow: hidden;
+  color: var(--is-labels-alert);
+}
+.is-rec-waves > i {
+  flex: none;
+  width: 2px;
+  border-radius: 1px;
+  background: currentColor;
+  transform-origin: center;
+}
+.is-rec-waves--mini {
+  gap: 2px;
+  height: 20px;
+  color: var(--is-status-foreground-alert);
+}
+.is-rec-waves--mini.is-rec-waves--ipad {
+  gap: 3px;
+  height: 40px;
+}
+.is-rec-waves--mini.is-rec-waves--ipad > i {
+  width: 3px;
+}
+/* While recording, each bar rises and falls a little, out of step with its neighbours */
+.is-rec-waves--live > i {
+  animation: is-rec-wave 1.2s ease-in-out infinite alternate;
+}
+@keyframes is-rec-wave {
+  from {
+    transform: scaleY(1);
+  }
+  to {
+    transform: scaleY(0.45);
+  }
+}
+
+/* ---------- Time ---------- */
+.is-rec-time {
+  flex: none;
+  font-family: var(--is-rec-mono, 'Relative Mono Pro 10 Pitch', ui-monospace, Menlo, monospace);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.is-rec-time--high {
+  color: var(--is-foreground-high-contrast-primary-foreground);
+}
+.is-rec-time--medium {
+  color: var(--is-foreground-medium-contrast-primary-foreground);
+}
+.is-rec-time--low {
+  color: var(--is-foreground-low-contrast-primary-foreground);
+}
+.is-rec-time--recording {
+  color: var(--is-status-foreground-alert);
+}
+.is-rec-time--focus {
+  letter-spacing: -0.01em;
+  line-height: 1.28;
+}
+
+/* ---------- Playback ---------- */
+.is-rec-playback {
+  --rec-track: 6px;
+  --rec-knob: 14px;
+  --rec-top: 18px;
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 60px;
+  height: 50px;
+  padding-top: var(--rec-top);
+}
+.is-rec-playback--ipad {
+  --rec-track: 8px;
+  --rec-knob: 22px;
+  --rec-top: 19px;
+  height: 60px;
+}
+.is-rec-playback__track {
+  position: relative;
+  height: var(--rec-knob);
+  cursor: pointer;
+  touch-action: none;
+  outline: none;
+}
+.is-rec-playback__bar {
+  position: absolute;
+  top: calc((var(--rec-knob) - var(--rec-track)) / 2);
+  right: 0;
+  left: 0;
+  height: var(--rec-track);
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--is-surface-soft-contrast-background);
+}
+.is-rec-playback__fill {
+  display: block;
+  width: calc(var(--is-rec-share) * 100%);
+  height: 100%;
+  background: var(--is-status-foreground-positive-pw);
+}
+.is-rec-playback__knob {
+  position: absolute;
+  top: 0;
+  left: calc(var(--is-rec-share) * (100% - var(--rec-knob)));
+  width: var(--rec-knob);
+  height: var(--rec-knob);
+  border-radius: 50%;
+  background: var(--is-background-elevated-background);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+[data-theme='dark'] .is-rec-playback__knob {
+  box-shadow: 0 0 10px rgba(57, 102, 255, 0.45);
+}
+.is-rec-playback__track:focus-visible .is-rec-playback__knob {
+  outline: 2px solid var(--is-button-accent);
+  outline-offset: 2px;
+}
+.is-rec-playback__times {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1px;
+}
+
+/* ---------- Record Widget ---------- */
+.is-rec-widget {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 396px;
+  max-width: 100%;
+}
+.is-rec-widget > .is-rec-waves {
+  flex: 1 1 auto;
+}
+
+/* ---------- Mini Record Widget ---------- */
+.is-rec-mini {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* ---------- Focus Mode ---------- */
+.is-rec-focus {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 375px;
+  max-width: 100%;
+  min-height: 405px;
+  padding: 0 20px;
+}
+.is-rec-focus--ipad {
+  gap: 30px;
+  padding: 0 40px;
+}
+.is-rec-focus__hint {
+  margin: 0;
+  color: var(--is-foreground-medium-contrast-primary-foreground);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+.is-rec-focus--ipad .is-rec-focus__hint {
+  font-size: 18px;
+  line-height: 1.22;
+}
+.is-rec-focus__bottom {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 50px;
+}
+.is-rec-focus--ipad .is-rec-focus__bottom {
+  gap: 20px;
+  min-height: 60px;
+}
+.is-rec-focus__bottom > .is-rec-waves {
+  flex: 1 1 auto;
+  justify-content: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-rec-waves--live > i {
+    animation: none;
+  }
+  .is-rec-btn {
+    transition: none;
+  }
+}
