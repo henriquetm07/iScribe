@@ -1,0 +1,95 @@
+/*
+ * Tabs — Figma "Tabs" (1061:21180): "Tab item" and the "Tab" bar.
+ * Colors and radii are the Figma variables, so light and dark mode follow data-theme.
+ */
+
+/* ---------- Tab item ---------- */
+.is-tab-item {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 0;
+  height: 40px;
+  padding: 0 12px;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: var(--is-full-round);
+  background: transparent;
+  color: var(--is-foreground-high-contrast-primary-foreground);
+  font-family: var(--is-font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: normal;
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+.is-tab-item--ipad {
+  height: 50px;
+  font-size: 15px;
+}
+.is-tab-item--web {
+  height: 30px;
+  font-size: 12px;
+}
+
+/* Selected (Figma State=Selected): T Periwinkle 20 with a Soft Contrast border */
+.is-tab-item--selected {
+  border-color: var(--is-surface-soft-contrast-background);
+  background: var(--is-color-tperiwinkle-20);
+}
+
+.is-tab-item__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Count badge (Figma "Notification"): 16px pill, Positive PW blue, white 9px mono numbers */
+.is-tab-item__badge {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: var(--is-full-round);
+  background: var(--is-status-foreground-positive-pw);
+  color: var(--is-foreground-high-contrast-secondary-foreground-2);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 9px;
+  line-height: 18px;
+}
+
+.is-tab-item:focus-visible {
+  outline: 2px solid var(--is-button-accent);
+  outline-offset: 1px;
+}
+.is-tab-item:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+/* ---------- Tab bar ---------- */
+.is-tabs {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+  padding: 5px;
+  border-radius: var(--is-full-round);
+  background: var(--is-surface-super-soft-contrast-background);
+}
+.is-tabs--ipad {
+  padding: 10px;
+}
+.is-tabs--web {
+  padding: 4px;
+}
+.is-tabs > .is-tab-item {
+  flex: 1 0 0;
+}

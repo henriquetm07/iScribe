@@ -1,0 +1,60 @@
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { fn } from 'storybook/test';
+import { Tabs, type TabsOption, type TabsProps } from './Tabs';
+import { tabsSpecComment } from './Tabs.docs';
+
+/** Five tabs, as in the Figma "Tab" component */
+const labels: TabsOption[] = ['Label', 'Label', 'Label', 'Label', 'Label'].map((label, i) => ({ value: `tab-${i + 1}`, label }));
+
+const meta = {
+  title: 'Components/Tabs/Tabs',
+  component: Tabs,
+  args: {
+    options: labels,
+    defaultValue: 'tab-1',
+    device: 'iphone',
+    width: 630,
+    'aria-label': 'Sections',
+    onChange: fn(),
+  },
+  argTypes: {
+    device: { control: 'inline-radio', options: ['iphone', 'ipad', 'web'] },
+    width: { control: 'text' },
+    options: { table: { disable: true } },
+    value: { table: { disable: true } },
+    defaultValue: { table: { disable: true } },
+    onChange: { table: { disable: true } },
+    'aria-label': { table: { disable: true } },
+  },
+  parameters: {
+    docs: {
+      source: {
+        transform: (code: string, ctx: { args: TabsProps }) =>
+          `${tabsSpecComment(ctx.args)}\n${code.replace(/\n\s*onChange=\{[^}]*\}\}?/g, '')}`,
+      },
+    },
+  },
+} satisfies Meta<typeof Tabs>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const IPhone: Story = { name: 'iPhone' };
+
+export const IPad: Story = { name: 'iPad', args: { device: 'ipad', width: 620 } };
+
+export const Web: Story = { args: { device: 'web', width: 620 } };
+
+/** Real labels with count badges (Figma "Notification") — e.g. the search panel's Patients / Jobs */
+export const WithCounts: Story = {
+  name: 'With counts',
+  args: {
+    width: 360,
+    options: [
+      { value: 'patients', label: 'Patients', count: 12 },
+      { value: 'jobs', label: 'Jobs', count: 3 },
+    ],
+    defaultValue: 'patients',
+    'aria-label': 'Search in',
+  },
+};

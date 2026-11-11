@@ -3,6 +3,7 @@ export { IconButton, type IconButtonProps } from './components/IconButton/IconBu
 export { SelectionList, type SelectionListProps, type SelectionListOption } from './components/SelectionList/SelectionList';
 export { SelectionListItem, type SelectionListItemProps, type SelectionListDevice } from './components/SelectionList/SelectionListItem';
 export { Dropdown, DropdownField, type DropdownProps, type DropdownFieldProps, type DropdownDevice } from './components/Dropdown/Dropdown';
+export { Tabs, TabItem, type TabsProps, type TabItemProps, type TabsOption, type TabsDevice } from './components/Tabs/Tabs';
 export { WebNavBar, type WebNavBarProps, type WebNavBarItem, type WebNavBarAvatar, type WebNavBarMenuMode } from './components/WebNavBar/WebNavBar';
 export { BottomTab, type BottomTabProps, type BottomTabContent } from './components/BottomTab/BottomTab';
 export { SendSlider, type SendSliderProps, type BottomTabDevice } from './components/BottomTab/SendSlider';
