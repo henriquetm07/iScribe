@@ -185,7 +185,7 @@ export const Waves = ({ size = 'default', device = 'iphone', bars, live = true, 
     return (
       <span className={`is-rec-waves is-rec-waves--mini is-rec-waves--${device}${live ? ' is-rec-waves--live' : ''} ${className}`} style={style} aria-hidden="true">
         {heights.map((h, i) => (
-          <i key={i} style={{ height: h, animationDelay: `${-i * 0.17}s` }} />
+          <i key={i} style={{ '--h': `${h}px`, animationDelay: `${-i * 0.11}s` } as CSSProperties} />
         ))}
       </span>
     );
@@ -194,7 +194,7 @@ export const Waves = ({ size = 'default', device = 'iphone', bars, live = true, 
   return (
     <span className={`is-rec-waves${live ? ' is-rec-waves--live' : ''} ${className}`} style={style} aria-hidden="true">
       {Array.from({ length: count }, (_, i) => (
-        <i key={i} style={{ height: WAVE[i % WAVE.length], animationDelay: `${-((i * 0.37) % 1.2)}s` }} />
+        <i key={i} style={{ '--h': `${WAVE[i % WAVE.length]}px`, animationDelay: `${-((i * 0.23) % 0.7).toFixed(2)}s` } as CSSProperties} />
       ))}
     </span>
   );
