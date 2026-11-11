@@ -19,7 +19,7 @@ const meta = {
   },
   argTypes: {
     device: { control: 'inline-radio', options: ['iphone', 'ipad', 'web'] },
-    width: { control: 'text' },
+    width: { control: { type: 'number', min: 200, max: 1000, step: 10 } },
     options: { table: { disable: true } },
     value: { table: { disable: true } },
     defaultValue: { table: { disable: true } },
