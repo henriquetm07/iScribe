@@ -6,7 +6,7 @@
  *   default       "cursor/default": a dark rounded arrow with a thin white edge
  *   presentation  "cursor/presentation": a 40px periwinkle arrow, plus the "Label" pill that names every
  *                 mouse action (Click, Double-click, Hold, Drag, Drop, Right-click, Scroll)
- *   touch         "cursor/touch": a 40px fingertip (two periwinkle 20% circles); no hover effects; on press the
+ *   touch         "cursor/touch" at 44px: a fingertip (two periwinkle 20% circles); no hover effects; on press the
  *                 inner circle grows smoothly to the outer one
  *   90s           "cursor/90s": an 8-bit arrow with a trail of twinkling pixel sparkles (Frames 1–5)
  */
@@ -17,10 +17,10 @@ export const CURSOR_STORAGE_KEY = 'iscribe-cursor';
 export const CURSOR_EVENT = 'iscribe/cursor';
 
 export const CURSORS: { value: CursorMode; label: string; hint: string }[] = [
-  { value: 'default', label: 'Default', hint: 'The iScribe arrow' },
-  { value: 'presentation', label: 'Presentation', hint: 'Big, and names every click, drag and scroll' },
-  { value: 'touch', label: 'Touch', hint: 'A 40px fingertip, with no hover' },
-  { value: '90s', label: '90s', hint: '8-bit arrow with a glitter trail' },
+  { value: 'default', label: 'Default', hint: 'iScribe cursor' },
+  { value: 'presentation', label: 'Presentation', hint: 'Big, bold and labeled' },
+  { value: 'touch', label: 'Touch', hint: 'A 44px fingertip (no hover)' },
+  { value: '90s', label: "90's Whimsy", hint: 'Feeling old and sparkly, but mainly old' },
 ];
 
 export const asCursor = (value: unknown): CursorMode =>
@@ -104,7 +104,7 @@ export const PRESENTATION_CURSOR_SVG =
 
 const svgUrl = (svg: string) => `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
 
-/** Pixel sparkle (Figma Frames 1–5): a 3 × 3 plus, drawn at 2× like the 90s arrow */
+/** Pixel sparkle (Figma Frames 1–5): a 3 × 3 plus, at the same scale as the 90s arrow */
 const PLUS = 'polygon(33.34% 0, 66.67% 0, 66.67% 33.34%, 100% 33.34%, 100% 66.67%, 66.67% 66.67%, 66.67% 100%, 33.34% 100%, 33.34% 66.67%, 0 66.67%, 0 33.34%, 33.34% 33.34%)';
 
 const css = (retroUrl: string, retroUrl2x: string) => `
@@ -125,18 +125,19 @@ html.is-cur--90s, html.is-cur--90s * {
 .is-cur-pres { position: absolute; top: 0; left: 0; width: 40px; height: 40px; will-change: transform; transition: opacity 120ms ease; }
 .is-cur-pres svg { display: block; width: 42px; height: 45px; transform-origin: 4px 3.3px; transition: transform 120ms ease; }
 .is-cur-pres--down svg { transform: scale(0.9); }
-.is-cur-pres__label { position: absolute; top: 32px; left: 40px; display: flex; align-items: center; height: 14px; padding: 0 4px;
-  border-radius: 1000px; background: #d6dbfe; color: #000; font: 400 12px/1 'Figtree', system-ui, sans-serif; white-space: nowrap;
+/* Label: Figma's 12px copy and 0 × 4px padding, each 2px bigger (14px copy, 2 × 6px padding) */
+.is-cur-pres__label { position: absolute; top: 32px; left: 40px; display: flex; align-items: center; padding: 2px 6px;
+  border-radius: 1000px; background: #d6dbfe; color: #000; font: 400 14px/1.2 'Figtree', system-ui, sans-serif; white-space: nowrap;
   opacity: 0; transform: scale(0.8); transform-origin: 0 50%; transition: opacity 180ms ease, transform 180ms ease; }
 .is-cur-pres__label--on { opacity: 1; transform: none; transition: opacity 120ms ease, transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1); }
 
-/* Touch: Figma "cursor/touch" — 40px circle and 16px inner circle, both periwinkle at 20%.
+/* Touch: Figma "cursor/touch" at 44px — the circle and its 16px inner circle, both periwinkle at 20%.
    While pressed, the inner circle grows smoothly to fill the outer one */
-.is-cur-touch { position: absolute; top: 0; left: 0; width: 40px; height: 40px; margin: -20px 0 0 -20px; border-radius: 50%;
+.is-cur-touch { position: absolute; top: 0; left: 0; width: 44px; height: 44px; margin: -22px 0 0 -22px; border-radius: 50%;
   background: rgba(57, 102, 255, 0.2); will-change: transform; transition: opacity 120ms ease; }
 .is-cur-touch__dot { position: absolute; top: 50%; left: 50%; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%;
   background: rgba(57, 102, 255, 0.2); transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1); }
-.is-cur-touch--down .is-cur-touch__dot { transform: scale(2.5); transition-duration: 240ms; }
+.is-cur-touch--down .is-cur-touch__dot { transform: scale(2.75); transition-duration: 240ms; }
 
 /* 90s: pixel sparkles (Figma Frames 1–5) that twinkle and drift down behind the arrow */
 .is-cur-spark { position: absolute; top: 0; left: 0; width: var(--s); height: var(--s); background: var(--c); clip-path: ${PLUS};
@@ -207,8 +208,8 @@ export const installCursor = (win: Window): CursorController => {
   const mount = () => {
     if (ready) return;
     ready = true;
-    // 2 screen pixels per art pixel, with a sharp version for high-density screens
-    style.textContent = css(retroCursorUrl(doc, 2), retroCursorUrl(doc, 4));
+    // 1 screen pixel per art pixel (11 × 19, the size of the 18px default arrow), sharp on dense screens
+    style.textContent = css(retroCursorUrl(doc, 1), retroCursorUrl(doc, 2));
     doc.head.appendChild(style);
     doc.body.appendChild(layer);
     apply();
@@ -246,21 +247,21 @@ export const installCursor = (win: Window): CursorController => {
   const sparkle = () => {
     if (reducedMotion || sparks > 70) return;
     const dist = Math.hypot(x - sparkX, y - sparkY);
-    if (dist < 7) return;
+    if (dist < 5) return;
     sparkX = x;
     sparkY = y;
     const n = dist > 30 ? 2 : 1;
     for (let i = 0; i < n; i++) {
       const s = doc.createElement('span');
       s.className = 'is-cur-spark';
-      // 3 × 3 art pixels at 2× (as the arrow), now and then at 1×; snapped to the pixel grid
-      const size = Math.random() < 0.25 ? 3 : 6;
+      // 3 × 3 pixels, like the arrow, snapped to the pixel grid; placed below-right of the arrow as in Figma
+      const size = 3;
       const time = 700 + Math.random() * 600;
-      const px = (v: number) => Math.round(v / 2) * 2;
+      const px = (v: number) => Math.round(v);
       s.style.cssText =
         `--s:${size}px;--c:${SPARK_COLORS[(Math.random() * SPARK_COLORS.length) | 0]};` +
-        `--x:${px(x + 14 + (Math.random() - 0.5) * 16)}px;--y:${px(y + 26 + (Math.random() - 0.5) * 16)}px;` +
-        `--dx:${px((Math.random() - 0.5) * 16)}px;--dy:${px(10 + Math.random() * 22)}px;--t:${time.toFixed(0)}ms`;
+        `--x:${px(x + 18 + (Math.random() - 0.5) * 12)}px;--y:${px(y + 22 + (Math.random() - 0.5) * 14)}px;` +
+        `--dx:${px((Math.random() - 0.5) * 10)}px;--dy:${px(6 + Math.random() * 14)}px;--t:${time.toFixed(0)}ms`;
       layer.appendChild(s);
       sparks++;
       setTimeout(() => {
@@ -387,8 +388,8 @@ export const installCursor = (win: Window): CursorController => {
           pointerId: (e as PointerEvent).pointerId ?? 1,
           pointerType: 'touch',
           isPrimary: true,
-          width: 40,
-          height: 40,
+          width: 44,
+          height: 44,
           pressure: type === 'pointerup' ? 0 : 0.5,
         })
       : new (win as typeof window).MouseEvent(type, init);

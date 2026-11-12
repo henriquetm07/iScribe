@@ -166,8 +166,8 @@ const glyphs: Record<CursorMode, () => ReturnType<typeof h>> = {
   touch: () =>
     svg(
       22,
-      '<circle cx="20" cy="20" r="20" fill="#3966FF" fill-opacity="0.2"/><circle cx="20" cy="20" r="8" fill="#3966FF" fill-opacity="0.2"/>',
-      '0 0 40 40',
+      '<circle cx="22" cy="22" r="22" fill="#3966FF" fill-opacity="0.2"/><circle cx="22" cy="22" r="8" fill="#3966FF" fill-opacity="0.2"/>',
+      '0 0 44 44',
     ),
   '90s': () => img(RETRO_ICON, 11, 19, true),
 };
