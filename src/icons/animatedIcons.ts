@@ -4,6 +4,8 @@
  */
 import arrowToCheck from './animated/arrow-to-check.json';
 import playPause from './animated/play-pause.json';
+import chevronUpDown from './animated/chevron-up-down.json';
+import chevronLeftRight from './animated/chevron-left-right.json';
 
 export interface AnimatedIconData {
   /** The Lottie JSON */
@@ -35,6 +37,22 @@ export const animatedIcons = {
     markers: { play: 41, pause: 92 },
     startsFrom: 'pause-flat',
     states: { play: [10, 41], pause: [50, 92] },
+  },
+  'chevron-up-down': {
+    data: chevronUpDown,
+    description:
+      'A chevron flips from pointing down to pointing up and back, with a small overshoot. For things that open and close (dropdowns, accordions): state="up" or state="down".',
+    markers: { up: 15, down: 60 },
+    startsFrom: 'chevron-down',
+    states: { up: [3, 32], down: [48, 77] },
+  },
+  'chevron-left-right': {
+    data: chevronLeftRight,
+    description:
+      'The same flip turned a quarter: a chevron flips from pointing left to pointing right and back. For things that expand sideways (side panels, carousels): state="right" or state="left".',
+    markers: { right: 15, left: 60 },
+    startsFrom: 'chevron-left',
+    states: { right: [3, 32], left: [48, 77] },
   },
 } satisfies Record<string, AnimatedIconData>;
 
