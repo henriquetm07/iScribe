@@ -1,7 +1,18 @@
 import { createElement as h, useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { addons, types } from 'storybook/manager-api';
 import { create } from 'storybook/theming';
-import { asCursor, CURSOR_EVENT, CURSOR_STORAGE_KEY, CURSORS, installCursor, readSavedCursor, retroCursorUrl, type CursorMode } from './cursors';
+import {
+  asCursor,
+  CURSOR_EVENT,
+  CURSOR_STORAGE_KEY,
+  CURSORS,
+  DEFAULT_CURSOR_SVG,
+  installCursor,
+  PRESENTATION_CURSOR_SVG,
+  readSavedCursor,
+  retroCursorUrl,
+  type CursorMode,
+} from './cursors';
 
 /*
  * Storybook's own UI (sidebar and top bar), styled like the iScribe brand guidelines site:
@@ -140,19 +151,26 @@ window.addEventListener('storage', (e) => {
 
 const svg = (size: number, body: string, viewBox = '0 0 16 16') =>
   h('svg', { width: size, height: size, viewBox, 'aria-hidden': true, dangerouslySetInnerHTML: { __html: body } });
-const ARROW = '<path d="M4 2.2v11.3l3-2.9 2 4.4 1.9-.9-2-4.3h4.1z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>';
-const glyphs: Record<CursorMode, () => ReturnType<typeof h>> = {
-  default: () => svg(16, ARROW),
-  presentation: () =>
-    svg(
-      16,
-      '<path d="M2 1.5v9l2.4-2.3 1.6 3.5 1.5-.7-1.6-3.4h3.3z" fill="currentColor"/><rect x="8.5" y="10.5" width="7" height="4" rx="2" fill="#3966ff"/>',
-    ),
-  touch: () =>
-    svg(16, '<circle cx="8" cy="8" r="6.5" fill="rgba(57,102,255,.15)" stroke="#3966ff" stroke-width="1.2"/><circle cx="8" cy="8" r="2.6" fill="#3966ff"/>'),
-  '90s': () => h('img', { src: RETRO_ICON, width: 11, height: 19, alt: '', style: { imageRendering: 'pixelated' } }),
-};
+const img = (src: string, width: number, height: number, pixelated = false) =>
+  h('img', { src, width, height, alt: '', style: pixelated ? { imageRendering: 'pixelated' } : undefined });
+const svgSrc = (markup: string) => `data:image/svg+xml,${encodeURIComponent(markup)}`;
+
+/** The arrow of Figma "cursor/default", in the button's text color (the top bar is dark) */
+const ARROW_PATH = (DEFAULT_CURSOR_SVG.match(/ d="([^"]+)"/) ?? [])[1] ?? '';
 const RETRO_ICON = retroCursorUrl(document, 2);
+
+/** Menu previews: each option shows its Figma cursor */
+const glyphs: Record<CursorMode, () => ReturnType<typeof h>> = {
+  default: () => img(svgSrc(DEFAULT_CURSOR_SVG), 20, 21),
+  presentation: () => img(svgSrc(PRESENTATION_CURSOR_SVG), 24, 26),
+  touch: () =>
+    svg(
+      22,
+      '<circle cx="20" cy="20" r="20" fill="#3966FF" fill-opacity="0.2"/><circle cx="20" cy="20" r="8" fill="#3966FF" fill-opacity="0.2"/>',
+      '0 0 40 40',
+    ),
+  '90s': () => img(RETRO_ICON, 11, 19, true),
+};
 
 const CursorPicker = () => {
   const [value, setValue] = useState<CursorMode>(readSavedCursor);
@@ -241,7 +259,8 @@ const CursorPicker = () => {
           }
         },
       },
-      glyphs[value === 'default' ? 'default' : value](),
+      // Figma Icon Button (secondary) with the cursor/default icon, 16px
+      svg(16, `<path d="${ARROW_PATH}" fill="currentColor"/>`, '1.5 1 16 16'),
     ),
     open &&
       h(
@@ -274,13 +293,13 @@ const pickerStyle = document.createElement('style');
 pickerStyle.textContent = `
   .is-top-tools { display: inline-flex; align-items: center; gap: 8px; margin-right: 4px; }
   .is-top-tools .is-mode-toggle { margin-right: 0; }
-  /* Secondary icon button, sized to the toggle (30px) */
-  .is-cursor-btn { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; padding: 0;
-    border: 1px solid #2e3136; border-radius: 50%; background: rgba(255, 255, 255, 0.04); color: #9ba3ac; cursor: pointer;
-    transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease; }
-  .is-cursor-btn:hover, .is-cursor-btn--open { color: #f0f2f4; background: rgba(255, 255, 255, 0.08); border-color: #3a3e44; }
+  /* Figma "Icon Button" (secondary, 40 × 40, radius 12px), in its dark-mode colors:
+     Button Secondary Default BG = TWhite 10, Secondary Stroke = TWhite 8, Active = TWhite 18 */
+  .is-cursor-btn { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; background: rgba(255, 255, 255, 0.1); color: #f0f2f4;
+    cursor: pointer; transition: background-color 150ms ease; }
+  .is-cursor-btn:hover, .is-cursor-btn--open { background: rgba(255, 255, 255, 0.18); }
   .is-cursor-btn:focus-visible { outline: 2px solid #3966ff; outline-offset: 2px; }
-  .is-cursor-btn img { width: 9px; height: auto; }
   .is-cursor-menu { position: fixed; z-index: 2147483000; width: 272px; padding: 6px; border: 1px solid #232527; border-radius: 16px;
     background: #121418; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45); font-family: 'Figtree', system-ui, sans-serif;
     white-space: normal; text-align: left;
