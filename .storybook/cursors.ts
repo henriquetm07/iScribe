@@ -524,7 +524,8 @@ export const installCursor = (win: Window): CursorController => {
     if (!ready) return;
     const root = doc.documentElement;
     CURSORS.forEach((c) => root.classList.remove(`is-cur--${c.value}`));
-    if (mode !== 'default') root.classList.add(`is-cur--${mode}`);
+    // Default too: it is the Figma arrow, not the system cursor
+    root.classList.add(`is-cur--${mode}`);
     pres.remove();
     touch.remove();
     label.classList.remove('is-cur-pres__label--on');
