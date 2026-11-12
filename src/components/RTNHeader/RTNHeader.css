@@ -1,0 +1,309 @@
+/*
+ * RTN Header (Web) — Figma "RTN Header" (3320:26730). Colors are the Figma variables, so light and dark
+ * mode follow data-theme. Names use Season Mix (licensed; Figtree where it isn't installed), labels and
+ * times Relative Mono 10 Pitch (system monospace as fallback), everything else Figtree.
+ */
+.is-rtn,
+.is-rtn-details,
+.is-rtn-patient,
+.is-rtn-rec {
+  --is-rtn-mono: 'Relative Mono Pro 10 Pitch', 'Relative Mono 10 Pitch', ui-monospace, 'SF Mono', SFMono-Regular, Menlo, monospace;
+  --is-rtn-display: 'Season Mix', var(--is-font-ui);
+  box-sizing: border-box;
+  font-family: var(--is-font-ui);
+}
+.is-rtn *,
+.is-rtn-details *,
+.is-rtn-patient *,
+.is-rtn-rec * {
+  box-sizing: border-box;
+}
+
+/* ---------- Header: 20px 40px padding, 20px between details and the row ---------- */
+.is-rtn {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  padding: 20px 40px;
+  border-bottom: 1px solid var(--is-surface-soft-contrast-background);
+  background: var(--is-surface-super-soft-contrast-light);
+}
+.is-rtn__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-width: 0;
+}
+
+/* ---------- Details ---------- */
+.is-rtn-details {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+}
+.is-rtn-details__info,
+.is-rtn-details__labels {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.is-rtn-details__info {
+  overflow: hidden;
+  white-space: nowrap;
+}
+/* Label: 22px pill, Labels / Low contrast, Relative Mono 13px */
+.is-rtn-chip {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  height: 22px;
+  padding: 2px 6px;
+  border-radius: 100px;
+  background: var(--is-labels-low-contrast);
+  color: var(--is-foreground-high-contrast-primary-foreground);
+  font-family: var(--is-rtn-mono);
+  font-size: 13px;
+  line-height: 18px;
+  white-space: nowrap;
+}
+.is-rtn-details__muted {
+  color: var(--is-foreground-low-contrast-primary-foreground);
+  font-size: 13px;
+}
+.is-rtn-details__time {
+  color: var(--is-foreground-medium-contrast-primary-foreground);
+  font-size: 13px;
+  font-weight: 600;
+}
+.is-rtn-dot {
+  flex: none;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--is-foreground-low-contrast-primary-foreground);
+}
+
+/* ---------- Patient (Figma "Complete Profile") ---------- */
+.is-rtn-patient {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 30px;
+  padding-right: 60px;
+}
+.is-rtn-patient--chrome-extension {
+  gap: 15px;
+  padding-right: 0;
+}
+/* Photo: 90 × 120, radius 18px (Chrome Extension 60 × 80, radius 12px), cropped to fill */
+.is-rtn-patient__photo {
+  flex: none;
+  width: 90px;
+  height: 120px;
+  overflow: hidden;
+  border-radius: 18px;
+  background: var(--is-surface-medium-contrast-background);
+}
+.is-rtn-patient--chrome-extension .is-rtn-patient__photo {
+  width: 60px;
+  height: 80px;
+  border-radius: 12px;
+}
+.is-rtn-patient__photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.is-rtn-patient__info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+.is-rtn-patient__name {
+  margin: 0;
+  color: var(--is-foreground-high-contrast-primary-foreground);
+  font-family: var(--is-rtn-display);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.is-rtn-patient__demo {
+  display: flex;
+  gap: 12px;
+  margin: 0;
+  color: var(--is-foreground-medium-contrast-primary-foreground);
+  font-size: 16px;
+  line-height: 18px;
+  white-space: nowrap;
+}
+/* Empty: placeholders in low contrast over a 2px dotted line (round dots, 5px apart) */
+.is-rtn-patient__blanks {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0;
+}
+.is-rtn-blank {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  color: var(--is-foreground-low-contrast-primary-foreground);
+  font-size: 16px;
+  line-height: 18px;
+  white-space: nowrap;
+}
+.is-rtn-blank--name {
+  font-family: var(--is-rtn-display);
+  font-size: 20px;
+  line-height: 1.2;
+}
+.is-rtn-blank__line {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: radial-gradient(circle at 1px 1px, var(--is-foreground-low-contrast-primary-foreground) 1px, transparent 1.2px) 0 0 / 5px 2px repeat-x;
+}
+
+/* ---------- Record feature ---------- */
+.is-rtn-rec {
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
+  max-width: 1000px;
+  height: 120px;
+}
+/* Recording and Playback sit in a 120px pill: Surface / Super soft contrast with a 1px Soft contrast border */
+.is-rtn-rec__pill {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 20px;
+  height: 120px;
+  padding: 0 30px;
+  border: 1px solid var(--is-surface-soft-contrast-background);
+  border-radius: 1000px;
+  background: var(--is-surface-super-soft-contrast-background);
+}
+.is-rtn-rec__pill--wide {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+/* Default (Start Recording) keeps Figma's 30px inset from the right */
+.is-rtn-rec > .is-rec-btn {
+  margin-right: 30px;
+}
+/* Recording time: Relative Mono 18px, Status / Alert red */
+.is-rtn-rec__time {
+  flex: none;
+  color: var(--is-status-foreground-alert);
+  font-family: var(--is-rtn-mono);
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.5px;
+  text-align: center;
+}
+/* Play / pause: a bare 40px icon (no circle), as in Figma */
+.is-rtn-rec__play {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: var(--is-foreground-medium-contrast-primary-foreground);
+  cursor: pointer;
+  transition: color 150ms ease;
+}
+.is-rtn-rec__play:hover {
+  color: var(--is-foreground-high-contrast-primary-foreground);
+}
+.is-rtn-rec__play:focus-visible {
+  outline: 2px solid var(--is-button-accent);
+  outline-offset: 2px;
+}
+/* Each state slides in softly when it appears */
+.is-rtn-rec__enter {
+  animation: is-rtn-rec-enter 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes is-rtn-rec-enter {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+}
+
+/* Timeline: 14px title, 5px bar (Labels / Accent on Surface / Super soft contrast light), 10px mono times */
+.is-rtn-timeline {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.is-rtn-timeline__title {
+  overflow: hidden;
+  margin: 0;
+  color: var(--is-foreground-medium-contrast-primary-foreground);
+  font-size: 14px;
+  line-height: 18px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.is-rtn-timeline__track {
+  position: relative;
+  height: 5px;
+  border-radius: 1000px;
+  background: var(--is-surface-super-soft-contrast-light);
+  cursor: pointer;
+  touch-action: none;
+  outline: none;
+}
+/* A taller invisible hit area, so the thin bar is easy to grab */
+.is-rtn-timeline__track::before {
+  content: '';
+  position: absolute;
+  inset: -8px 0;
+}
+.is-rtn-timeline__track:focus-visible {
+  box-shadow: 0 0 0 2px var(--is-button-accent);
+}
+.is-rtn-timeline__fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 1000px;
+  background: var(--is-labels-accent);
+}
+.is-rtn-timeline__times {
+  display: flex;
+  justify-content: space-between;
+  color: var(--is-foreground-medium-contrast-primary-foreground);
+  font-family: var(--is-rtn-mono);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-rtn-rec__enter {
+    animation: none;
+  }
+}
