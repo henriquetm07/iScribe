@@ -39,18 +39,20 @@
 }
 
 /*
- * Glass (the look of the selection): translucent white with a soft vertical gradient, a hairline edge,
- * a two-layer shadow so it floats over the bar, and bright inner rims (light from the top left).
+ * Glass (the look of the selection): a tinted body, a hairline edge, a two-layer shadow so it floats over
+ * the bar, and bright inner rims (light from the top left). Two tints:
+ *   periwinkle (default) — T Periwinkle 20 with the Soft Contrast edge, as in Figma
+ *   white                — translucent white with a soft vertical gradient
  * Used by a standalone selected Tab Item and by the liquid glass indicator of Tabs.
  */
 .is-tab-item--selected,
 .is-tabs__glass {
-  --glass-top: rgba(255, 255, 255, 0.88);
-  --glass-bottom: rgba(255, 255, 255, 0.66);
-  --glass-edge: rgba(0, 0, 0, 0.05);
-  --glass-shadow: 0 2px 4px rgba(20, 24, 60, 0.06), 0 10px 24px -6px rgba(20, 24, 60, 0.18);
+  --glass-top: var(--is-color-tperiwinkle-20);
+  --glass-bottom: var(--is-color-tperiwinkle-20);
+  --glass-edge: var(--is-surface-soft-contrast-background);
+  --glass-shadow: 0 2px 4px rgba(20, 24, 60, 0.05), 0 10px 24px -6px rgba(20, 24, 60, 0.14);
   background: linear-gradient(180deg, var(--glass-top), var(--glass-bottom));
-  box-shadow: 0 0 0 0.5px var(--glass-edge), var(--glass-shadow);
+  box-shadow: 0 0 0 1px var(--glass-edge), var(--glass-shadow);
   -webkit-backdrop-filter: blur(12px) saturate(170%);
   backdrop-filter: blur(12px) saturate(170%);
 }
@@ -60,6 +62,19 @@
 }
 [data-theme='dark'] .is-tab-item--selected,
 [data-theme='dark'] .is-tabs__glass {
+  --glass-shadow: 0 2px 4px rgba(0, 0, 0, 0.25), 0 10px 24px -6px rgba(0, 0, 0, 0.55);
+}
+/* White tint */
+.is-tab-item--selected.is-tab-item--white,
+.is-tabs--white .is-tabs__glass {
+  --glass-top: rgba(255, 255, 255, 0.88);
+  --glass-bottom: rgba(255, 255, 255, 0.66);
+  --glass-edge: rgba(0, 0, 0, 0.05);
+  --glass-shadow: 0 2px 4px rgba(20, 24, 60, 0.06), 0 10px 24px -6px rgba(20, 24, 60, 0.18);
+  box-shadow: 0 0 0 0.5px var(--glass-edge), var(--glass-shadow);
+}
+[data-theme='dark'] .is-tab-item--selected.is-tab-item--white,
+[data-theme='dark'] .is-tabs--white .is-tabs__glass {
   --glass-top: rgba(255, 255, 255, 0.2);
   --glass-bottom: rgba(255, 255, 255, 0.09);
   --glass-edge: rgba(255, 255, 255, 0.14);

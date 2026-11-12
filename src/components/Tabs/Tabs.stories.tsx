@@ -14,6 +14,7 @@ const meta = {
     defaultValue: 'tab-1',
     device: 'iphone',
     width: 630,
+    tint: 'periwinkle',
     refraction: 22,
     lens: 1.05,
     elasticity: 0.6,
@@ -23,6 +24,7 @@ const meta = {
   argTypes: {
     device: { control: 'inline-radio', options: ['iphone', 'ipad', 'web'] },
     width: { control: { type: 'number', min: 200, max: 1000, step: 10 } },
+    tint: { control: 'inline-radio', options: ['periwinkle', 'white'] },
     refraction: { control: { type: 'range', min: 0, max: 40, step: 1 } },
     lens: { control: { type: 'range', min: 1, max: 1.25, step: 0.01 } },
     elasticity: { control: { type: 'range', min: 0, max: 1, step: 0.05 } },

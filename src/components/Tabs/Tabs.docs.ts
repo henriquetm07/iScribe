@@ -16,22 +16,24 @@ const itemLines = (d: TabsDevice) => [
   `  Height      ${item[d].height}px, var(--is-full-round) corners, 8px between label and badge`,
   `  Text        Figtree Medium ${item[d].text}px (SemiBold when selected), var(--is-foreground-high-contrast-primary-foreground)`,
   '  Default     no background',
-  '  Selected    glass: white 88% → 66% gradient, 0.5px edge, shadow 0 2 4 + 0 10 24 -6,',
-  '              backdrop blur(12px) saturate(170%), bright top-left / softer bottom-right inner rims',
-  '              dark mode: white 20% → 9%, lighter edge, deeper shadow',
+  '  Selected    glass, tint="periwinkle" (default): var(--is-color-tperiwinkle-20)',
+  '              + 1px var(--is-surface-soft-contrast-background) edge',
+  '              tint="white": white 88% → 66% gradient, 0.5px edge (dark: white 20% → 9%)',
+  '              both: shadow 0 2 4 + 0 10 24 -6, backdrop blur(12px) saturate(170%),',
+  '              bright top-left / softer bottom-right inner rims',
   '              (web only — on iOS and iPadOS use the native glass effect, see Tabs)',
   '  Badge       16px pill, var(--is-status-foreground-positive-pw), white 9px numbers',
 ];
 
 export const tabItemSpecLines = (p: Partial<TabItemProps>) => {
   const d = p.device ?? 'iphone';
-  return [`Tab item · ${deviceName[d]} · ${p.selected ? 'Selected' : 'Default'}`, '', ...itemLines(d)];
+  return [`Tab item · ${deviceName[d]} · ${p.selected ? 'Selected' : 'Default'} · ${p.tint ?? 'periwinkle'}`, '', ...itemLines(d)];
 };
 
 export const tabsSpecLines = (p: Partial<TabsProps>) => {
   const d = p.device ?? 'iphone';
   return [
-    `Tabs · ${deviceName[d]}`,
+    `Tabs · ${deviceName[d]} · ${p.tint ?? 'periwinkle'} glass`,
     '',
     'BAR',
     `  Padding     ${barPadding[d]}px, 5px between tabs; the tabs share the width equally`,

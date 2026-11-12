@@ -12,10 +12,12 @@ const meta = {
     children: 'Label',
     device: 'iphone',
     selected: false,
+    tint: 'periwinkle',
     onClick: fn(),
   },
   argTypes: {
     device: { control: 'inline-radio', options: ['iphone', 'ipad', 'web'] },
+    tint: { control: 'inline-radio', options: ['periwinkle', 'white'] },
     children: { name: 'label', control: 'text' },
     count: { control: 'text' },
   },

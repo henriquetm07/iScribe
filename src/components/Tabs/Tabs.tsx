@@ -14,6 +14,8 @@ import {
 import './Tabs.css';
 
 export type TabsDevice = 'iphone' | 'ipad' | 'web';
+/** Colour of the selection glass: periwinkle (T Periwinkle 20, as in Figma) or white */
+export type TabsTint = 'periwinkle' | 'white';
 
 export interface TabItemProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
   /** The tab label */
@@ -22,6 +24,8 @@ export interface TabItemProps extends Omit<ButtonHTMLAttributes<HTMLButtonElemen
   device?: TabsDevice;
   /** Selected: glass pill */
   selected?: boolean;
+  /** Colour of the glass when selected (default periwinkle) */
+  tint?: TabsTint;
   /** Number in a blue badge after the label (Figma "Notification"). Leave empty for none. */
   count?: number | string;
   ref?: Ref<HTMLButtonElement>;
@@ -29,12 +33,12 @@ export interface TabItemProps extends Omit<ButtonHTMLAttributes<HTMLButtonElemen
 
 // iOS / iPadOS: the selected pill must use the native iOS glass effect (see the note above Tabs), not this CSS imitation.
 /** One tab (Figma "Tab item"): a pill that is glass when selected, with an optional count badge. */
-export const TabItem = ({ children, device = 'iphone', selected = false, count, className, type = 'button', ...rest }: TabItemProps) => (
+export const TabItem = ({ children, device = 'iphone', selected = false, tint = 'periwinkle', count, className, type = 'button', ...rest }: TabItemProps) => (
   <button
     type={type}
     role="tab"
     aria-selected={selected}
-    className={['is-tab-item', `is-tab-item--${device}`, selected && 'is-tab-item--selected', className].filter(Boolean).join(' ')}
+    className={['is-tab-item', `is-tab-item--${device}`, selected && 'is-tab-item--selected', tint === 'white' && 'is-tab-item--white', className].filter(Boolean).join(' ')}
     {...rest}
   >
     <TabItemContent count={count}>{children}</TabItemContent>
@@ -71,6 +75,8 @@ export interface TabsProps {
   device?: TabsDevice;
   /** Width of the bar; the tabs share it equally (default: fill the container) */
   width?: number | string;
+  /** Colour of the selection glass: periwinkle (default, T Periwinkle 20 as in Figma) or white */
+  tint?: TabsTint;
   /** Liquid glass: how strongly the glass bends what is under its edges (0 = flat, 40 = strong). Default 22. */
   refraction?: number;
   /** Liquid glass: how much the lens enlarges the selected label (1 = none, 1.25 = 25% larger). Default 1.05. */
@@ -151,6 +157,7 @@ export const Tabs = ({
   onChange,
   device = 'iphone',
   width = '100%',
+  tint = 'periwinkle',
   refraction = 22,
   lens = 1.05,
   elasticity = 0.6,
@@ -408,7 +415,7 @@ export const Tabs = ({
   return (
     <div
       ref={bar}
-      className={`is-tabs is-tabs--${device}${measured ? ' is-tabs--has-indicator' : ''}`}
+      className={`is-tabs is-tabs--${device}${tint === 'white' ? ' is-tabs--white' : ''}${measured ? ' is-tabs--has-indicator' : ''}`}
       role="tablist"
       aria-label={ariaLabel}
       style={{ width }}
@@ -426,6 +433,7 @@ export const Tabs = ({
               tabs.current[i] = el;
             }}
             device={device}
+            tint={tint}
             selected={o.value === selected}
             count={o.count}
             disabled={o.disabled}
