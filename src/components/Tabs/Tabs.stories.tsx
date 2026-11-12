@@ -67,7 +67,7 @@ export const WithCounts: Story = {
   },
 };
 
-/** The same glass over a colorful background, where its blur and sheen are easier to see. */
+/** The same glass over a periwinkle-and-white gradient, where its blur and sheen are easier to see. */
 export const OnColor: Story = {
   name: 'On a colorful background',
   decorators: [
@@ -77,7 +77,8 @@ export const OnColor: Story = {
           padding: '40px 24px',
           borderRadius: 24,
           background:
-            'radial-gradient(60% 90% at 15% 20%, #ff8a5c 0, transparent 60%), radial-gradient(50% 80% at 85% 30%, #6f7bff 0, transparent 60%), radial-gradient(60% 90% at 55% 100%, #24c6a8 0, transparent 60%), #c9b8ff',
+            // Periwinkle and white only: Periwinkle Main (#3966FF), a lighter periwinkle and white
+            'radial-gradient(60% 90% at 15% 20%, #3966ff 0, transparent 60%), radial-gradient(50% 80% at 85% 30%, #ffffff 0, transparent 60%), radial-gradient(60% 90% at 55% 100%, #7f9bff 0, transparent 60%), #b9c8ff',
         }}
       >
         <Story />
