@@ -3,6 +3,7 @@ import type { Preview } from '@storybook/react-vite';
 import { DocsContainer } from '@storybook/addon-docs/blocks';
 import { addons } from 'storybook/preview-api';
 import { create } from 'storybook/theming';
+import { asCursor, CURSOR_EVENT, CURSOR_STORAGE_KEY, installCursor, readSavedCursor } from './cursors';
 import '../src/styles/colors.css';
 import '../src/styles/variables.css';
 import '../src/styles/tokens.css';
@@ -76,6 +77,16 @@ addons.getChannel().on(MODE_EVENT, (mode: unknown) => switchMode(asMode(mode)));
 if (typeof window !== 'undefined') {
   window.addEventListener('storage', (e) => {
     if (e.key === STORAGE_KEY) switchMode(asMode(e.newValue));
+  });
+}
+
+// Cursor picked in the top bar (manager.ts); cursors.ts draws it on this page too
+if (typeof window !== 'undefined') {
+  const pageCursor = installCursor(window);
+  pageCursor.set(readSavedCursor());
+  addons.getChannel().on(CURSOR_EVENT, (value: unknown) => pageCursor.set(asCursor(value)));
+  window.addEventListener('storage', (e) => {
+    if (e.key === CURSOR_STORAGE_KEY) pageCursor.set(asCursor(e.newValue));
   });
 }
 
