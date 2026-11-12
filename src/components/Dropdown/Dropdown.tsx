@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState, type ButtonHTMLAttributes, type KeyboardEvent, type ReactNode, type Ref } from 'react';
+import { AnimatedIcon } from '../../icons/AnimatedIcon';
 import { Icon } from '../../icons/Icon';
 import type { IconName } from '../../icons/icons';
 import { SelectionList, type SelectionListOption } from '../SelectionList/SelectionList';
@@ -43,7 +44,14 @@ export const DropdownField = ({
     {...rest}
   >
     <span className="is-dropdown-field__label">{children}</span>
-    <Icon name={active ? 'chevron-up' : 'chevron-down'} className="is-dropdown-field__icon" />
+    {/* Animated chevron (Foundations / Animated Icons, "chevron-up-down"): flips up as the menu opens, down as it closes */}
+    <AnimatedIcon
+      name="chevron-up-down"
+      state={active ? 'up' : 'down'}
+      size="var(--dd-icon)"
+      className="is-dropdown-field__icon"
+      fallback={<Icon name={active ? 'chevron-up' : 'chevron-down'} size="100%" />}
+    />
   </button>
 );
 
