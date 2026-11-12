@@ -288,6 +288,11 @@
 }
 
 /* ---------- Mini Record Widget ---------- */
+/* Web mini waves (Figma Waves · Web · Mini): 18 bars, 87 × 40px */
+.is-rec-waves--web-mini {
+  flex: none;
+  width: 87px;
+}
 .is-rec-mini {
   display: inline-flex;
   align-items: center;

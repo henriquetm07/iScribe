@@ -64,15 +64,16 @@ export const recordWidgetSpecLines = (p: Partial<RecordWidgetProps>) => {
 export const miniRecordSpecLines = (p: Partial<MiniRecordWidgetProps>) => {
   const d = p.device ?? 'iphone';
   const ipad = d === 'ipad';
+  const web = d === 'web';
   return [
-    `Mini Record Widget · ${deviceName[d]} · ${{ idle: 'Default', recording: 'Recording', stopped: 'Playback' }[p.state ?? 'idle']}`,
+    `Mini Record Widget · ${web ? 'Web' : deviceName[d]} · ${{ idle: 'Default', recording: 'Recording', stopped: 'Playback' }[p.state ?? 'idle']}`,
     '',
     'LAYOUT',
     '  Right-aligned row, 10px gaps: [mini waves] time button',
     `  Time        ${ipad ? 18 : 15}px Relative Mono 10 Pitch`,
     `  Button      ${ipad ? '80px circle, 28px icon' : '40px circle, 16px icon'}`,
     '  Default     dark mic (primary) — starts recording',
-    `  Recording   red time + ${ipad ? '5 bars 3px wide, up to 35px' : '5 bars 2px wide, up to 16px'} + red Stop`,
+    `  Recording   red time + ${web ? 'web mini waves: 18 bars 2px wide, 3px apart, 87 × 40px' : ipad ? '5 bars 3px wide, up to 35px' : '5 bars 2px wide, up to 16px'} + red Stop`,
     '  Playback    white mic (secondary) — records more',
     '',
     ...sharedLines,

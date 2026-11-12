@@ -7,7 +7,7 @@ import { miniRecordSpecComment } from './Record.docs';
 const caption = { fontFamily: 'var(--is-font-ui)', fontSize: 12, color: 'var(--is-foreground-low-contrast-primary-foreground)' } as const;
 
 const meta = {
-  title: 'Components/Record/Mini Record Widget',
+  title: 'Components/Record/Mini Record Widget iPhone',
   component: MiniRecordWidget,
   args: { device: 'iphone', state: 'idle', duration: 30, onStateChange: fn() },
   argTypes: {
