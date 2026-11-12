@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { Playback, PlayPauseButton, RecordRoundButton, RecordTime, useRecorder, Waves, type RecordDevice, type RecordState } from './RecordParts';
 
 export interface RecordFocusModeProps {
@@ -45,6 +45,16 @@ export const RecordFocusMode = ({
 }: RecordFocusModeProps) => {
   const rec = useRecorder({ initialState, initialDuration: duration, initialPosition: position, onStateChange });
   const s = size[device];
+  // After the first tap on the mic, the waves begin as dots and grow from the centre out (as in the Record Widget)
+  const [started, setStarted] = useState(false);
+  const startRecording = () => {
+    setStarted(true);
+    rec.start();
+  };
+  const resumeRecording = () => {
+    setStarted(false);
+    rec.resume();
+  };
   const recording = rec.state === 'recording';
   const playback = rec.state === 'paused' || rec.state === 'playing';
 
@@ -57,14 +67,14 @@ export const RecordFocusMode = ({
         {playback && showDelete && (
           <RecordRoundButton icon="trash" label="Delete recording" size={s.side} iconSize={s.sideIcon} iconColor="var(--is-status-foreground-alert)" onClick={rec.discard} />
         )}
-        {rec.state === 'idle' && <RecordRoundButton icon="mic" label="Start recording" variant="primary" size={s.main} iconSize={s.mainIcon} onClick={rec.start} />}
+        {rec.state === 'idle' && <RecordRoundButton icon="mic" label="Start recording" variant="primary" size={s.main} iconSize={s.mainIcon} onClick={startRecording} />}
         {recording && <RecordRoundButton icon="stop-flat" label="Stop recording" variant="destructive" size={s.main} iconSize={s.mainIcon} onClick={rec.stop} />}
-        {playback && <RecordRoundButton icon="mic" label="Resume recording" size={s.main} iconSize={s.mainIcon} onClick={rec.resume} />}
+        {playback && <RecordRoundButton icon="mic" label="Resume recording" size={s.main} iconSize={s.mainIcon} onClick={resumeRecording} />}
         {playback && showDelete && <span style={{ width: s.side }} aria-hidden="true" />}
       </div>
 
       <div className="is-rec-focus__bottom">
-        {recording && <Waves />}
+        {recording && <Waves intro={started} />}
         {playback && (
           <>
             <PlayPauseButton
