@@ -36,11 +36,10 @@ export const animatedIcons = {
     data: playPause,
     description:
       'Pause bars morph into a play triangle and back. Used for the play / pause button in the Record Feature: state="play" shows the triangle, state="pause" the bars.',
-    markers: { play: 41, pause: 92 },
+    markers: { play: 10.25, pause: 23 },
     startsFrom: 'pause-flat',
-    states: { play: [10, 41], pause: [50, 92] },
-    // Twice the designed speed, so the morph keeps up with a tap
-    speed: 2,
+    // The fast version is built into the animation (about 0.13s each way), so it plays as designed
+    states: { play: [2.5, 10.25], pause: [12.5, 23] },
   },
   'chevron-up-down': {
     data: chevronUpDown,
