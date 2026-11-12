@@ -247,8 +247,8 @@ const PITCH = 5;
  * shorter, move less and slow down.
  */
 /** Intro: each bar grows from a dot in this time, the centre first and the ends a little later */
-const INTRO = 0.45;
-const INTRO_SPREAD = 0.3;
+/** The centre bars start growing first; bars towards the ends start up to this much later (s) */
+const INTRO_SPREAD = 0.2;
 
 const WaveBars = ({ bars, live, intro, className, style }: { bars?: number; live: boolean; intro: boolean; className: string; style?: CSSProperties }) => {
   const ref = useRef<HTMLSpanElement>(null);
@@ -286,9 +286,11 @@ const WaveBars = ({ bars, live, intro, className, style }: { bars?: number; live
                 '--h': `${tall.toFixed(1)}px`,
                 '--lo': `${low.toFixed(1)}px`,
                 '--dur': `${speed.toFixed(2)}s`,
-                '--delay': intro ? `${(growAt + INTRO).toFixed(2)}s` : `${-((i * 0.29) % speed).toFixed(2)}s`,
+                // The grow is the bar's first up-stroke: same length and easing as its loop, so the loop
+                // carries straight on from it with no pause
+                '--delay': intro ? `${(growAt + speed).toFixed(2)}s` : `${-((i * 0.29) % speed).toFixed(2)}s`,
                 '--in-delay': `${growAt.toFixed(2)}s`,
-                '--in-dur': `${INTRO}s`,
+                '--in-dur': `${speed.toFixed(2)}s`,
               } as CSSProperties
             }
           />

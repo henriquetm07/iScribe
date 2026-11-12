@@ -106,7 +106,7 @@
    then its loop starts from that full height */
 .is-rec-waves--live.is-rec-waves--intro > i {
   animation:
-    is-rec-wave-in var(--in-dur, 0.45s) cubic-bezier(0.2, 0.8, 0.2, 1) var(--in-delay, 0s) both,
+    is-rec-wave-in var(--in-dur, 0.7s) ease-in-out var(--in-delay, 0s) both,
     is-rec-wave var(--dur, 0.7s) ease-in-out var(--delay, 0s) infinite alternate;
 }
 @keyframes is-rec-wave-in {
