@@ -283,6 +283,7 @@ pickerStyle.textContent = `
   .is-cursor-btn img { width: 9px; height: auto; }
   .is-cursor-menu { position: fixed; z-index: 2147483000; width: 272px; padding: 6px; border: 1px solid #232527; border-radius: 16px;
     background: #121418; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45); font-family: 'Figtree', system-ui, sans-serif;
+    white-space: normal; text-align: left;
     animation: is-cursor-menu-in 180ms cubic-bezier(0.22, 1, 0.36, 1); }
   @keyframes is-cursor-menu-in { from { opacity: 0; transform: translateY(-4px) scale(0.98); } }
   .is-cursor-menu__title { margin: 6px 10px 6px; color: #6d747c; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
