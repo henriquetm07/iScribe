@@ -254,8 +254,8 @@ export const installCursor = (win: Window): CursorController => {
     for (let i = 0; i < n; i++) {
       const s = doc.createElement('span');
       s.className = 'is-cur-spark';
-      // 3 × 3 pixels, like the arrow, snapped to the pixel grid; placed below-right of the arrow as in Figma
-      const size = 3;
+      // 3 × 3 pixels drawn at 2× (6px), now and then at 1× (3px); placed below-right of the arrow as in Figma
+      const size = Math.random() < 0.25 ? 3 : 6;
       const time = 700 + Math.random() * 600;
       const px = (v: number) => Math.round(v);
       s.style.cssText =
