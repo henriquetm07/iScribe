@@ -13,6 +13,11 @@ export interface AnimatedIconProps {
   loop?: boolean;
   /** Playback speed multiplier (1 = as designed) */
   speed?: number;
+  /**
+   * For icons with states (see animatedIcons, e.g. play-pause): which state to show. Changing it animates
+   * from the current look to the new one; the first render jumps straight there. Autoplay is ignored.
+   */
+  state?: string;
   /** Called when the animation reaches one of its named markers, e.g. "check" */
   onMarker?: (marker: string) => void;
   /** Called when the animation finishes (not called when looping) */
@@ -35,6 +40,7 @@ export const AnimatedIcon = ({
   autoplay = true,
   loop = false,
   speed = 1,
+  state,
   onMarker,
   onComplete,
   fallback,
@@ -45,6 +51,11 @@ export const AnimatedIcon = ({
   const [ready, setReady] = useState(false);
   const callbacks = useRef({ onMarker, onComplete });
   callbacks.current = { onMarker, onComplete };
+  // The loaded player and the state it was last moved to, for icons with states
+  const player = useRef<{ playSegments: (s: [number, number], force: boolean) => void; goToAndStop: (f: number, isFrame: boolean) => void } | null>(null);
+  const shown = useRef<string | undefined>(undefined);
+  const stateRef = useRef(state);
+  stateRef.current = state;
 
   useEffect(() => {
     const icon = animatedIcons[name];
@@ -75,9 +86,20 @@ export const AnimatedIcon = ({
           autoplay: false,
           animationData: icon.data,
         });
-        destroy = () => anim.destroy();
+        destroy = () => {
+          player.current = null;
+          anim.destroy();
+        };
         anim.setSpeed(speed);
         setReady(true);
+        // Icons with states: start on the end frame of the current state and wait for changes
+        const states = 'states' in icon ? (icon.states as Record<string, readonly [number, number]>) : undefined;
+        if (states && stateRef.current && states[stateRef.current]) {
+          player.current = anim;
+          shown.current = stateRef.current;
+          anim.goToAndStop(states[stateRef.current][1], true);
+          return;
+        }
         if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
           anim.goToAndStop(anim.totalFrames - 1, true);
           if (autoplay) finish();
@@ -98,6 +120,18 @@ export const AnimatedIcon = ({
       destroy();
     };
   }, [name, autoplay, loop, speed]);
+
+  // Animate to a new state (play-pause: triangle ↔ bars)
+  useEffect(() => {
+    const icon = animatedIcons[name];
+    const states = 'states' in icon ? (icon.states as Record<string, readonly [number, number]>) : undefined;
+    const anim = player.current;
+    if (!anim || !states || !state || !states[state] || shown.current === state) return;
+    shown.current = state;
+    const [from, to] = states[state];
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) anim.goToAndStop(to, true);
+    else anim.playSegments([from, to], true);
+  }, [name, state]);
 
   return (
     <span

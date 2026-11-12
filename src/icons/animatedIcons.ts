@@ -3,6 +3,7 @@
  * Add a new one by dropping its .json into src/icons/animated/ and registering it here.
  */
 import arrowToCheck from './animated/arrow-to-check.json';
+import playPause from './animated/play-pause.json';
 
 export interface AnimatedIconData {
   /** The Lottie JSON */
@@ -13,6 +14,11 @@ export interface AnimatedIconData {
   markers?: Record<string, number>;
   /** Static icon (from Foundations / Icons) it starts from, shown while the player loads */
   startsFrom?: string;
+  /**
+   * For icons that switch between two looks (like play / pause): the frames to play to reach each state.
+   * Pass AnimatedIcon a `state` and it animates to it; on first show it jumps straight to the end frame.
+   */
+  states?: Record<string, readonly [from: number, to: number]>;
 }
 
 export const animatedIcons = {
@@ -21,6 +27,14 @@ export const animatedIcons = {
     description: 'An arrow turns into a spinner, then draws a check mark. Plays in the Send Slider knob once sending completes.',
     markers: { spinner: 5, check: 105, done: 124 },
     startsFrom: 'arrow-right',
+  },
+  'play-pause': {
+    data: playPause,
+    description:
+      'Pause bars morph into a play triangle and back. Used for the play / pause button in the Record Feature: state="play" shows the triangle, state="pause" the bars.',
+    markers: { play: 41, pause: 92 },
+    startsFrom: 'pause-flat',
+    states: { play: [10, 41], pause: [50, 92] },
   },
 } satisfies Record<string, AnimatedIconData>;
 

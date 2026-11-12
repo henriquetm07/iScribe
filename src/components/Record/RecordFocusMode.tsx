@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { Playback, RecordRoundButton, RecordTime, useRecorder, Waves, type RecordDevice, type RecordState } from './RecordParts';
+import { Playback, PlayPauseButton, RecordRoundButton, RecordTime, useRecorder, Waves, type RecordDevice, type RecordState } from './RecordParts';
 
 export interface RecordFocusModeProps {
   /** iPhone (80px button, 50px clock) or iPad (100px button, 80px clock) */
@@ -67,9 +67,8 @@ export const RecordFocusMode = ({
         {recording && <Waves />}
         {playback && (
           <>
-            <RecordRoundButton
-              icon={rec.state === 'playing' ? 'pause-flat' : 'play-flat'}
-              label={rec.state === 'playing' ? 'Pause' : 'Play'}
+            <PlayPauseButton
+              playing={rec.state === 'playing'}
               size={s.play}
               iconSize={s.playIcon}
               onClick={rec.state === 'playing' ? rec.pause : rec.play}

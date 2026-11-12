@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import {
   Playback,
+  PlayPauseButton,
   RecordRoundButton,
   RecordTextButton,
   RecordTime,
@@ -142,14 +143,7 @@ export const RecordWidget = ({
       className={`is-rec is-rec-widget is-rec-widget--${device}${leaving ? ' is-rec-widget--leaving' : ''} ${className}`}
       style={{ width, ...style }}
     >
-      <RecordRoundButton
-        icon={playing ? 'pause-flat' : 'play-flat'}
-        label={playing ? 'Pause' : 'Play'}
-        size={s.round}
-        iconSize={s.icon}
-        onClick={playing ? rec.pause : rec.play}
-        className={left}
-      />
+      <PlayPauseButton playing={playing} size={s.round} iconSize={s.icon} onClick={playing ? rec.pause : rec.play} className={left} />
       <Playback position={rec.position} duration={rec.duration} device={device} onSeek={rec.seek} />
       <RecordTextButton
         height={s.resumeH}

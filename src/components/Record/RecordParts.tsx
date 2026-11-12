@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react';
+import { AnimatedIcon } from '../../icons/AnimatedIcon';
 import { Icon } from '../../icons/Icon';
 import type { IconName } from '../../icons/icons';
 import './Record.css';
@@ -114,12 +115,14 @@ export interface RecordRoundButtonProps {
   iconSize: number;
   /** Color of the icon when it differs from the variant (Figma Delete uses the Alert red) */
   iconColor?: string;
+  /** Draw something else in place of the static icon (e.g. an animated icon) */
+  iconNode?: ReactNode;
   onClick?: () => void;
   className?: string;
 }
 
 /** Round icon button used for record, stop, play, pause and delete */
-export const RecordRoundButton = ({ icon, label, variant = 'secondary', size, iconSize, iconColor, onClick, className = '' }: RecordRoundButtonProps) => (
+export const RecordRoundButton = ({ icon, label, variant = 'secondary', size, iconSize, iconColor, iconNode, onClick, className = '' }: RecordRoundButtonProps) => (
   <button
     type="button"
     className={`is-rec-btn is-rec-btn--${variant} is-rec-btn--round ${className}`}
@@ -128,7 +131,7 @@ export const RecordRoundButton = ({ icon, label, variant = 'secondary', size, ic
     title={label}
     onClick={onClick}
   >
-    <Icon name={icon} size={iconSize} />
+    {iconNode ?? <Icon name={icon} size={iconSize} />}
   </button>
 );
 
@@ -162,6 +165,41 @@ export const RecordTextButton = ({ children, icon, variant = 'secondary', height
     {icon && <Icon name={icon} size={iconSize ?? fontSize + 7} />}
     <span>{children}</span>
   </button>
+);
+
+/* ---------- Play / Pause ---------- */
+
+export interface PlayPauseButtonProps {
+  playing: boolean;
+  /** Circle size in px */
+  size: number;
+  /** Icon size in px */
+  iconSize: number;
+  onClick?: () => void;
+  className?: string;
+}
+
+/**
+ * Play / pause button. Its icon is the "play-pause" animated icon (Foundations / Animated Icons):
+ * the triangle morphs into pause bars when playback starts and back when it pauses.
+ */
+export const PlayPauseButton = ({ playing, size, iconSize, onClick, className }: PlayPauseButtonProps) => (
+  <RecordRoundButton
+    icon={playing ? 'pause-flat' : 'play-flat'}
+    label={playing ? 'Pause' : 'Play'}
+    size={size}
+    iconSize={iconSize}
+    onClick={onClick}
+    className={className}
+    iconNode={
+      <AnimatedIcon
+        name="play-pause"
+        state={playing ? 'pause' : 'play'}
+        size={iconSize}
+        fallback={<Icon name={playing ? 'pause-flat' : 'play-flat'} size={iconSize} />}
+      />
+    }
+  />
 );
 
 /* ---------- Waves ---------- */

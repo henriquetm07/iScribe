@@ -28,6 +28,7 @@ const sharedLines = [
   '              secondary var(--is-background-elevated-background) + 1px var(--is-button-secondarystroke)',
   '              stop / delete var(--is-button-destructive), white icon/text',
   '              hover uses the same Active colors as the Button',
+  '  Play/Pause  the "play-pause" animated icon: triangle ↔ bars morph (Foundations / Animated Icons)',
 ];
 
 const flowLines = [
