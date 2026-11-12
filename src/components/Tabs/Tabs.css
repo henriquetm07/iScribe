@@ -1,6 +1,10 @@
 /*
  * Tabs — Figma "Tabs" (1061:21180): "Tab item" and the "Tab" bar.
  * Colors and radii are the Figma variables, so light and dark mode follow data-theme.
+ *
+ * iOS and iPadOS: the glass here is a web imitation. In the iPhone and iPad apps, use the native iOS glass
+ * effect instead (SwiftUI .glassEffect(.regular.interactive(), in: .capsule) inside a GlassEffectContainer,
+ * or UIKit UIVisualEffectView + UIGlassEffect). See Tabs.tsx.
  */
 
 /* ---------- Tab item ---------- */
@@ -35,38 +39,31 @@
 }
 
 /*
- * Selected (Figma State=Selected): T Periwinkle 20 with a Soft Contrast border and Figma's Glass effect
- * (frost 4, refraction 0.8, depth 20, light −45° at 0.8, dispersion 0.5), rebuilt in CSS:
- *   frost       → backdrop blur(4px)
- *   light −45°  → a bright rim on the top-left edge (light from the top left)
- *   refraction  → a softer rim on the opposite, bottom-right edge
- *   depth       → a faint inner glow around the edge
- * Used by a standalone Tab Item and by the sliding indicator of Tabs.
- *
- * iOS and iPadOS: this is a web imitation. In the iPhone and iPad apps, use the native iOS glass effect
- * instead (SwiftUI .glassEffect(.regular.tint(T Periwinkle 20).interactive(), in: .capsule) inside a
- * GlassEffectContainer, or UIKit UIVisualEffectView + UIGlassEffect). See Tabs.tsx.
+ * Glass (the look of the selection): translucent white with a soft vertical gradient, a hairline edge,
+ * a two-layer shadow so it floats over the bar, and bright inner rims (light from the top left).
+ * Used by a standalone selected Tab Item and by the liquid glass indicator of Tabs.
  */
 .is-tab-item--selected,
-.is-tabs__indicator {
-  --glass-light: rgba(255, 255, 255, 0.8);
-  --glass-refraction: rgba(255, 255, 255, 0.45);
-  --glass-depth: rgba(255, 255, 255, 0.2);
-  border: 1px solid var(--is-surface-soft-contrast-background);
-  background: var(--is-color-tperiwinkle-20);
-  box-shadow:
-    inset 1.5px 1.5px 1px -0.5px var(--glass-light),
-    inset -1.5px -1.5px 1px -0.5px var(--glass-refraction),
-    inset 0 0 8px var(--glass-depth);
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
+.is-tabs__glass {
+  --glass-top: rgba(255, 255, 255, 0.88);
+  --glass-bottom: rgba(255, 255, 255, 0.66);
+  --glass-edge: rgba(0, 0, 0, 0.05);
+  --glass-shadow: 0 2px 4px rgba(20, 24, 60, 0.06), 0 10px 24px -6px rgba(20, 24, 60, 0.18);
+  background: linear-gradient(180deg, var(--glass-top), var(--glass-bottom));
+  box-shadow: 0 0 0 0.5px var(--glass-edge), var(--glass-shadow);
+  -webkit-backdrop-filter: blur(12px) saturate(170%);
+  backdrop-filter: blur(12px) saturate(170%);
 }
-/* Dark mode: the same glass on a dark surface — the rim reads as a soft light edge */
+.is-tab-item--selected {
+  border-color: transparent;
+  font-weight: 600;
+}
 [data-theme='dark'] .is-tab-item--selected,
-[data-theme='dark'] .is-tabs__indicator {
-  --glass-light: rgba(255, 255, 255, 0.42);
-  --glass-refraction: rgba(255, 255, 255, 0.26);
-  --glass-depth: rgba(255, 255, 255, 0.06);
+[data-theme='dark'] .is-tabs__glass {
+  --glass-top: rgba(255, 255, 255, 0.2);
+  --glass-bottom: rgba(255, 255, 255, 0.09);
+  --glass-edge: rgba(255, 255, 255, 0.14);
+  --glass-shadow: 0 2px 4px rgba(0, 0, 0, 0.25), 0 10px 24px -6px rgba(0, 0, 0, 0.55);
 }
 
 .is-tab-item__label {
@@ -97,21 +94,26 @@
   outline: 2px solid var(--is-button-accent);
   outline-offset: 1px;
 }
-.is-tab-item:disabled {
+.is-tab-item:disabled,
+.is-tab-item--disabled {
   cursor: not-allowed;
   opacity: 0.4;
 }
 
 /* ---------- Tab bar ---------- */
 .is-tabs {
+  position: relative;
+  isolation: isolate;
   box-sizing: border-box;
   display: flex;
   align-items: center;
-  gap: 5px;
   max-width: 100%;
   padding: 5px;
   border-radius: var(--is-full-round);
   background: var(--is-surface-super-soft-contrast-background);
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
 }
 .is-tabs--ipad {
   padding: 10px;
@@ -119,41 +121,99 @@
 .is-tabs--web {
   padding: 4px;
 }
-.is-tabs > .is-tab-item {
-  position: relative;
-  z-index: 1;
+.is-tabs__items,
+.is-tabs__clone {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.is-tabs__items {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.is-tabs__items > .is-tab-item,
+.is-tabs__clone > .is-tab-item {
   flex: 1 0 0;
 }
-
-/* Sliding selection: one glass indicator behind the labels moves to the selected tab */
-.is-tabs {
-  position: relative;
-  isolation: isolate;
-}
-.is-tabs--has-indicator > .is-tab-item--selected {
-  border-color: transparent;
-  background: transparent;
+/* In the bar, the selected tab has no glass of its own: the sliding indicator is the glass */
+.is-tabs--has-indicator .is-tabs__items > .is-tab-item--selected {
+  background: none;
   box-shadow: none;
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
 }
+
+/*
+ * Liquid glass indicator (above the labels):
+ *   glass  — the translucent body
+ *   lens   — a copy of the labels, enlarged and bent at the edges by the SVG displacement filter
+ *   rim    — specular highlight that follows the pointer, plus bright inner rims
+ * The real labels are masked where the glass sits (see Tabs.tsx), so only the lens copy shows there.
+ */
 .is-tabs__indicator {
-  box-sizing: border-box;
   position: absolute;
-  z-index: 0;
+  z-index: 2;
   top: 0;
   left: 0;
   border-radius: var(--is-full-round);
   pointer-events: none;
+  will-change: transform, width, height;
 }
-.is-tabs__indicator--animate {
-  transition:
-    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
-    width 420ms cubic-bezier(0.22, 1, 0.36, 1),
-    height 420ms cubic-bezier(0.22, 1, 0.36, 1);
+.is-tabs__indicator > span {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
 }
-@media (prefers-reduced-motion: reduce) {
-  .is-tabs__indicator--animate {
-    transition: none;
-  }
+.is-tabs__lens {
+  overflow: hidden;
+}
+.is-tabs__clone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  will-change: transform;
+}
+.is-tabs__clone > .is-tab-item {
+  cursor: inherit;
+}
+.is-tab-item--lens {
+  font-weight: 600;
+}
+.is-tabs__rim {
+  --rim-sheen: rgba(255, 255, 255, 0.5);
+  --rim-light: rgba(255, 255, 255, 0.95);
+  --rim-soft: rgba(255, 255, 255, 0.7);
+  --rim-edge: rgba(255, 255, 255, 0.6);
+  --rim-glow: rgba(255, 255, 255, 0.35);
+  background: radial-gradient(120% 140% at var(--mx, 30%) var(--my, -20%), var(--rim-sheen), rgba(255, 255, 255, 0) 40%);
+  mix-blend-mode: soft-light;
+  box-shadow:
+    inset 1.5px 1.5px 1px -1px var(--rim-light),
+    inset -1.5px -1.5px 1px -1px var(--rim-soft),
+    inset 0 0 0 0.5px var(--rim-edge),
+    inset 0 0 8px var(--rim-glow);
+}
+.is-tabs__rim2 {
+  box-shadow:
+    inset 1.5px 1.5px 1px -1px var(--rim-light, rgba(255, 255, 255, 0.95)),
+    inset -1.5px -1.5px 1px -1px rgba(255, 255, 255, 0.6);
+}
+[data-theme='dark'] .is-tabs__rim {
+  --rim-sheen: rgba(255, 255, 255, 0.28);
+  --rim-light: rgba(255, 255, 255, 0.55);
+  --rim-soft: rgba(255, 255, 255, 0.3);
+  --rim-edge: rgba(255, 255, 255, 0.22);
+  --rim-glow: rgba(255, 255, 255, 0.08);
+}
+[data-theme='dark'] .is-tabs__rim2 {
+  box-shadow:
+    inset 1.5px 1.5px 1px -1px rgba(255, 255, 255, 0.5),
+    inset -1.5px -1.5px 1px -1px rgba(255, 255, 255, 0.25);
+}
+.is-tabs__defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
 }

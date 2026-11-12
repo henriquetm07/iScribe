@@ -14,12 +14,18 @@ const meta = {
     defaultValue: 'tab-1',
     device: 'iphone',
     width: 630,
+    refraction: 22,
+    lens: 1.05,
+    elasticity: 0.6,
     'aria-label': 'Sections',
     onChange: fn(),
   },
   argTypes: {
     device: { control: 'inline-radio', options: ['iphone', 'ipad', 'web'] },
     width: { control: { type: 'number', min: 200, max: 1000, step: 10 } },
+    refraction: { control: { type: 'range', min: 0, max: 40, step: 1 } },
+    lens: { control: { type: 'range', min: 1, max: 1.25, step: 0.01 } },
+    elasticity: { control: { type: 'range', min: 0, max: 1, step: 0.05 } },
     options: { table: { disable: true } },
     value: { table: { disable: true } },
     defaultValue: { table: { disable: true } },
@@ -57,4 +63,23 @@ export const WithCounts: Story = {
     defaultValue: 'patients',
     'aria-label': 'Search in',
   },
+};
+
+/** The same glass over a colorful background, where its blur and sheen are easier to see. */
+export const OnColor: Story = {
+  name: 'On a colorful background',
+  decorators: [
+    (Story) => (
+      <div
+        style={{
+          padding: '40px 24px',
+          borderRadius: 24,
+          background:
+            'radial-gradient(60% 90% at 15% 20%, #ff8a5c 0, transparent 60%), radial-gradient(50% 80% at 85% 30%, #6f7bff 0, transparent 60%), radial-gradient(60% 90% at 55% 100%, #24c6a8 0, transparent 60%), #c9b8ff',
+        }}
+      >
+        <Story />
+      </div>
+    ),
+  ],
 };
