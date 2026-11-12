@@ -78,7 +78,8 @@ export const OnColor: Story = {
           borderRadius: 24,
           background:
             // Periwinkle and white only: Periwinkle Main (#3966FF), a lighter periwinkle and white
-            'radial-gradient(60% 90% at 15% 20%, #3966ff 0, transparent 60%), radial-gradient(50% 80% at 85% 30%, #ffffff 0, transparent 60%), radial-gradient(60% 90% at 55% 100%, #7f9bff 0, transparent 60%), #b9c8ff',
+            // Softened: lighter periwinkles at partial strength, wide fades, a pale periwinkle base
+            'radial-gradient(80% 120% at 15% 20%, rgba(57, 102, 255, 0.38) 0, transparent 70%), radial-gradient(70% 110% at 85% 30%, #ffffff 0, transparent 70%), radial-gradient(80% 120% at 55% 100%, rgba(127, 155, 255, 0.4) 0, transparent 70%), #e3e9ff',
         }}
       >
         <Story />
