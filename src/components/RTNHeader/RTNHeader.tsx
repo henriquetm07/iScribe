@@ -202,7 +202,6 @@ export const RTNHeaderRecord = ({ state: initialState = 'idle', duration = 160, 
               name="play-pause"
               state={rec.state === 'playing' ? 'pause' : 'play'}
               size={40}
-              speed={2}
               fallback={<Icon name={rec.state === 'playing' ? 'pause-flat' : 'play-flat'} size={40} />}
             />
           </button>

@@ -11,7 +11,7 @@ export interface AnimatedIconProps {
   autoplay?: boolean;
   /** Repeat forever instead of stopping on the last frame */
   loop?: boolean;
-  /** Playback speed multiplier (1 = as designed) */
+  /** Playback speed multiplier (1 = as designed). Leave out to use the icon's own speed (e.g. play-pause runs at 2×) */
   speed?: number;
   /**
    * For icons with states (see animatedIcons, e.g. play-pause): which state to show. Changing it animates
@@ -39,7 +39,7 @@ export const AnimatedIcon = ({
   size = '1em',
   autoplay = true,
   loop = false,
-  speed = 1,
+  speed,
   state,
   onMarker,
   onComplete,
@@ -90,7 +90,7 @@ export const AnimatedIcon = ({
           player.current = null;
           anim.destroy();
         };
-        anim.setSpeed(speed);
+        anim.setSpeed(speed ?? ('speed' in icon ? (icon.speed as number) : 1));
         setReady(true);
         // Icons with states: start on the end frame of the current state and wait for changes
         const states = 'states' in icon ? (icon.states as Record<string, readonly [number, number]>) : undefined;

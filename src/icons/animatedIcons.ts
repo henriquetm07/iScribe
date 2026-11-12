@@ -21,6 +21,8 @@ export interface AnimatedIconData {
    * Pass AnimatedIcon a `state` and it animates to it; on first show it jumps straight to the end frame.
    */
   states?: Record<string, readonly [from: number, to: number]>;
+  /** Speed it plays at by default (1 = as designed); AnimatedIcon's `speed` prop overrides it */
+  speed?: number;
 }
 
 export const animatedIcons = {
@@ -37,6 +39,8 @@ export const animatedIcons = {
     markers: { play: 41, pause: 92 },
     startsFrom: 'pause-flat',
     states: { play: [10, 41], pause: [50, 92] },
+    // Twice the designed speed, so the morph keeps up with a tap
+    speed: 2,
   },
   'chevron-up-down': {
     data: chevronUpDown,

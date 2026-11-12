@@ -196,8 +196,6 @@ export const PlayPauseButton = ({ playing, size, iconSize, onClick, className }:
         name="play-pause"
         state={playing ? 'pause' : 'play'}
         size={iconSize}
-        // Twice the designed speed, so the morph keeps up with a tap
-        speed={2}
         fallback={<Icon name={playing ? 'pause-flat' : 'play-flat'} size={iconSize} />}
       />
     }
