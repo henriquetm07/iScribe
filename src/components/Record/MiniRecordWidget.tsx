@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { RecordRoundButton, RecordTime, useRecorder, Waves, type RecordDevice, type RecordState } from './RecordParts';
 
 export type MiniRecordState = 'idle' | 'recording' | 'stopped';
@@ -30,11 +30,25 @@ const WEB_BARS = 18;
 export const MiniRecordWidget = ({ device = 'iphone', state = 'idle', duration = 30, onStateChange, className = '', style }: MiniRecordWidgetProps) => {
   const rec = useRecorder({ initialState: state === 'stopped' ? 'paused' : state, initialDuration: duration, onStateChange });
   const s = size[device];
+  // After the first tap on the mic, the waves begin as dots and grow from the centre out (as in the Record Widget)
+  const [started, setStarted] = useState(false);
+  const startRecording = () => {
+    setStarted(true);
+    rec.start();
+  };
+  const recordAgain = () => {
+    setStarted(false);
+    rec.resume();
+  };
   const recording = rec.state === 'recording';
   return (
     <div className={`is-rec is-rec-mini is-rec-mini--${device} ${className}`} style={style}>
       {recording &&
-        (device === 'web' ? <Waves bars={WEB_BARS} className="is-rec-waves--web-mini" /> : <Waves size="mini" device={device} />)}
+        (device === 'web' ? (
+          <Waves bars={WEB_BARS} intro={started} className="is-rec-waves--web-mini" />
+        ) : (
+          <Waves size="mini" device={device} intro={started} />
+        ))}
       <RecordTime seconds={rec.duration} device={device === 'web' ? 'iphone' : device} size="large" recording={recording} />
       {recording ? (
         <RecordRoundButton icon="stop-flat" label="Stop recording" variant="destructive" size={s.round} iconSize={s.icon} onClick={rec.stop} />
@@ -45,7 +59,7 @@ export const MiniRecordWidget = ({ device = 'iphone', state = 'idle', duration =
           variant={rec.state === 'idle' ? 'primary' : 'secondary'}
           size={s.round}
           iconSize={s.icon}
-          onClick={rec.state === 'idle' ? rec.start : rec.resume}
+          onClick={rec.state === 'idle' ? startRecording : recordAgain}
         />
       )}
     </div>

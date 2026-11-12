@@ -226,12 +226,34 @@ export interface WavesProps {
 /** Recording waveform (Figma "Waves"): 2px red bars, 3px apart */
 export const Waves = ({ size = 'default', device = 'iphone', bars, live = true, intro = false, className = '', style }: WavesProps) => {
   if (size === 'mini') {
-    const heights = device === 'ipad' ? [17, 28, 17, 35, 17] : [8, 13, 8, 16, 8];
+    // The outer bars are nearly dots (one bar-width tall); the inner three carry the wave
+    const heights = device === 'ipad' ? [4, 28, 17, 35, 4] : [3, 13, 8, 16, 3];
+    const dot = device === 'ipad' ? 3 : 2;
     return (
-      <span className={`is-rec-waves is-rec-waves--mini is-rec-waves--${device}${live ? ' is-rec-waves--live' : ''} ${className}`} style={style} aria-hidden="true">
-        {heights.map((h, i) => (
-          <i key={i} style={{ '--h': `${h}px`, '--delay': `${-i * 0.11}s` } as CSSProperties} />
-        ))}
+      <span
+        className={`is-rec-waves is-rec-waves--mini is-rec-waves--${device}${live ? ' is-rec-waves--live' : ''}${intro ? ' is-rec-waves--intro' : ''} ${className}`}
+        style={style}
+        aria-hidden="true">
+        {heights.map((h, i) => {
+          const centre = 1 - Math.abs(i - 2) / 2;
+          const speed = MINI_SPEED;
+          const growAt = (1 - centre) * INTRO_SPREAD;
+          return (
+            <i
+              key={i}
+              style={
+                {
+                  '--h': `${h}px`,
+                  '--lo': `${Math.max(dot, Math.round(h * 0.45))}px`,
+                  '--dur': `${speed}s`,
+                  '--delay': intro ? `${(growAt + speed).toFixed(2)}s` : `${-i * 0.11}s`,
+                  '--in-delay': `${growAt.toFixed(2)}s`,
+                  '--in-dur': `${speed}s`,
+                } as CSSProperties
+              }
+            />
+          );
+        })}
       </span>
     );
   }
@@ -249,6 +271,8 @@ const PITCH = 5;
 /** Intro: each bar grows from a dot in this time, the centre first and the ends a little later */
 /** The centre bars start growing first; bars towards the ends start up to this much later (s) */
 const INTRO_SPREAD = 0.2;
+/** Loop length of the five-bar mini waves (s) */
+const MINI_SPEED = 0.7;
 
 const WaveBars = ({ bars, live, intro, className, style }: { bars?: number; live: boolean; intro: boolean; className: string; style?: CSSProperties }) => {
   const ref = useRef<HTMLSpanElement>(null);
@@ -272,9 +296,10 @@ const WaveBars = ({ bars, live, intro, className, style }: { bars?: number; live
       {Array.from({ length: count }, (_, i) => {
         // 0 at the ends → 1 in the centre
         const t = count > 1 ? i / (count - 1) : 0.5;
-        const centre = Math.max(0.12, Math.sin(Math.PI * t) ** 1.3);
-        const tall = 8 + centre * (0.55 * 39 + 0.45 * WAVE[i % WAVE.length] - 8);
-        const low = Math.max(4, tall * (1 - 0.82 * centre));
+        const centre = Math.sin(Math.PI * t) ** 1.3;
+        // Tapers down to a near-dot (2–3px) at the very ends
+        const tall = 2.5 + centre * (0.55 * 39 + 0.45 * WAVE[i % WAVE.length] - 2.5);
+        const low = Math.max(2, tall * (1 - 0.82 * centre));
         const speed = 1.15 - 0.7 * centre;
         // With the intro, the bar grows from a dot to its full height, then the loop carries on from there
         const growAt = (1 - centre) * INTRO_SPREAD;
