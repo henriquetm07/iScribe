@@ -154,11 +154,14 @@ export const RTNHeaderRecord = ({ state: initialState = 'idle', duration = 160, 
   const rec = useRecorder({ initialState, initialDuration: duration, initialPosition: position, onStateChange });
   // The first Start grows the waves from dots (as in the Record Widget); Resume brings them back in full
   const [started, setStarted] = useState(false);
+  // Width of Start Recording when it was pressed: the stop button morphs from it and the pill grows from behind it
+  const [morphFrom, setMorphFrom] = useState<number | null>(null);
+  const root = useRef<HTMLDivElement>(null);
   const recording = rec.state === 'recording';
   const playback = rec.state === 'paused' || rec.state === 'playing';
 
   return (
-    <div className={`is-rec is-rtn-rec ${className}`}>
+    <div ref={root} className={`is-rec is-rtn-rec ${className}`}>
       {rec.state === 'idle' && (
         <RecordTextButton
           className="is-rtn-rec__enter"
@@ -171,6 +174,8 @@ export const RTNHeaderRecord = ({ state: initialState = 'idle', duration = 160, 
           paddingX={20}
           gap={12}
           onClick={() => {
+            const start = root.current?.querySelector<HTMLElement>('.is-rec-btn');
+            setMorphFrom(start ? start.offsetWidth : null);
             setStarted(true);
             rec.start();
           }}
@@ -180,12 +185,34 @@ export const RTNHeaderRecord = ({ state: initialState = 'idle', duration = 160, 
       )}
 
       {recording && (
-        <div className="is-rtn-rec__pill is-rtn-rec__enter">
+        <div
+          className={`is-rtn-rec__pill ${morphFrom ? 'is-rtn-rec__pill--grow' : 'is-rtn-rec__enter'}`}
+          style={morphFrom ? ({ '--is-rtn-from-w': `${morphFrom}px` } as CSSProperties) : undefined}
+        >
           <Waves bars={WEB_BARS} intro={started} className="is-rec-waves--web-mini" />
           <span className="is-rtn-rec__time" aria-live="off">
             {formatTime(rec.duration)}
           </span>
-          <RecordRoundButton icon="stop-flat" label="Stop recording" variant="destructive" size={60} iconSize={22} onClick={rec.stop} />
+          <span className="is-rtn-rec__stop">
+            <RecordRoundButton
+              icon="stop-flat"
+              label="Stop recording"
+              variant="destructive"
+              size={60}
+              iconSize={22}
+              onClick={() => {
+                setMorphFrom(null);
+                rec.stop();
+              }}
+            />
+            {/* Start Recording, shrinking into the stop button (decorative) */}
+            {morphFrom && (
+              <span className="is-rtn-rec__ghost" aria-hidden="true">
+                <Icon name="mic" size={22} />
+                <span>Start Recording</span>
+              </span>
+            )}
+          </span>
         </div>
       )}
 

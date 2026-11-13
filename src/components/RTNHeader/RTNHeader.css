@@ -302,8 +302,104 @@
   font-variant-numeric: tabular-nums;
 }
 
+/*
+ * Start Recording → Recording. The pill grows out from behind the button (a clip that starts as the button's
+ * shape and opens to the full pill), while the button shrinks into the round stop button and turns red.
+ * --is-rtn-from-w is the width Start Recording had. The stop button sits 31px from the pill's right edge
+ * (1px border + 30px padding) and 30px from its top, where Start Recording was.
+ */
+.is-rtn-rec__pill--grow {
+  animation: is-rtn-rec-grow 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes is-rtn-rec-grow {
+  from {
+    clip-path: inset(30px 31px 30px calc(100% - 31px - var(--is-rtn-from-w, 60px)) round 30px);
+  }
+  to {
+    clip-path: inset(0 0 0 0 round 60px);
+  }
+}
+/* The waves and time fade in as the pill opens */
+.is-rtn-rec__pill--grow > :not(.is-rtn-rec__stop) {
+  animation: is-rtn-rec-fade 360ms ease 160ms both;
+}
+@keyframes is-rtn-rec-fade {
+  from {
+    opacity: 0;
+  }
+}
+.is-rtn-rec__stop {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+}
+/* The stop square appears once the button has nearly finished shrinking */
+.is-rtn-rec__pill--grow .is-rtn-rec__stop .is-rec-btn > * {
+  animation: is-rtn-rec-stop-in 260ms cubic-bezier(0.34, 1.56, 0.64, 1) 300ms both;
+}
+@keyframes is-rtn-rec-stop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+/* Start Recording on top of the stop button: right-anchored, it narrows to 60px and goes from Primary to
+   Destructive, its label fading out first, then it fades away to reveal the stop button underneath */
+.is-rtn-rec__ghost {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 60px;
+  padding: 0 20px;
+  overflow: hidden;
+  border-radius: 1000px;
+  color: var(--is-foreground-high-contrast-secondary-foreground);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: is-rtn-rec-morph 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.is-rtn-rec__ghost > * {
+  flex: none;
+  animation: is-rtn-rec-label-out 160ms ease both;
+}
+@keyframes is-rtn-rec-morph {
+  0% {
+    width: var(--is-rtn-from-w, 60px);
+    background: var(--is-button-primary-default-bg);
+    opacity: 1;
+  }
+  75% {
+    width: 60px;
+    background: var(--is-button-destructive);
+    opacity: 1;
+  }
+  100% {
+    width: 60px;
+    background: var(--is-button-destructive);
+    opacity: 0;
+  }
+}
+@keyframes is-rtn-rec-label-out {
+  to {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .is-rtn-rec__enter {
+  .is-rtn-rec__enter,
+  .is-rtn-rec__pill--grow,
+  .is-rtn-rec__pill--grow > *,
+  .is-rtn-rec__pill--grow .is-rtn-rec__stop .is-rec-btn > * {
     animation: none;
+  }
+  .is-rtn-rec__ghost {
+    display: none;
   }
 }
