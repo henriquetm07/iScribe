@@ -107,8 +107,18 @@ const svgUrl = (svg: string) => `url("data:image/svg+xml,${encodeURIComponent(sv
 /** Pixel sparkle (Figma Frames 1–5): a 3 × 3 plus, at the same scale as the 90s arrow */
 const PLUS = 'polygon(33.34% 0, 66.67% 0, 66.67% 33.34%, 100% 33.34%, 100% 66.67%, 66.67% 66.67%, 66.67% 100%, 33.34% 100%, 33.34% 66.67%, 0 66.67%, 0 33.34%, 33.34% 33.34%)';
 
+/** Elements that get the hand in the default cursor */
+const CLICKABLE = [
+  'a[href]', 'button:not(:disabled)', 'summary', 'select:not(:disabled)', 'label[for]',
+  'input:is([type=button],[type=submit],[type=reset],[type=checkbox],[type=radio],[type=file],[type=color],[type=range]):not(:disabled)',
+  ':is([role=button],[role=link],[role=tab],[role=menuitem],[role=menuitemradio],[role=menuitemcheckbox],[role=option],[role=switch],[role=checkbox],[role=radio],[role=slider]):not([aria-disabled=true])',
+  '[onclick]',
+].join(', ');
+
 const css = (retroUrl: string, retroUrl2x: string) => `
 html.is-cur--default, html.is-cur--default * { cursor: ${svgUrl(DEFAULT_CURSOR_SVG)} 2 2, default !important; }
+/* Over anything clickable, the system hand (disabled controls keep the arrow) */
+html.is-cur--default :is(${CLICKABLE}), html.is-cur--default :is(${CLICKABLE}) * { cursor: pointer !important; }
 html.is-cur--default :is(input:not([type=range]):not([type=checkbox]):not([type=radio]):not([type=color]), textarea, [contenteditable="true"]) { cursor: text !important; }
 html.is-cur--presentation, html.is-cur--presentation *,
 html.is-cur--touch, html.is-cur--touch * { cursor: none !important; }
