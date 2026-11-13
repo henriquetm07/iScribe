@@ -320,7 +320,7 @@
   }
 }
 /* The waves and time fade in as the pill opens */
-.is-rtn-rec__pill--grow > :not(.is-rtn-rec__stop) {
+.is-rtn-rec__pill--grow > :not(.is-rtn-rec__morph) {
   animation: is-rtn-rec-fade 380ms ease 240ms both;
 }
 @keyframes is-rtn-rec-fade {
@@ -328,13 +328,13 @@
     opacity: 0;
   }
 }
-.is-rtn-rec__stop {
+.is-rtn-rec__morph {
   position: relative;
   display: inline-flex;
   flex: none;
 }
 /* The stop square appears once the button has nearly finished shrinking */
-.is-rtn-rec__pill--grow .is-rtn-rec__stop .is-rec-btn > * {
+.is-rtn-rec__pill--grow .is-rtn-rec__morph .is-rec-btn > * {
   animation: is-rtn-rec-stop-in 280ms cubic-bezier(0.34, 1.56, 0.64, 1) 380ms both;
 }
 @keyframes is-rtn-rec-stop-in {
@@ -392,11 +392,64 @@
   }
 }
 
+/*
+ * Recording → Playback. The pill widens from the recording pill's width to the full playback width (it stays
+ * anchored on the right), while the stop button widens into Resume: red to the Secondary fill and stroke, the
+ * stop square fading out, then Resume's mic and label fading in. The play button and timeline fade in as it opens.
+ */
+.is-rtn-rec__pill--open {
+  animation: is-rtn-rec-open 620ms cubic-bezier(0.45, 0, 0.2, 1) both;
+}
+@keyframes is-rtn-rec-open {
+  from {
+    clip-path: inset(0 0 0 calc(100% - var(--is-rtn-from-w, 100%)) round 60px);
+  }
+  to {
+    clip-path: inset(0 0 0 0 round 60px);
+  }
+}
+.is-rtn-rec__pill--open > :not(.is-rtn-rec__morph) {
+  animation: is-rtn-rec-fade 380ms ease 240ms both;
+}
+.is-rtn-rec__pill--open .is-rtn-rec__morph .is-rec-btn > * {
+  animation: is-rtn-rec-fade 260ms ease 380ms both;
+}
+.is-rtn-rec__ghost--stop {
+  justify-content: flex-end;
+  padding: 0 18px;
+  border: 1px solid transparent;
+  color: var(--is-foreground-high-contrast-secondary-foreground-2);
+  animation: is-rtn-rec-unmorph 540ms cubic-bezier(0.45, 0, 0.2, 1) both;
+}
+@keyframes is-rtn-rec-unmorph {
+  0% {
+    width: 60px;
+    background: var(--is-button-destructive);
+    border-color: var(--is-button-destructive);
+    opacity: 1;
+  }
+  75% {
+    width: 100%;
+    background: var(--is-background-elevated-background);
+    border-color: var(--is-button-secondarystroke);
+    opacity: 1;
+  }
+  100% {
+    width: 100%;
+    background: var(--is-background-elevated-background);
+    border-color: var(--is-button-secondarystroke);
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .is-rtn-rec__enter,
   .is-rtn-rec__pill--grow,
   .is-rtn-rec__pill--grow > *,
-  .is-rtn-rec__pill--grow .is-rtn-rec__stop .is-rec-btn > * {
+  .is-rtn-rec__pill--grow .is-rtn-rec__morph .is-rec-btn > *,
+  .is-rtn-rec__pill--open,
+  .is-rtn-rec__pill--open > *,
+  .is-rtn-rec__pill--open .is-rtn-rec__morph .is-rec-btn > * {
     animation: none;
   }
   .is-rtn-rec__ghost {
