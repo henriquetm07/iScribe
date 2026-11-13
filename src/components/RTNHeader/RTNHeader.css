@@ -393,12 +393,13 @@
 }
 
 /*
- * Recording → Playback. The pill widens from the recording pill's width to the full playback width (it stays
- * anchored on the right), while the stop button widens into Resume: red to the Secondary fill and stroke, the
- * stop square fading out, then Resume's mic and label fading in. The play button and timeline fade in as it opens.
+ * Recording → Playback, quick and crisp. The pill widens from the recording pill's width to the full playback
+ * width (anchored on the right). The stop circle turns into Resume in place: the red circle fades to Resume's
+ * white one at the same size, which then stretches leftwards to Resume's full width as its mic and label fade in.
+ * The play button and timeline fade in as the pill opens.
  */
 .is-rtn-rec__pill--open {
-  animation: is-rtn-rec-open 620ms cubic-bezier(0.45, 0, 0.2, 1) both;
+  animation: is-rtn-rec-open 400ms cubic-bezier(0.2, 0, 0, 1) both;
 }
 @keyframes is-rtn-rec-open {
   from {
@@ -409,35 +410,37 @@
   }
 }
 .is-rtn-rec__pill--open > :not(.is-rtn-rec__morph) {
-  animation: is-rtn-rec-fade 380ms ease 240ms both;
+  animation: is-rtn-rec-fade 220ms ease-out 100ms both;
+}
+/* Resume, revealed from a 60px circle on its right edge */
+.is-rtn-rec__pill--open .is-rtn-rec__morph .is-rec-btn {
+  animation: is-rtn-rec-widen 340ms cubic-bezier(0.2, 0, 0, 1) 40ms both;
+}
+@keyframes is-rtn-rec-widen {
+  from {
+    clip-path: inset(0 0 0 calc(100% - 60px) round 30px);
+  }
+  to {
+    clip-path: inset(0 0 0 0 round 30px);
+  }
 }
 .is-rtn-rec__pill--open .is-rtn-rec__morph .is-rec-btn > * {
-  animation: is-rtn-rec-fade 260ms ease 380ms both;
+  animation: is-rtn-rec-fade 180ms ease-out 140ms both;
 }
+/* The red stop circle on top, fading away over Resume's circle */
 .is-rtn-rec__ghost--stop {
-  justify-content: flex-end;
-  padding: 0 18px;
-  border: 1px solid transparent;
+  justify-content: center;
+  width: 60px;
+  padding: 0;
+  background: var(--is-button-destructive);
   color: var(--is-foreground-high-contrast-secondary-foreground-2);
-  animation: is-rtn-rec-unmorph 540ms cubic-bezier(0.45, 0, 0.2, 1) both;
+  animation: is-rtn-rec-ghost-out 140ms ease-out both;
 }
-@keyframes is-rtn-rec-unmorph {
-  0% {
-    width: 60px;
-    background: var(--is-button-destructive);
-    border-color: var(--is-button-destructive);
-    opacity: 1;
-  }
-  75% {
-    width: 100%;
-    background: var(--is-background-elevated-background);
-    border-color: var(--is-button-secondarystroke);
-    opacity: 1;
-  }
-  100% {
-    width: 100%;
-    background: var(--is-background-elevated-background);
-    border-color: var(--is-button-secondarystroke);
+.is-rtn-rec__ghost--stop > * {
+  animation: none;
+}
+@keyframes is-rtn-rec-ghost-out {
+  to {
     opacity: 0;
   }
 }
@@ -449,6 +452,7 @@
   .is-rtn-rec__pill--grow .is-rtn-rec__morph .is-rec-btn > *,
   .is-rtn-rec__pill--open,
   .is-rtn-rec__pill--open > *,
+  .is-rtn-rec__pill--open .is-rtn-rec__morph .is-rec-btn,
   .is-rtn-rec__pill--open .is-rtn-rec__morph .is-rec-btn > * {
     animation: none;
   }
