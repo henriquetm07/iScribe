@@ -309,7 +309,7 @@
  * (1px border + 30px padding) and 30px from its top, where Start Recording was.
  */
 .is-rtn-rec__pill--grow {
-  animation: is-rtn-rec-grow 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: is-rtn-rec-grow 620ms cubic-bezier(0.45, 0, 0.2, 1) both;
 }
 @keyframes is-rtn-rec-grow {
   from {
@@ -321,7 +321,7 @@
 }
 /* The waves and time fade in as the pill opens */
 .is-rtn-rec__pill--grow > :not(.is-rtn-rec__stop) {
-  animation: is-rtn-rec-fade 360ms ease 160ms both;
+  animation: is-rtn-rec-fade 380ms ease 240ms both;
 }
 @keyframes is-rtn-rec-fade {
   from {
@@ -335,7 +335,7 @@
 }
 /* The stop square appears once the button has nearly finished shrinking */
 .is-rtn-rec__pill--grow .is-rtn-rec__stop .is-rec-btn > * {
-  animation: is-rtn-rec-stop-in 260ms cubic-bezier(0.34, 1.56, 0.64, 1) 300ms both;
+  animation: is-rtn-rec-stop-in 280ms cubic-bezier(0.34, 1.56, 0.64, 1) 380ms both;
 }
 @keyframes is-rtn-rec-stop-in {
   from {
@@ -362,11 +362,11 @@
   line-height: 1;
   white-space: nowrap;
   pointer-events: none;
-  animation: is-rtn-rec-morph 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: is-rtn-rec-morph 540ms cubic-bezier(0.45, 0, 0.2, 1) both;
 }
 .is-rtn-rec__ghost > * {
   flex: none;
-  animation: is-rtn-rec-label-out 160ms ease both;
+  animation: is-rtn-rec-label-out 180ms ease both;
 }
 @keyframes is-rtn-rec-morph {
   0% {
