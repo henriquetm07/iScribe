@@ -32,6 +32,14 @@
 .is-apt-fill-fg-positive {
   fill: var(--is-status-foreground-positive);
 }
+/* Sent to EHR plane: drawn like the animation (12 on its 240 grid = 1px), round ends and corners */
+.is-apt-plane path {
+  fill: none;
+  stroke: var(--is-status-foreground-positive);
+  stroke-width: 12;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 /* Alert: Failed */
 .is-apt-fill-bg-alert {
   fill: var(--is-status-background-alert);

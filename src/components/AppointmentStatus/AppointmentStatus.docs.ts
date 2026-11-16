@@ -11,7 +11,7 @@ const look: Record<AppointmentStatusValue, string> = {
   'checked-in': 'patient in a 1px circle, high contrast',
   'checked-out': 'patient in a dotted circle with a dotted diagonal, medium contrast',
   'note-in-progress': 'iScribe waves in a 1px circle, high contrast',
-  'sent-to-ehr': '"send" in var(--is-status-foreground-positive) on a var(--is-status-background-positive) disc',
+  'sent-to-ehr': '"send" plane (1px line, round corners) in var(--is-status-foreground-positive) on a var(--is-status-background-positive) disc',
   'copied-to-ehr': '"copy" in var(--is-status-foreground-positive) on a var(--is-status-background-positive) disc',
   failed: '"alert" in var(--is-status-foreground-alert) on a var(--is-status-background-alert) disc',
 };

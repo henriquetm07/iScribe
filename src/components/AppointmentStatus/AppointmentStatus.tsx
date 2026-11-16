@@ -84,11 +84,17 @@ const artwork: Record<AppointmentStatusValue, ReactNode> = {
       <path className="is-apt-fill-hi" fillRule="evenodd" d="M12.4416 13.6749C11.0892 12.2322 8.9138 12.2322 7.56144 13.6749C7.30448 13.949 6.87546 13.9615 6.60321 13.7028C6.33095 13.444 6.31856 13.0121 6.57552 12.7379C8.46293 10.7244 11.5401 10.7244 13.4275 12.7379C13.6845 13.0121 13.6721 13.444 13.3998 13.7028C13.1275 13.9615 12.6985 13.949 12.4416 13.6749Z" />
     </>
   ),
-  // Positive: "send" on a green disc
+  // Positive: "send" on a green disc. The plane is drawn exactly as in the "sent-to-ehr-expanded" animation
+  // (a 1px round-cornered line on its 240 grid), so the animation hands back to this icon without a jump.
   'sent-to-ehr': (
     <>
       <path className="is-apt-fill-bg-positive" fillRule="evenodd" d="M10 0C15.5228 0 20 4.47715 20 10C20 15.5228 15.5228 20 10 20C4.47715 20 0 15.5228 0 10C0 4.47715 4.47715 0 10 0Z" />
-      <path className="is-apt-fill-fg-positive" fillRule="evenodd" d="M13.1822 6.18494L13.2684 6.19819L13.3514 6.22387C13.4324 6.255 13.5062 6.30362 13.5679 6.36633C13.6296 6.42908 13.6772 6.50428 13.7079 6.58665L13.7331 6.67114L13.7461 6.75893C13.7526 6.84427 13.7405 6.93016 13.7128 7.01156L13.7136 7.01239L11.142 14.6632C11.1013 14.7839 11.0249 14.89 10.9239 14.9655C10.8229 15.0409 10.7016 15.0831 10.5764 15.0864C10.4511 15.0897 10.3271 15.0538 10.2224 14.9837C10.1439 14.9311 10.0785 14.8608 10.0311 14.7791L9.99044 14.6938L8.7323 11.5L8.6973 11.4321C8.68343 11.4108 8.66716 11.3906 8.64929 11.3724C8.6136 11.3363 8.57071 11.3079 8.52396 11.2888L5.38594 10.0074C5.26977 9.95993 5.16995 9.87781 5.10111 9.77138C5.03232 9.66481 4.99699 9.53855 5.0002 9.41108L5.00997 9.31665C5.02646 9.22341 5.06349 9.13448 5.11902 9.0574L5.18005 8.98534C5.24597 8.91819 5.32707 8.8665 5.41605 8.83542L12.9331 6.21807C13.0133 6.18959 13.0981 6.17834 13.1822 6.18494ZM9.47937 11.1273L9.50541 11.1836L10.5438 13.8208L12.4725 8.08086L9.47937 11.1273ZM6.24288 9.44338L8.83402 10.5011C8.85312 10.5089 8.87071 10.5189 8.88936 10.5276L11.8866 7.47788L6.24288 9.44338Z" />
+      <svg width="20" height="20" viewBox="0 0 240 240" className="is-apt-plane">
+        <g transform="translate(114.387 123.627)">
+          <path d="M44.8 -42.2L11.8 50L-6.6 8.4L-48 -10Z" />
+          <path d="M44.8 -42.2L-6.6 8.4" />
+        </g>
+      </svg>
     </>
   ),
   // Positive: "copy" on a green disc
@@ -149,7 +155,7 @@ export const AppointmentStatusIcon = ({ status, size = 20, title, animate = true
         aria-hidden={name ? undefined : true}
       >
         <svg width={size} height={size} viewBox="0 0 20 20" aria-hidden="true">
-          <circle className="is-apt-fill-bg-positive" cx="10" cy="10" r="10" />
+          <path className="is-apt-fill-bg-positive" d="M10 0C15.5228 0 20 4.47715 20 10C20 15.5228 15.5228 20 10 20C4.47715 20 0 15.5228 0 10C0 4.47715 4.47715 0 10 0Z" />
         </svg>
         <AnimatedIcon
           name="sent-to-ehr-expanded"
