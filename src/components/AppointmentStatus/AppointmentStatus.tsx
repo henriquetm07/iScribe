@@ -145,7 +145,8 @@ export const AppointmentStatusIcon = ({ status, size = 20, title, animate = true
 
   if (flying && status === 'sent-to-ehr') {
     // The green disc stays put; the plane (240-grid animation, which lines up with the static icon) flies on top,
-    // clipped to the circle, and the static icon comes back when it lands
+    // clipped to the circle. When it lands it stays on its last frame — identical to the static icon — rather than
+    // swapping back, so there is no hand-off to see. Changing the status again resets it.
     return (
       <span
         className={`is-apt-icon is-apt-flight ${className}`}
@@ -161,7 +162,6 @@ export const AppointmentStatusIcon = ({ status, size = 20, title, animate = true
           name="sent-to-ehr-expanded"
           size={size}
           className="is-apt-flight__plane"
-          onComplete={() => setFlying(false)}
           // The static plane, until the animation player has loaded
           fallback={
             <svg width={size} height={size} viewBox="0 0 20 20" aria-hidden="true">
