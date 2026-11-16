@@ -32,6 +32,7 @@ const meta = {
     position: 32,
     onMoreClick: fn(),
     onRecordStateChange: fn(),
+    onPatientChange: fn(),
   },
   argTypes: {
     filledIn: { name: 'filled in', control: 'boolean' },
@@ -48,6 +49,7 @@ const meta = {
     patient: { table: { disable: true } },
     onMoreClick: { table: { disable: true } },
     onRecordStateChange: { table: { disable: true } },
+    onPatientChange: { table: { disable: true } },
     className: { table: { disable: true } },
     style: { table: { disable: true } },
   },
