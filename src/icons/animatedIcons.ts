@@ -6,6 +6,7 @@ import arrowToCheck from './animated/arrow-to-check.json';
 import playPause from './animated/play-pause.json';
 import chevronUpDown from './animated/chevron-up-down.json';
 import chevronLeftRight from './animated/chevron-left-right.json';
+import sentToEhr from './animated/sent-to-ehr.json';
 
 export interface AnimatedIconData {
   /** The Lottie JSON */
@@ -56,6 +57,13 @@ export const animatedIcons = {
     markers: { right: 15, left: 60 },
     startsFrom: 'chevron-left',
     states: { right: [3, 32], left: [48, 77] },
+  },
+  'sent-to-ehr': {
+    data: sentToEhr,
+    description:
+      'A paper plane dips, flies off to the top right, then glides back in from the bottom left and settles. For "Sent to EHR" (see Components / Appointment Status).',
+    markers: { away: 16.5, back: 40.5 },
+    startsFrom: 'send',
   },
 } satisfies Record<string, AnimatedIconData>;
 
