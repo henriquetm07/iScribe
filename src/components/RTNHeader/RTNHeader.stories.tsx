@@ -16,13 +16,13 @@ const sarah: RTNPatient = {
 const caption = { margin: '0 0 8px', fontFamily: 'var(--is-font-ui)', fontSize: 12, color: 'var(--is-foreground-low-contrast-primary-foreground)' } as const;
 
 /** Story-only: switch the patient between the Figma "Filled in" and "Empty" profiles, and show or hide the check-in note */
-type StoryArgs = RTNHeaderProps & { profile?: 'filled in' | 'empty'; showCheckedIn?: boolean };
+type StoryArgs = RTNHeaderProps & { filledIn?: boolean; showCheckedIn?: boolean };
 
 const meta = {
   title: 'Components/RTN Header (Web)',
   component: RTNHeader,
   args: {
-    profile: 'filled in',
+    filledIn: true,
     showPhoto: true,
     recordState: 'idle',
     labels: ['Visit', 'Room 12'],
@@ -34,7 +34,7 @@ const meta = {
     onRecordStateChange: fn(),
   },
   argTypes: {
-    profile: { name: 'demographics', control: 'inline-radio', options: ['filled in', 'empty'] },
+    filledIn: { name: 'filled in', control: 'boolean' },
     showCheckedIn: { name: 'checked in', control: 'boolean' },
     // Set by the stories (Recording, Playback) rather than from Controls
     recordState: { table: { disable: true } },
@@ -56,19 +56,19 @@ const meta = {
     docs: {
       source: {
         transform: (code: string, ctx: { args: StoryArgs }) =>
-          `${rtnHeaderSpecComment({ ...ctx.args, patient: ctx.args.profile === 'empty' ? null : sarah })}\n${code
+          `${rtnHeaderSpecComment({ ...ctx.args, patient: ctx.args.filledIn === false ? null : sarah })}\n${code
             .replace(/\n\s*on[A-Z]\w*=\{[^}]*\}\}?/g, '')
-            .replace(/\n\s*profile="[^"]*"/g, '')
+            .replace(/\n\s*filledIn(=\{[^}]*\})?/g, '')
             .replace(/\n\s*showCheckedIn(=\{[^}]*\})?/g, '')}`,
       },
     },
   },
-  render: ({ profile, showCheckedIn = true, ...args }) => (
+  render: ({ filledIn = true, showCheckedIn = true, ...args }) => (
     <RTNHeader
       // Restart the record feature when its controls change
       key={`${args.recordState}-${args.duration}-${args.position}`}
       {...args}
-      patient={profile === 'empty' ? null : sarah}
+      patient={filledIn ? sarah : null}
       checkedIn={showCheckedIn ? args.checkedIn : ''}
     />
   ),
@@ -85,7 +85,7 @@ export const Recording: Story = { args: { recordState: 'recording', duration: 0 
 export const Playback: Story = { args: { recordState: 'paused' } };
 
 /** The patient's profile isn't filled in yet: dotted blanks in place of the name and details. Click any of them to fill it in. */
-export const EmptyProfile: Story = { name: 'Empty profile', args: { profile: 'empty' } };
+export const EmptyProfile: Story = { name: 'Empty profile', args: { filledIn: false } };
 
 /** Figma "RTN Header Web Details" on its own. */
 export const Details: Story = {
