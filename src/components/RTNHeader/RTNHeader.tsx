@@ -197,6 +197,8 @@ const TextField = ({
       aria-label={label}
       inputMode={numeric ? 'numeric' : undefined}
       maxLength={maxLength}
+      // The sizer sets the width; size 1 stops the input's own default width (about 20 characters) from widening it
+      size={1}
       autoComplete="off"
       spellCheck={false}
       onChange={(e) => onChange(e.target.value, ((e.nativeEvent as InputEvent).inputType ?? '').startsWith('insert'))}
