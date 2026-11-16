@@ -40,6 +40,19 @@
   fill: var(--is-status-foreground-alert);
 }
 
+/* Sent to EHR, on arrival: the green disc with the paper plane animation on top, clipped to the circle */
+.is-apt-flight {
+  display: inline-grid;
+  overflow: hidden;
+  border-radius: 50%;
+}
+.is-apt-flight > * {
+  grid-area: 1 / 1;
+}
+.is-apt-flight__plane {
+  color: var(--is-status-foreground-positive);
+}
+
 /* Icon + label: 8px apart, label Figtree Medium 11px / 18px, high contrast */
 .is-apt-status {
   display: inline-flex;

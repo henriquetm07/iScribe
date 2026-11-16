@@ -1,4 +1,5 @@
-import type { ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { AnimatedIcon } from '../../icons/AnimatedIcon';
 import './AppointmentStatus.css';
 
 /*
@@ -117,12 +118,55 @@ export interface AppointmentStatusIconProps {
   size?: number;
   /** Accessible name. Defaults to the status label; pass "" when a visible label sits next to it. */
   title?: string;
+  /**
+   * Animate on arrival (default true): when the status changes to "sent-to-ehr", the paper plane flies off
+   * and back in once (Foundations / Animated Icons, "sent-to-ehr-expanded"). The first render is static.
+   */
+  animate?: boolean;
   className?: string;
 }
 
 /** Figma "Appointment Status Icons": the 20px icon for an appointment's status */
-export const AppointmentStatusIcon = ({ status, size = 20, title, className = '' }: AppointmentStatusIconProps) => {
+export const AppointmentStatusIcon = ({ status, size = 20, title, animate = true, className = '' }: AppointmentStatusIconProps) => {
   const name = title ?? appointmentStatusLabel(status);
+  // Play the paper plane once when the status becomes "Sent to EHR" (not when it starts there)
+  const previous = useRef(status);
+  const [flying, setFlying] = useState(false);
+  useEffect(() => {
+    if (status !== previous.current) setFlying(animate && status === 'sent-to-ehr');
+    previous.current = status;
+  }, [status, animate]);
+
+  if (flying && status === 'sent-to-ehr') {
+    // The green disc stays put; the plane (240-grid animation, which lines up with the static icon) flies on top,
+    // clipped to the circle, and the static icon comes back when it lands
+    return (
+      <span
+        className={`is-apt-icon is-apt-flight ${className}`}
+        style={{ width: size, height: size }}
+        role={name ? 'img' : undefined}
+        aria-label={name || undefined}
+        aria-hidden={name ? undefined : true}
+      >
+        <svg width={size} height={size} viewBox="0 0 20 20" aria-hidden="true">
+          <circle className="is-apt-fill-bg-positive" cx="10" cy="10" r="10" />
+        </svg>
+        <AnimatedIcon
+          name="sent-to-ehr-expanded"
+          size={size}
+          className="is-apt-flight__plane"
+          onComplete={() => setFlying(false)}
+          // The static plane, until the animation player has loaded
+          fallback={
+            <svg width={size} height={size} viewBox="0 0 20 20" aria-hidden="true">
+              {artwork['sent-to-ehr']}
+            </svg>
+          }
+        />
+      </span>
+    );
+  }
+
   return (
     <svg
       className={`is-apt-icon is-apt-icon--${status} ${className}`}
@@ -145,13 +189,15 @@ export interface AppointmentStatusProps {
   status: AppointmentStatusValue;
   /** Text next to the icon; defaults to the status name (e.g. "Sent to EHR") */
   label?: string;
+  /** Play the paper plane when the status changes to "sent-to-ehr" (default true) */
+  animate?: boolean;
   className?: string;
 }
 
 /** Figma "Appointment Status": the status icon followed by its label (Figtree Medium 11px, 8px apart) */
-export const AppointmentStatus = ({ status, label, className = '' }: AppointmentStatusProps) => (
+export const AppointmentStatus = ({ status, label, animate = true, className = '' }: AppointmentStatusProps) => (
   <span className={`is-apt-status ${className}`}>
-    <AppointmentStatusIcon status={status} title="" />
+    <AppointmentStatusIcon status={status} title="" animate={animate} />
     <span className="is-apt-status__label">{label ?? appointmentStatusLabel(status)}</span>
   </span>
 );

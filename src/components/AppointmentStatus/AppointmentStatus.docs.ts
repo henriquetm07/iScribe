@@ -24,6 +24,9 @@ export const appointmentStatusSpecLines = (status: AppointmentStatusValue = 'new
   `  Look        ${look[status]}`,
   '  Contrast    high = var(--is-foreground-high-contrast-primary-foreground)',
   '              medium = var(--is-foreground-medium-contrast-primary-foreground)',
+  ...(status === 'sent-to-ehr'
+    ? ['  Arrival     when the status changes to Sent to EHR, the paper plane flies off and back in once', '              (Animated Icons "sent-to-ehr-expanded", 1s); animate={false} turns it off']
+    : []),
   ...(withLabel
     ? [
         '',

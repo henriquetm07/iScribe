@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Button } from '../Button/Button';
 import { AppointmentStatus, AppointmentStatusIcon, appointmentStatuses, type AppointmentStatusProps } from './AppointmentStatus';
 import { appointmentStatusSpecComment } from './AppointmentStatus.docs';
 
@@ -11,6 +13,7 @@ const meta = {
   argTypes: {
     status: { control: 'select', options: appointmentStatuses.map((s) => s.value) },
     label: { table: { disable: true } },
+    animate: { table: { disable: true } },
     className: { table: { disable: true } },
   },
   parameters: {
@@ -39,6 +42,23 @@ export const Icon: Story = {
     },
   },
   render: ({ status }) => <AppointmentStatusIcon status={status} />,
+};
+
+/** Sending a note: when the status changes to Sent to EHR, the paper plane flies off and back in once. */
+export const SendToEhr: Story = {
+  name: 'Send to EHR',
+  parameters: { controls: { disable: true } },
+  render: function Render() {
+    const [sent, setSent] = useState(false);
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
+        <AppointmentStatus status={sent ? 'sent-to-ehr' : 'note-in-progress'} />
+        <Button size="small" variant="secondary" onClick={() => setSent((s) => !s)}>
+          {sent ? 'Reset' : 'Send to EHR'}
+        </Button>
+      </div>
+    );
+  },
 };
 
 /** Every status, as in the Figma sheet: the icons on their own, and with their labels. */
