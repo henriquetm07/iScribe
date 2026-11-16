@@ -185,10 +185,16 @@ const TextField = ({
     <span className="is-rtn-field__sizer" aria-hidden="true">
       {mask ? value + mask.slice(value.length) : value || placeholder}
     </span>
-    {mask && (
-      <span className="is-rtn-field__mask" aria-hidden="true">
+    {/* What you see when not typing: plain text (or the placeholder), so it renders exactly like the rest of
+        the page's text. The input on top only shows its own text while it has focus. */}
+    {mask ? (
+      <span className="is-rtn-field__display is-rtn-field__mask" aria-hidden="true">
         <span className="is-rtn-field__typed">{value}</span>
-        {mask.slice(value.length)}
+        <span className="is-rtn-field__rest">{mask.slice(value.length)}</span>
+      </span>
+    ) : (
+      <span className="is-rtn-field__display" aria-hidden="true">
+        {value || placeholder}
       </span>
     )}
     <input
