@@ -1,0 +1,157 @@
+import type { ReactNode } from 'react';
+import './AppointmentStatus.css';
+
+/*
+ * Appointment Status — Figma "Appointment Status" (1067:23721). Two parts:
+ *   AppointmentStatusIcon   the 20px status icon (Figma "Appointment Status Icons")
+ *   AppointmentStatus       the icon with its label (Figma "Appointment Status")
+ * Colours are the Figma variables (Foreground and Status), so light and dark mode follow data-theme.
+ */
+
+export type AppointmentStatusValue =
+  | 'new-note'
+  | 'not-checked-in'
+  | 'checked-in'
+  | 'checked-out'
+  | 'note-in-progress'
+  | 'sent-to-ehr'
+  | 'copied-to-ehr'
+  | 'failed';
+
+/** The statuses in Figma order, with their labels */
+export const appointmentStatuses: { value: AppointmentStatusValue; label: string }[] = [
+  { value: 'new-note', label: 'New Note' },
+  { value: 'not-checked-in', label: 'Not Checked-in' },
+  { value: 'checked-in', label: 'Checked-in' },
+  { value: 'checked-out', label: 'Checked-out' },
+  { value: 'note-in-progress', label: 'Note in Progress' },
+  { value: 'sent-to-ehr', label: 'Sent to EHR' },
+  { value: 'copied-to-ehr', label: 'Copied to EHR' },
+  { value: 'failed', label: 'Failed' },
+];
+
+export const appointmentStatusLabel = (status: AppointmentStatusValue) =>
+  appointmentStatuses.find((s) => s.value === status)?.label ?? status;
+
+/* ---------- Icon artwork (20 × 20, exported from the Figma components) ---------- */
+
+/** Dotted circle (Figma "Circle (Stroke)"): 1px dots, evenly spaced around a 20px circle */
+const DottedCircle = () => (
+  <circle className="is-apt-stroke-mid" cx="10" cy="10" r="9.5" pathLength="60" strokeDasharray="1.05 0.95" />
+);
+
+const artwork: Record<AppointmentStatusValue, ReactNode> = {
+  // High contrast: patient in a dotted rounded square
+  'new-note': (
+    <>
+      <rect className="is-apt-stroke-hi" x="0.5" y="0.5" width="19" height="19" rx="2.5" strokeDasharray="1 1" />
+      <path className="is-apt-fill-hi" d="M10.0001 10.88C11.5668 10.88 13.0005 11.4348 14.1051 12.3538C15.4838 13.501 14.2401 15.28 12.4267 15.28H7.57253C5.75927 15.2798 4.51635 13.5009 5.89505 12.3538C6.99964 11.4349 8.43329 10.88 10.0001 10.88Z" />
+      <path className="is-apt-fill-hi" d="M10.0001 4.71997C11.497 4.72012 12.7108 5.90203 12.7108 7.35997C12.7108 8.81791 11.497 9.99983 10.0001 9.99997C8.50293 9.99997 7.28927 8.818 7.28927 7.35997C7.28927 5.90194 8.50293 4.71997 10.0001 4.71997Z" />
+    </>
+  ),
+  // Medium contrast: patient in a dotted circle
+  'not-checked-in': (
+    <>
+      <path className="is-apt-fill-mid" d="M10.0001 10.88C11.5668 10.88 13.0005 11.4348 14.1051 12.3538C15.4838 13.501 14.2401 15.28 12.4267 15.28H7.57253C5.75927 15.2798 4.51635 13.5009 5.89505 12.3538C6.99964 11.4349 8.43329 10.88 10.0001 10.88Z" />
+      <path className="is-apt-fill-mid" d="M10.0001 4.71997C11.497 4.72012 12.7108 5.90203 12.7108 7.35997C12.7108 8.81791 11.497 9.99983 10.0001 9.99997C8.50293 9.99997 7.28927 8.818 7.28927 7.35997C7.28927 5.90194 8.50293 4.71997 10.0001 4.71997Z" />
+      <DottedCircle />
+    </>
+  ),
+  // High contrast: patient in a circle
+  'checked-in': (
+    <>
+      <path className="is-apt-stroke-hi" d="M10 0.5C15.2467 0.5 19.5 4.75329 19.5 10C19.5 15.2467 15.2467 19.5 10 19.5C4.75329 19.5 0.5 15.2467 0.5 10C0.5 4.75329 4.75329 0.5 10 0.5Z" />
+      <path className="is-apt-fill-hi" d="M10.0001 10.88C11.5668 10.88 13.0005 11.4348 14.1051 12.3538C15.4838 13.501 14.2401 15.28 12.4267 15.28H7.57253C5.75927 15.2798 4.51635 13.5009 5.89505 12.3538C6.99964 11.4349 8.43329 10.88 10.0001 10.88Z" />
+      <path className="is-apt-fill-hi" d="M10.0001 4.71997C11.497 4.72012 12.7108 5.90203 12.7108 7.35997C12.7108 8.81791 11.497 9.99983 10.0001 9.99997C8.50293 9.99997 7.28927 8.818 7.28927 7.35997C7.28927 5.90194 8.50293 4.71997 10.0001 4.71997Z" />
+    </>
+  ),
+  // Medium contrast: dotted circle with a dotted diagonal through the patient
+  'checked-out': (
+    <>
+      <DottedCircle />
+      <path className="is-apt-fill-mid" d="M10.0001 10.88C11.5668 10.88 13.0005 11.4348 14.1051 12.3538C15.4838 13.501 14.2401 15.28 12.4267 15.28H7.57253C5.75927 15.2798 4.51635 13.5009 5.89505 12.3538C6.99964 11.4349 8.43329 10.88 10.0001 10.88Z" />
+      <path className="is-apt-fill-mid" d="M10.0001 4.71997C11.497 4.72012 12.7108 5.90203 12.7108 7.35997C12.7108 8.81791 11.497 9.99983 10.0001 9.99997C8.50293 9.99997 7.28927 8.818 7.28927 7.35997C7.28927 5.90194 8.50293 4.71997 10.0001 4.71997Z" />
+      <path className="is-apt-fill-mid" d="M4.44356 14.8492L5.15067 15.5563L4.45668 16.2503L3.74957 15.5432L4.44356 14.8492ZM5.83084 13.4619L6.53795 14.1691L5.84396 14.863L5.13686 14.1559L5.83084 13.4619ZM7.21812 12.0747L7.92523 12.7818L7.23124 13.4758L6.52414 12.7686L7.21812 12.0747ZM8.60541 10.6874L9.31251 11.3945L8.61922 12.0878L7.91211 11.3807L8.60541 10.6874ZM9.99338 9.2994L10.7005 10.0065L10.0065 10.7005L9.29939 9.99339L9.99338 9.2994ZM11.3807 7.91212L12.0878 8.61923L11.3938 9.31322L10.6867 8.60611L11.3807 7.91212ZM12.7679 6.52484L13.4751 7.23195L12.7811 7.92593L12.074 7.21883L12.7679 6.52484ZM14.1552 5.13756L14.8623 5.84466L14.169 6.53796L13.4619 5.83085L14.1552 5.13756ZM15.5432 3.74958L16.2503 4.45669L15.5563 5.15068L14.8492 4.44357L15.5432 3.74958Z" />
+    </>
+  ),
+  // High contrast: the iScribe waves in a circle
+  'note-in-progress': (
+    <>
+      <path className="is-apt-stroke-hi" d="M10 0.5C15.2467 0.5 19.5 4.75329 19.5 10C19.5 15.2467 15.2467 19.5 10 19.5C4.75329 19.5 0.5 15.2467 0.5 10C0.5 4.75329 4.75329 0.5 10 0.5Z" />
+      <path className="is-apt-fill-hi" fillRule="evenodd" d="M15.8292 10.0559C12.6051 6.61625 7.39494 6.61625 4.17082 10.0559C3.91386 10.33 3.48485 10.3425 3.21259 10.0837C2.94033 9.82501 2.92793 9.39304 3.18489 9.1189C6.94405 5.10848 13.056 5.10848 16.8151 9.1189C17.0721 9.39304 17.0597 9.82502 16.7874 10.0838C16.5151 10.3425 16.0861 10.33 15.8292 10.0559Z" />
+      <path className="is-apt-fill-hi" fillRule="evenodd" d="M14.1377 11.8664C11.8488 9.42453 8.15498 9.42453 5.86614 11.8664C5.60918 12.1405 5.18016 12.153 4.9079 11.8943C4.63565 11.6355 4.62324 11.2036 4.8802 10.9294C7.7041 7.91676 12.2997 7.91676 15.1236 10.9294C15.3806 11.2036 15.3682 11.6355 15.0959 11.8943C14.8236 12.153 14.3946 12.1405 14.1377 11.8664Z" />
+      <path className="is-apt-fill-hi" fillRule="evenodd" d="M12.4416 13.6749C11.0892 12.2322 8.9138 12.2322 7.56144 13.6749C7.30448 13.949 6.87546 13.9615 6.60321 13.7028C6.33095 13.444 6.31856 13.0121 6.57552 12.7379C8.46293 10.7244 11.5401 10.7244 13.4275 12.7379C13.6845 13.0121 13.6721 13.444 13.3998 13.7028C13.1275 13.9615 12.6985 13.949 12.4416 13.6749Z" />
+    </>
+  ),
+  // Positive: "send" on a green disc
+  'sent-to-ehr': (
+    <>
+      <path className="is-apt-fill-bg-positive" fillRule="evenodd" d="M10 0C15.5228 0 20 4.47715 20 10C20 15.5228 15.5228 20 10 20C4.47715 20 0 15.5228 0 10C0 4.47715 4.47715 0 10 0Z" />
+      <path className="is-apt-fill-fg-positive" fillRule="evenodd" d="M13.1822 6.18494L13.2684 6.19819L13.3514 6.22387C13.4324 6.255 13.5062 6.30362 13.5679 6.36633C13.6296 6.42908 13.6772 6.50428 13.7079 6.58665L13.7331 6.67114L13.7461 6.75893C13.7526 6.84427 13.7405 6.93016 13.7128 7.01156L13.7136 7.01239L11.142 14.6632C11.1013 14.7839 11.0249 14.89 10.9239 14.9655C10.8229 15.0409 10.7016 15.0831 10.5764 15.0864C10.4511 15.0897 10.3271 15.0538 10.2224 14.9837C10.1439 14.9311 10.0785 14.8608 10.0311 14.7791L9.99044 14.6938L8.7323 11.5L8.6973 11.4321C8.68343 11.4108 8.66716 11.3906 8.64929 11.3724C8.6136 11.3363 8.57071 11.3079 8.52396 11.2888L5.38594 10.0074C5.26977 9.95993 5.16995 9.87781 5.10111 9.77138C5.03232 9.66481 4.99699 9.53855 5.0002 9.41108L5.00997 9.31665C5.02646 9.22341 5.06349 9.13448 5.11902 9.0574L5.18005 8.98534C5.24597 8.91819 5.32707 8.8665 5.41605 8.83542L12.9331 6.21807C13.0133 6.18959 13.0981 6.17834 13.1822 6.18494ZM9.47937 11.1273L9.50541 11.1836L10.5438 13.8208L12.4725 8.08086L9.47937 11.1273ZM6.24288 9.44338L8.83402 10.5011C8.85312 10.5089 8.87071 10.5189 8.88936 10.5276L11.8866 7.47788L6.24288 9.44338Z" />
+    </>
+  ),
+  // Positive: "copy" on a green disc
+  'copied-to-ehr': (
+    <>
+      <path className="is-apt-fill-bg-positive" fillRule="evenodd" d="M10 0C15.5228 0 20 4.47715 20 10C20 15.5228 15.5228 20 10 20C4.47715 20 0 15.5228 0 10C0 4.47715 4.47715 0 10 0Z" />
+      <path className="is-apt-fill-fg-positive" fillRule="evenodd" d="M13.3465 5.31006C14.0882 5.31027 14.6898 5.91161 14.6898 6.65338V11.2772C14.6896 12.0188 14.0881 12.6203 13.3465 12.6205H12.6206V13.3464C12.6204 14.088 12.0189 14.6895 11.2773 14.6897H6.6535C5.91173 14.6897 5.31039 14.0881 5.31018 13.3464V8.72259C5.31018 7.98069 5.91161 7.37926 6.6535 7.37926H7.37939V6.65338C7.37939 5.91148 7.98081 5.31006 8.72271 5.31006H13.3465ZM6.6535 8.27481C6.4062 8.27481 6.20573 8.47529 6.20573 8.72259V13.3464C6.20594 13.5935 6.40633 13.7941 6.6535 13.7941H11.2773C11.5243 13.7939 11.7249 13.5934 11.7251 13.3464V8.72259C11.7251 8.47541 11.5244 8.27502 11.2773 8.27481H6.6535ZM8.72271 6.20561C8.47541 6.20561 8.27493 6.40608 8.27493 6.65338V7.37926H11.2773C12.019 7.37947 12.6206 7.98082 12.6206 8.72259V11.7249H13.3465C13.5935 11.7247 13.7941 11.5242 13.7943 11.2772V6.65338C13.7943 6.40621 13.5936 6.20581 13.3465 6.20561H8.72271Z" />
+    </>
+  ),
+  // Alert: "alert" on a pink disc
+  failed: (
+    <>
+      <path className="is-apt-fill-bg-alert" fillRule="evenodd" d="M10 0C15.5228 0 20 4.47715 20 10C20 15.5228 15.5228 20 10 20C4.47715 20 0 15.5228 0 10C0 4.47715 4.47715 0 10 0Z" />
+      <path className="is-apt-fill-fg-alert" d="M10 11.667C10.4602 11.667 10.833 12.0398 10.833 12.5C10.833 12.9602 10.4602 13.333 10 13.333C9.53976 13.333 9.16699 12.9602 9.16699 12.5C9.167 12.0398 9.53977 11.667 10 11.667Z" />
+      <path className="is-apt-fill-fg-alert" d="M10 6.66699C10.46 6.66717 10.8338 7.04002 10.834 7.5V10C10.8338 10.46 10.46 10.8338 10 10.834C9.54001 10.8338 9.16716 10.46 9.16699 10V7.5C9.16717 7.04002 9.54002 6.66717 10 6.66699Z" />
+      <path className="is-apt-fill-fg-alert" fillRule="evenodd" d="M10 5C12.7614 5 15 7.23858 15 10C15 12.7614 12.7614 15 10 15C7.23858 15 5 12.7614 5 10C5 7.23858 7.23858 5 10 5ZM10 6C7.79086 6 6 7.79086 6 10C6 12.2091 7.79086 14 10 14C12.2091 14 14 12.2091 14 10C14 7.79086 12.2091 6 10 6Z" />
+    </>
+  ),
+};
+
+/* ---------- Icon ---------- */
+
+export interface AppointmentStatusIconProps {
+  /** Which status to show */
+  status: AppointmentStatusValue;
+  /** Width and height in px (Figma: 20) */
+  size?: number;
+  /** Accessible name. Defaults to the status label; pass "" when a visible label sits next to it. */
+  title?: string;
+  className?: string;
+}
+
+/** Figma "Appointment Status Icons": the 20px icon for an appointment's status */
+export const AppointmentStatusIcon = ({ status, size = 20, title, className = '' }: AppointmentStatusIconProps) => {
+  const name = title ?? appointmentStatusLabel(status);
+  return (
+    <svg
+      className={`is-apt-icon is-apt-icon--${status} ${className}`}
+      width={size}
+      height={size}
+      viewBox="0 0 20 20"
+      role={name ? 'img' : undefined}
+      aria-label={name || undefined}
+      aria-hidden={name ? undefined : true}
+    >
+      {artwork[status]}
+    </svg>
+  );
+};
+
+/* ---------- Icon + label ---------- */
+
+export interface AppointmentStatusProps {
+  /** Which status to show */
+  status: AppointmentStatusValue;
+  /** Text next to the icon; defaults to the status name (e.g. "Sent to EHR") */
+  label?: string;
+  className?: string;
+}
+
+/** Figma "Appointment Status": the status icon followed by its label (Figtree Medium 11px, 8px apart) */
+export const AppointmentStatus = ({ status, label, className = '' }: AppointmentStatusProps) => (
+  <span className={`is-apt-status ${className}`}>
+    <AppointmentStatusIcon status={status} title="" />
+    <span className="is-apt-status__label">{label ?? appointmentStatusLabel(status)}</span>
+  </span>
+);

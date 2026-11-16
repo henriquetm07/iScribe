@@ -1,4 +1,13 @@
 export { Button, type ButtonProps } from './components/Button/Button';
+export {
+  AppointmentStatus,
+  AppointmentStatusIcon,
+  appointmentStatuses,
+  appointmentStatusLabel,
+  type AppointmentStatusProps,
+  type AppointmentStatusIconProps,
+  type AppointmentStatusValue,
+} from './components/AppointmentStatus/AppointmentStatus';
 export { IconButton, type IconButtonProps } from './components/IconButton/IconButton';
 export { SelectionList, type SelectionListProps, type SelectionListOption } from './components/SelectionList/SelectionList';
 export { SelectionListItem, type SelectionListItemProps, type SelectionListDevice } from './components/SelectionList/SelectionListItem';

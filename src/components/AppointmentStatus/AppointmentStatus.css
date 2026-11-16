@@ -1,0 +1,54 @@
+/*
+ * Appointment Status — Figma "Appointment Status" (1067:23721). Colours are the Figma variables, so light and
+ * dark mode follow data-theme.
+ */
+.is-apt-icon {
+  display: block;
+  flex: none;
+  overflow: visible;
+}
+/* High contrast: New Note, Checked-in, Note in Progress */
+.is-apt-fill-hi {
+  fill: var(--is-foreground-high-contrast-primary-foreground);
+}
+.is-apt-stroke-hi {
+  fill: none;
+  stroke: var(--is-foreground-high-contrast-primary-foreground);
+  stroke-width: 1;
+}
+/* Medium contrast: Not Checked-in, Checked-out */
+.is-apt-fill-mid {
+  fill: var(--is-foreground-medium-contrast-primary-foreground);
+}
+.is-apt-stroke-mid {
+  fill: none;
+  stroke: var(--is-foreground-medium-contrast-primary-foreground);
+  stroke-width: 1;
+}
+/* Positive: Sent to EHR, Copied to EHR */
+.is-apt-fill-bg-positive {
+  fill: var(--is-status-background-positive);
+}
+.is-apt-fill-fg-positive {
+  fill: var(--is-status-foreground-positive);
+}
+/* Alert: Failed */
+.is-apt-fill-bg-alert {
+  fill: var(--is-status-background-alert);
+}
+.is-apt-fill-fg-alert {
+  fill: var(--is-status-foreground-alert);
+}
+
+/* Icon + label: 8px apart, label Figtree Medium 11px / 18px, high contrast */
+.is-apt-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--is-foreground-high-contrast-primary-foreground);
+  font-family: var(--is-font-ui);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 18px;
+  white-space: nowrap;
+}
