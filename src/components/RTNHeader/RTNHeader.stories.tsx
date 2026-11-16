@@ -15,8 +15,8 @@ const sarah: RTNPatient = {
 
 const caption = { margin: '0 0 8px', fontFamily: 'var(--is-font-ui)', fontSize: 12, color: 'var(--is-foreground-low-contrast-primary-foreground)' } as const;
 
-/** Story-only: switch the patient between the Figma "Filled in" and "Empty" profiles */
-type StoryArgs = RTNHeaderProps & { profile?: 'filled in' | 'empty' };
+/** Story-only: switch the patient between the Figma "Filled in" and "Empty" profiles, and show or hide the check-in note */
+type StoryArgs = RTNHeaderProps & { profile?: 'filled in' | 'empty'; showCheckedIn?: boolean };
 
 const meta = {
   title: 'Components/RTN Header (Web)',
@@ -27,16 +27,21 @@ const meta = {
     recordState: 'idle',
     labels: ['Visit', 'Room 12'],
     checkedIn: 'Checked in 11 min ago',
+    showCheckedIn: true,
     duration: 160,
     position: 32,
     onMoreClick: fn(),
     onRecordStateChange: fn(),
   },
   argTypes: {
-    profile: { name: 'profile (story only)', control: 'inline-radio', options: ['filled in', 'empty'] },
-    recordState: { control: 'inline-radio', options: ['idle', 'recording', 'paused', 'playing'] },
-    duration: { control: { type: 'number', min: 0, max: 3600, step: 1 } },
-    position: { control: { type: 'number', min: 0, max: 3600, step: 1 } },
+    profile: { name: 'demographics', control: 'inline-radio', options: ['filled in', 'empty'] },
+    showCheckedIn: { name: 'checked in', control: 'boolean' },
+    // Set by the stories (Recording, Playback) rather than from Controls
+    recordState: { table: { disable: true } },
+    duration: { table: { disable: true } },
+    position: { table: { disable: true } },
+    labels: { table: { disable: true } },
+    checkedIn: { table: { disable: true } },
     // Today's date and the current time by default (pass date / time to the component to set them)
     date: { table: { disable: true } },
     time: { table: { disable: true } },
@@ -53,16 +58,18 @@ const meta = {
         transform: (code: string, ctx: { args: StoryArgs }) =>
           `${rtnHeaderSpecComment({ ...ctx.args, patient: ctx.args.profile === 'empty' ? null : sarah })}\n${code
             .replace(/\n\s*on[A-Z]\w*=\{[^}]*\}\}?/g, '')
-            .replace(/\n\s*profile="[^"]*"/g, '')}`,
+            .replace(/\n\s*profile="[^"]*"/g, '')
+            .replace(/\n\s*showCheckedIn(=\{[^}]*\})?/g, '')}`,
       },
     },
   },
-  render: ({ profile, ...args }) => (
+  render: ({ profile, showCheckedIn = true, ...args }) => (
     <RTNHeader
       // Restart the record feature when its controls change
       key={`${args.recordState}-${args.duration}-${args.position}`}
       {...args}
       patient={profile === 'empty' ? null : sarah}
+      checkedIn={showCheckedIn ? args.checkedIn : ''}
     />
   ),
 } satisfies Meta<StoryArgs>;
