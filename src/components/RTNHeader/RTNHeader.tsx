@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react';
+import { useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react';
 import { AnimatedIcon } from '../../icons/AnimatedIcon';
 import { Icon } from '../../icons/Icon';
 import { IconButton } from '../IconButton/IconButton';
@@ -158,63 +158,119 @@ const toFields = (p?: RTNPatient | null): PatientFields => ({
   age: p?.age === undefined || p?.age === null ? '' : String(p.age),
 });
 
+/** Put the caret at the end of an element's text */
+const caretToEnd = (el: HTMLElement) => {
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  range.collapse(false);
+  const selection = window.getSelection();
+  selection?.removeAllRanges();
+  selection?.addRange(range);
+};
+
 /**
- * A field you can click and type into. It is exactly as wide as its text (or placeholder) — a hidden copy of
- * the text sets the width — so neighbours stay the same distance away while typing. Blank fields show the
- * placeholder over the Figma dotted line; the line turns accent while editing.
+ * A field you click and type into, edited as text in place (contenteditable) rather than in a text box, so it
+ * keeps the page's fonts (Season Mix names) while typing. It is exactly as wide as its text — or its
+ * placeholder while empty — so neighbours stay the same distance away. Blank fields show the placeholder over
+ * the Figma dotted line; the line turns accent while editing.
  */
 const TextField = ({
   value,
   placeholder,
   label,
   onChange,
+  format = (text) => text,
   numeric,
-  maxLength,
   mask,
 }: {
   value: string;
   placeholder: string;
   label: string;
-  onChange: (value: string, typing: boolean) => void;
+  onChange: (value: string) => void;
+  /** Clean up what was typed (e.g. digits only); `typing` is false for deletions */
+  format?: (text: string, typing: boolean) => string;
   numeric?: boolean;
-  maxLength?: number;
   /** Show the rest of this mask (low contrast) after what has been typed */
   mask?: string;
-}) => (
-  <label className={`is-rtn-field${value ? '' : ' is-rtn-field--blank'}`}>
-    <span className="is-rtn-field__sizer" aria-hidden="true">
-      {mask ? value + mask.slice(value.length) : value || placeholder}
-    </span>
-    {/* What you see when not typing: plain text (or the placeholder), so it renders exactly like the rest of
-        the page's text. The input on top only shows its own text while it has focus. */}
-    {mask ? (
-      <span className="is-rtn-field__display is-rtn-field__mask" aria-hidden="true">
-        <span className="is-rtn-field__typed">{value}</span>
-        <span className="is-rtn-field__rest">{mask.slice(value.length)}</span>
-      </span>
-    ) : (
-      <span className="is-rtn-field__display" aria-hidden="true">
-        {value || placeholder}
-      </span>
-    )}
-    <input
-      value={value}
-      placeholder={mask ? undefined : placeholder}
+}) => {
+  const edit = useRef<HTMLSpanElement>(null);
+
+  // Keep the text in step when the value changes from outside (a new patient, or the age set from the date)
+  useLayoutEffect(() => {
+    const el = edit.current;
+    if (el && el.textContent !== value) el.textContent = value;
+  }, [value]);
+
+  const editable = (
+    <span
+      ref={edit}
+      className="is-rtn-field__edit"
+      contentEditable="plaintext-only"
+      suppressContentEditableWarning
+      role="textbox"
       aria-label={label}
+      aria-placeholder={placeholder}
       inputMode={numeric ? 'numeric' : undefined}
-      maxLength={maxLength}
-      // The sizer sets the width; size 1 stops the input's own default width (about 20 characters) from widening it
-      size={1}
-      autoComplete="off"
       spellCheck={false}
-      onChange={(e) => onChange(e.target.value, ((e.nativeEvent as InputEvent).inputType ?? '').startsWith('insert'))}
+      tabIndex={0}
+      onInput={(e) => {
+        const el = e.currentTarget;
+        const typing = ((e.nativeEvent as InputEvent).inputType ?? '').startsWith('insert');
+        const raw = (el.textContent ?? '').replace(/\n/g, '');
+        const next = format(raw, typing);
+        // Rewrite the text when it was cleaned up (or emptied, so no stray line break is left behind)
+        if (next !== el.textContent || next === '') {
+          el.textContent = next;
+          if (next) caretToEnd(el);
+        }
+        onChange(next);
+      }}
       onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === 'Escape') e.currentTarget.blur();
+        if (e.key === 'Enter' || e.key === 'Escape') {
+          e.preventDefault();
+          e.currentTarget.blur();
+        }
+      }}
+      onPaste={(e) => {
+        // Plain text only, on one line
+        e.preventDefault();
+        document.execCommand('insertText', false, e.clipboardData.getData('text/plain').replace(/\s+/g, ' '));
       }}
     />
-    <span className="is-rtn-field__line" aria-hidden="true" />
-  </label>
-);
+  );
+
+  return (
+    <span
+      className={`is-rtn-field${value ? '' : ' is-rtn-field--blank'}`}
+      // Clicking the placeholder or the rest of the mask puts the caret at the end of the text
+      onMouseDown={(e) => {
+        const el = edit.current;
+        if (el && e.target !== el) {
+          e.preventDefault();
+          el.focus();
+          caretToEnd(el);
+        }
+      }}
+    >
+      {mask ? (
+        <span className="is-rtn-field__masked">
+          {editable}
+          <span className="is-rtn-field__rest" aria-hidden="true">
+            {mask.slice(value.length)}
+          </span>
+        </span>
+      ) : (
+        <>
+          <span className="is-rtn-field__placeholder" aria-hidden="true">
+            {placeholder}
+          </span>
+          {editable}
+        </>
+      )}
+      <span className="is-rtn-field__line" aria-hidden="true" />
+    </span>
+  );
+};
 
 /** The sex field: a button that opens a Selection List (Female / Male) below it */
 const SelectField = ({ value, placeholder, label, options, onChange }: { value: string; placeholder: string; label: string; options: { value: string; label: string }[]; onChange: (value: string) => void }) => {
@@ -303,8 +359,7 @@ export const RTNHeaderPatient = ({ patient, device = 'web', showPhoto = true, on
     onPatientChange?.({ ...next, photo: patient?.photo });
   };
 
-  const onDob = (value: string, typing: boolean) => {
-    const dob = maskDob(value, typing);
+  const onDob = (dob: string) => {
     const age = ageFromDob(dob);
     update(age === null ? { dob } : { dob, age: String(age) });
   };
@@ -323,8 +378,15 @@ export const RTNHeaderPatient = ({ patient, device = 'web', showPhoto = true, on
         </p>
         <p className="is-rtn-patient__demo">
           <SelectField value={fields.sex} placeholder="Sex" label="Sex" options={SEX_OPTIONS} onChange={(sex) => update({ sex })} />
-          <TextField value={fields.dob} placeholder={DOB_MASK} label="Date of birth" mask={DOB_MASK} numeric onChange={onDob} />
-          <TextField value={fields.age} placeholder="Age" label="Age" numeric maxLength={3} onChange={(age) => update({ age: age.replace(/\D/g, '') })} />
+          <TextField value={fields.dob} placeholder={DOB_MASK} label="Date of birth" mask={DOB_MASK} numeric format={maskDob} onChange={onDob} />
+          <TextField
+            value={fields.age}
+            placeholder="Age"
+            label="Age"
+            numeric
+            format={(text) => text.replace(/\D/g, '').slice(0, 3)}
+            onChange={(age) => update({ age })}
+          />
         </p>
       </div>
     </div>

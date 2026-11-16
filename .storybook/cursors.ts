@@ -119,7 +119,7 @@ const css = (retroUrl: string, retroUrl2x: string) => `
 html.is-cur--default, html.is-cur--default * { cursor: ${svgUrl(DEFAULT_CURSOR_SVG)} 2 2, default !important; }
 /* Over anything clickable, the system hand (disabled controls keep the arrow) */
 html.is-cur--default :is(${CLICKABLE}), html.is-cur--default :is(${CLICKABLE}) * { cursor: pointer !important; }
-html.is-cur--default :is(input:not([type=range]):not([type=checkbox]):not([type=radio]):not([type=color]), textarea, [contenteditable="true"]) { cursor: text !important; }
+html.is-cur--default :is(input:not([type=range]):not([type=checkbox]):not([type=radio]):not([type=color]), textarea, [contenteditable]:not([contenteditable="false"])) { cursor: text !important; }
 html.is-cur--presentation, html.is-cur--presentation *,
 html.is-cur--touch, html.is-cur--touch * { cursor: none !important; }
 html.is-cur--90s, html.is-cur--90s * {

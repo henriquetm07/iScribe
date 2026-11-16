@@ -161,33 +161,48 @@
 }
 
 /* ---------- Editable fields ---------- */
-/* Exactly as wide as the text: a hidden copy (the sizer) sets the width and the input sits on top of it */
+/*
+ * Names, date of birth and age are edited as text in place (contenteditable), not in a text box: browsers
+ * draw text boxes with their own font handling, which lost Season Mix while typing. Each field is exactly as
+ * wide as its text, or its placeholder while it is empty.
+ */
 .is-rtn-field {
   position: relative;
   display: inline-grid;
   align-items: center;
   min-width: 0;
   font: inherit;
+  white-space: pre;
   cursor: text;
 }
-.is-rtn-field > .is-rtn-field__sizer,
-.is-rtn-field > .is-rtn-field__display,
-.is-rtn-field > input,
-.is-rtn-field > button {
+.is-rtn-field > * {
   grid-area: 1 / 1;
 }
-.is-rtn-field__sizer {
-  /* 1px extra so the caret is never clipped at the end */
-  padding-right: 1px;
-  white-space: pre;
-  visibility: hidden;
+.is-rtn-field__line {
+  grid-area: auto;
+}
+.is-rtn-field__edit {
+  display: inline-block;
+  min-width: 1px;
+  min-height: 1lh;
+  outline: none;
+  color: inherit;
+  caret-color: var(--is-button-accent);
+}
+/* Placeholder, under the (empty) text while the field is blank */
+.is-rtn-field__placeholder {
+  display: none;
   pointer-events: none;
 }
-/* Direct children only, so the Selection List that opens inside the sex field keeps its own styles */
-.is-rtn-field > input,
+.is-rtn-field--blank > .is-rtn-field__placeholder {
+  display: block;
+}
+/* Date of birth: the digits typed so far, then the rest of the MM/DD/YYYY mask */
+.is-rtn-field__masked {
+  display: inline-flex;
+}
+/* Sex: the button that opens the Selection List (direct child only, so the list keeps its own styles) */
 .is-rtn-field > button {
-  width: 100%;
-  min-width: 0;
   margin: 0;
   padding: 0;
   border: 0;
@@ -199,36 +214,12 @@
   letter-spacing: inherit;
   text-align: left;
   white-space: pre;
-  caret-color: var(--is-button-accent);
-}
-/*
- * The text you see is a plain span (.is-rtn-field__display), so names render in Season Mix like the rest of
- * the page. The input sits on top with transparent text and only shows its own text while it has focus.
- */
-.is-rtn-field > input,
-.is-rtn-field > input::placeholder {
-  color: transparent;
-  opacity: 1;
-}
-.is-rtn-field:focus-within:not(.is-rtn-field--blank) > input {
-  color: inherit;
-}
-.is-rtn-field__display {
-  white-space: pre;
-  pointer-events: none;
-}
-.is-rtn-field:focus-within:not(.is-rtn-field--blank) > .is-rtn-field__display:not(.is-rtn-field__mask) {
-  visibility: hidden;
 }
 /* Placeholders, and the rest of the date mask after what has been typed, in low contrast */
-.is-rtn-field--blank > .is-rtn-field__display,
+.is-rtn-field__placeholder,
 .is-rtn-field--blank > button,
 .is-rtn-field__rest {
   color: var(--is-foreground-low-contrast-primary-foreground);
-}
-/* Date of birth: the typed digits show as plain text until you type, then the input shows them */
-.is-rtn-field:focus-within > .is-rtn-field__mask > .is-rtn-field__typed {
-  visibility: hidden;
 }
 /* Dotted line under blank fields (Figma: 2px round dots 5px apart, centred 5px below the text, Low Contrast
    Primary Foreground at 20% opacity). Filled fields show it on hover, as a hint they can be edited; while
