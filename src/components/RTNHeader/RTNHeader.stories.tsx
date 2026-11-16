@@ -65,6 +65,14 @@ const meta = {
       },
     },
   },
+  // Room below the header for the sex field's Selection List, so it isn't cut off when it opens
+  decorators: [
+    (Story) => (
+      <div style={{ minHeight: 320 }}>
+        <Story />
+      </div>
+    ),
+  ],
   render: ({ filledIn = true, showCheckedIn = true, ...args }) => (
     <RTNHeader
       // Restart the record feature when its controls change
@@ -100,7 +108,7 @@ export const PatientInformation: Story = {
   name: 'Patient information',
   parameters: { controls: { disable: true }, layout: 'padded' },
   render: () => (
-    <div style={{ display: 'grid', gap: 24 }}>
+    <div style={{ display: 'grid', gap: 24, paddingBottom: 110 }}>
       {(
         [
           ['Web · Filled in', <RTNHeaderPatient key="a" patient={sarah} />],
