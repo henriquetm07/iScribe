@@ -77,14 +77,14 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Try it: Start Recording, then Stop, play, drag the bar and Resume. */
+/** Try it: Start Recording, then Stop, play, drag the bar and Resume. Click the name or any detail to edit it. */
 export const Default: Story = {};
 
 export const Recording: Story = { args: { recordState: 'recording', duration: 0 } };
 
 export const Playback: Story = { args: { recordState: 'paused' } };
 
-/** The patient's profile isn't filled in yet: dotted blanks in place of the name and details. */
+/** The patient's profile isn't filled in yet: dotted blanks in place of the name and details. Click any of them to fill it in. */
 export const EmptyProfile: Story = { name: 'Empty profile', args: { profile: 'empty' } };
 
 /** Figma "RTN Header Web Details" on its own. */

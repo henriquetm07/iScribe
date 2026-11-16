@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react';
+import { useEffect, useId, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react';
 import { AnimatedIcon } from '../../icons/AnimatedIcon';
 import { Icon } from '../../icons/Icon';
 import { IconButton } from '../IconButton/IconButton';
+import { SelectionList } from '../SelectionList/SelectionList';
 import { formatTime, RecordRoundButton, RecordTextButton, useRecorder, Waves, type RecordState } from '../Record/RecordParts';
 import './RTNHeader.css';
 
@@ -95,9 +96,9 @@ export const RTNHeaderDetails = ({
 export interface RTNPatient {
   firstName: string;
   lastName: string;
-  /** e.g. "Female" */
+  /** "Female" or "Male" */
   sex: string;
-  /** Date of birth, e.g. "03/15/1982" */
+  /** Date of birth, MM/DD/YYYY, e.g. "03/15/1982" */
   dob: string;
   age: number | string;
   /** Photo URL; leave out when there is no photo */
@@ -113,17 +114,193 @@ export interface RTNHeaderPatientProps {
   device?: RTNPatientDevice;
   /** Show the photo when the patient has one */
   showPhoto?: boolean;
+  /** Called with the patient as it is edited (any field can be clicked and edited) */
+  onPatientChange?: (patient: RTNPatient) => void;
   className?: string;
 }
 
-/** Figma "Complete Profile": photo, name and demographics — or dotted blanks when nothing is filled in yet */
-export const RTNHeaderPatient = ({ patient, device = 'web', showPhoto = true, className = '' }: RTNHeaderPatientProps) => {
-  const blank = (text: string, big = false) => (
-    <span className={`is-rtn-blank${big ? ' is-rtn-blank--name' : ''}`} aria-label={`${text}: not filled in`}>
-      <span aria-hidden="true">{text}</span>
-      <span className="is-rtn-blank__line" aria-hidden="true" />
+/** Options for the sex field (shown in a Selection List) */
+const SEX_OPTIONS = [
+  { value: 'Female', label: 'Female' },
+  { value: 'Male', label: 'Male' },
+];
+
+/** Date of birth mask; digits fill the letters and the separators are added automatically */
+const DOB_MASK = 'MM/DD/YYYY';
+const DOB_SEP = '/';
+
+/** Digits typed into the date of birth → "MM/DD/YYYY" (adds the separator right after MM and DD while typing) */
+const maskDob = (input: string, typing: boolean) => {
+  const d = input.replace(/\D/g, '').slice(0, 8);
+  let out = d.slice(0, 2);
+  if (d.length > 2 || (typing && d.length === 2)) out += DOB_SEP + d.slice(2, 4);
+  if (d.length > 4 || (typing && d.length === 4)) out += DOB_SEP + d.slice(4);
+  return out;
+};
+
+/** Age in whole years for a complete, real, past MM/DD/YYYY date; otherwise null */
+const ageFromDob = (dob: string, today = new Date()) => {
+  const m = /^(\d{2})\D(\d{2})\D(\d{4})$/.exec(dob);
+  if (!m) return null;
+  const [month, day, year] = [Number(m[1]), Number(m[2]), Number(m[3])];
+  const born = new Date(year, month - 1, day);
+  if (born.getFullYear() !== year || born.getMonth() !== month - 1 || born.getDate() !== day || born > today || year < 1900) return null;
+  const hadBirthday = today.getMonth() > month - 1 || (today.getMonth() === month - 1 && today.getDate() >= day);
+  return today.getFullYear() - year - (hadBirthday ? 0 : 1);
+};
+
+type PatientFields = Pick<RTNPatient, 'firstName' | 'lastName' | 'sex' | 'dob'> & { age: string };
+const toFields = (p?: RTNPatient | null): PatientFields => ({
+  firstName: p?.firstName ?? '',
+  lastName: p?.lastName ?? '',
+  sex: p?.sex ?? '',
+  dob: p?.dob ?? '',
+  age: p?.age === undefined || p?.age === null ? '' : String(p.age),
+});
+
+/**
+ * A field you can click and type into. It is exactly as wide as its text (or placeholder) — a hidden copy of
+ * the text sets the width — so neighbours stay the same distance away while typing. Blank fields show the
+ * placeholder over the Figma dotted line; the line turns accent while editing.
+ */
+const TextField = ({
+  value,
+  placeholder,
+  label,
+  onChange,
+  numeric,
+  maxLength,
+  mask,
+}: {
+  value: string;
+  placeholder: string;
+  label: string;
+  onChange: (value: string, typing: boolean) => void;
+  numeric?: boolean;
+  maxLength?: number;
+  /** Show the rest of this mask (low contrast) after what has been typed */
+  mask?: string;
+}) => (
+  <label className={`is-rtn-field${value ? '' : ' is-rtn-field--blank'}`}>
+    <span className="is-rtn-field__sizer" aria-hidden="true">
+      {mask ? value + mask.slice(value.length) : value || placeholder}
+    </span>
+    {mask && (
+      <span className="is-rtn-field__mask" aria-hidden="true">
+        <span className="is-rtn-field__typed">{value}</span>
+        {mask.slice(value.length)}
+      </span>
+    )}
+    <input
+      value={value}
+      placeholder={mask ? undefined : placeholder}
+      aria-label={label}
+      inputMode={numeric ? 'numeric' : undefined}
+      maxLength={maxLength}
+      autoComplete="off"
+      spellCheck={false}
+      onChange={(e) => onChange(e.target.value, ((e.nativeEvent as InputEvent).inputType ?? '').startsWith('insert'))}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === 'Escape') e.currentTarget.blur();
+      }}
+    />
+    <span className="is-rtn-field__line" aria-hidden="true" />
+  </label>
+);
+
+/** The sex field: a button that opens a Selection List (Female / Male) below it */
+const SelectField = ({ value, placeholder, label, options, onChange }: { value: string; placeholder: string; label: string; options: { value: string; label: string }[]; onChange: (value: string) => void }) => {
+  const [open, setOpen] = useState(false);
+  const root = useRef<HTMLSpanElement>(null);
+  const button = useRef<HTMLButtonElement>(null);
+  const menuId = useId();
+
+  // Close on a click outside; when it opens, move focus to the selected (or first) option
+  useEffect(() => {
+    if (!open) return;
+    root.current?.querySelector<HTMLElement>('.is-rtn-field__menu [tabindex="0"]')?.focus();
+    const onDown = (e: globalThis.PointerEvent) => {
+      if (!root.current?.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('pointerdown', onDown);
+    return () => document.removeEventListener('pointerdown', onDown);
+  }, [open]);
+
+  return (
+    <span ref={root} className={`is-rtn-field is-rtn-field--select${value ? '' : ' is-rtn-field--blank'}${open ? ' is-rtn-field--open' : ''}`}>
+      <button
+        ref={button}
+        type="button"
+        aria-label={value ? `${label}: ${value}` : label}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-controls={open ? menuId : undefined}
+        onClick={() => setOpen((o) => !o)}
+        onKeyDown={(e) => {
+          if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            setOpen(true);
+          }
+        }}
+      >
+        {value || placeholder}
+      </button>
+      <span className="is-rtn-field__line" aria-hidden="true" />
+      {open && (
+        <span
+          id={menuId}
+          className="is-rtn-field__menu"
+          onKeyDown={(e) => {
+            if (e.key === 'Escape' || e.key === 'Tab') {
+              if (e.key === 'Escape') e.preventDefault();
+              setOpen(false);
+              if (e.key === 'Escape') button.current?.focus();
+            }
+          }}
+        >
+          {/* Components / Selection List */}
+          <SelectionList
+            options={options}
+            value={value || null}
+            onChange={(v) => {
+              onChange(v);
+              setOpen(false);
+              button.current?.focus();
+            }}
+            device="web"
+            width={160}
+            aria-label={label}
+          />
+        </span>
+      )}
     </span>
   );
+};
+
+/**
+ * Figma "Complete Profile": photo, name and demographics — or dotted blanks when nothing is filled in yet.
+ * Every field can be clicked and edited: the names and age are typed in, sex is picked from a Selection List,
+ * and the date of birth is typed as digits into an MM/DD/YYYY mask (the age then follows it).
+ */
+export const RTNHeaderPatient = ({ patient, device = 'web', showPhoto = true, onPatientChange, className = '' }: RTNHeaderPatientProps) => {
+  const [fields, setFields] = useState(() => toFields(patient));
+  // A different patient from outside replaces whatever was typed (compared by value, so passing the edited
+  // patient back in, or a new object with the same details, keeps the edits)
+  const patientKey = JSON.stringify(patient ?? null);
+  useEffect(() => setFields(toFields(patient)), [patientKey]);
+
+  const update = (change: Partial<PatientFields>) => {
+    const next = { ...fields, ...change };
+    setFields(next);
+    onPatientChange?.({ ...next, photo: patient?.photo });
+  };
+
+  const onDob = (value: string, typing: boolean) => {
+    const dob = maskDob(value, typing);
+    const age = ageFromDob(dob);
+    update(age === null ? { dob } : { dob, age: String(age) });
+  };
+
   return (
     <div className={`is-rtn-patient is-rtn-patient--${device}${patient ? '' : ' is-rtn-patient--empty'} ${className}`}>
       {patient && showPhoto && patient.photo && (
@@ -131,30 +308,17 @@ export const RTNHeaderPatient = ({ patient, device = 'web', showPhoto = true, cl
           <img src={patient.photo} alt="" />
         </span>
       )}
-      {patient ? (
-        <div className="is-rtn-patient__info">
-          <p className="is-rtn-patient__name">
-            {patient.firstName} {patient.lastName}
-          </p>
-          <p className="is-rtn-patient__demo">
-            <span>{patient.sex}</span>
-            <span>{patient.dob}</span>
-            <span>{patient.age}</span>
-          </p>
-        </div>
-      ) : (
-        <div className="is-rtn-patient__info">
-          <p className="is-rtn-patient__blanks">
-            {blank('First name', true)}
-            {blank('Last name', true)}
-          </p>
-          <p className="is-rtn-patient__blanks">
-            {blank('Sex')}
-            {blank('MM/DD/YYYY')}
-            {blank('Age')}
-          </p>
-        </div>
-      )}
+      <div className="is-rtn-patient__info">
+        <p className="is-rtn-patient__name">
+          <TextField value={fields.firstName} placeholder="First name" label="First name" onChange={(firstName) => update({ firstName })} />
+          <TextField value={fields.lastName} placeholder="Last name" label="Last name" onChange={(lastName) => update({ lastName })} />
+        </p>
+        <p className="is-rtn-patient__demo">
+          <SelectField value={fields.sex} placeholder="Sex" label="Sex" options={SEX_OPTIONS} onChange={(sex) => update({ sex })} />
+          <TextField value={fields.dob} placeholder={DOB_MASK} label="Date of birth" mask={DOB_MASK} numeric onChange={onDob} />
+          <TextField value={fields.age} placeholder="Age" label="Age" numeric maxLength={3} onChange={(age) => update({ age: age.replace(/\D/g, '') })} />
+        </p>
+      </div>
     </div>
   );
 };
@@ -367,6 +531,8 @@ export interface RTNHeaderProps extends Omit<RTNHeaderDetailsProps, 'className'>
   /** Playback position in seconds */
   position?: number;
   onRecordStateChange?: (state: RecordState) => void;
+  /** Called with the patient as it is edited in the header */
+  onPatientChange?: (patient: RTNPatient) => void;
   className?: string;
   style?: CSSProperties;
 }
@@ -384,6 +550,7 @@ export const RTNHeader = ({
   duration,
   position,
   onRecordStateChange,
+  onPatientChange,
   className = '',
   style,
 }: RTNHeaderProps) => {
@@ -391,13 +558,25 @@ export const RTNHeader = ({
   const now = useNow(dateProp === undefined || timeProp === undefined);
   const date = dateProp ?? formatRTNDate(now);
   const time = timeProp ?? formatRTNTime(now);
+  // The patient as edited in the header (the playback title follows it)
+  const [edited, setEdited] = useState<RTNPatient | null>(null);
+  useEffect(() => setEdited(null), [JSON.stringify(patient ?? null)]);
+  const shown = edited ?? patient;
+  const name = shown ? `${shown.firstName} ${shown.lastName}`.trim() : '';
   // The playback title, as in Figma: "Sarah Johnson • Visit • Oct 23, 2026"
-  const title = [patient ? `${patient.firstName} ${patient.lastName}` : '', labels[0] ?? '', date ?? ''].filter(Boolean).join(' • ');
+  const title = [name, labels[0] ?? '', date ?? ''].filter(Boolean).join(' • ');
   return (
     <header className={`is-rtn ${className}`} style={style}>
       <RTNHeaderDetails labels={labels} date={date} time={time} checkedIn={checkedIn} onMoreClick={onMoreClick} />
       <div className="is-rtn__row">
-        <RTNHeaderPatient patient={patient} showPhoto={showPhoto} />
+        <RTNHeaderPatient
+          patient={patient}
+          showPhoto={showPhoto}
+          onPatientChange={(p) => {
+            setEdited(p);
+            onPatientChange?.(p);
+          }}
+        />
         <RTNHeaderRecord state={recordState} duration={duration} position={position} title={title} onStateChange={onRecordStateChange} />
       </div>
     </header>

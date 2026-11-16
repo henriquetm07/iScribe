@@ -130,6 +130,10 @@
   min-width: 0;
 }
 .is-rtn-patient__name {
+  display: flex;
+  align-items: flex-start;
+  /* A space's width between first and last name (Figma); 10px apart when the profile is empty */
+  gap: 0.25em;
   margin: 0;
   color: var(--is-foreground-high-contrast-primary-foreground);
   font-family: var(--is-rtn-display);
@@ -140,6 +144,7 @@
 }
 .is-rtn-patient__demo {
   display: flex;
+  align-items: flex-start;
   gap: 12px;
   margin: 0;
   color: var(--is-foreground-medium-contrast-primary-foreground);
@@ -147,33 +152,99 @@
   line-height: 18px;
   white-space: nowrap;
 }
-/* Empty: placeholders in low contrast over a 2px dotted line (round dots, 5px apart) */
-.is-rtn-patient__blanks {
-  display: flex;
-  align-items: flex-start;
+/* Empty profile: fields 10px apart, each over the 2px dotted line 5px below it (in the flow, as in Figma) */
+.is-rtn-patient--empty .is-rtn-patient__name,
+.is-rtn-patient--empty .is-rtn-patient__demo {
   gap: 10px;
-  margin: 0;
+  padding-bottom: 7px;
 }
-.is-rtn-blank {
-  display: inline-flex;
-  flex-direction: column;
+
+/* ---------- Editable fields ---------- */
+/* Exactly as wide as the text: a hidden copy (the sizer) sets the width and the input sits on top of it */
+.is-rtn-field {
+  position: relative;
+  display: inline-grid;
   align-items: center;
-  gap: 5px;
-  color: var(--is-foreground-low-contrast-primary-foreground);
-  font-size: 16px;
-  line-height: 18px;
-  white-space: nowrap;
+  min-width: 0;
+  font: inherit;
+  cursor: text;
 }
-.is-rtn-blank--name {
-  font-family: var(--is-rtn-display);
-  font-size: 20px;
-  line-height: 1.2;
+.is-rtn-field > .is-rtn-field__sizer,
+.is-rtn-field > .is-rtn-field__mask,
+.is-rtn-field > input,
+.is-rtn-field > button {
+  grid-area: 1 / 1;
 }
-.is-rtn-blank__line {
-  display: block;
+.is-rtn-field__sizer {
+  /* 1px extra so the caret is never clipped at the end */
+  padding-right: 1px;
+  white-space: pre;
+  visibility: hidden;
+  pointer-events: none;
+}
+.is-rtn-field input,
+.is-rtn-field button {
   width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: left;
+  white-space: pre;
+  caret-color: var(--is-button-accent);
+}
+.is-rtn-field input::placeholder,
+.is-rtn-field--blank button,
+.is-rtn-field__mask {
+  color: var(--is-foreground-low-contrast-primary-foreground);
+  opacity: 1;
+}
+/* The rest of the date mask after what has been typed (the typed part is invisible, just for spacing) */
+.is-rtn-field__mask {
+  white-space: pre;
+  pointer-events: none;
+}
+.is-rtn-field__typed {
+  visibility: hidden;
+}
+/* Dotted line under blank fields (Figma: round dots, 5px apart, 5px below the text). Filled fields show it
+   on hover, as a hint they can be edited; while editing it becomes a solid accent line. */
+.is-rtn-field__line {
+  position: absolute;
+  bottom: -7px;
+  left: 0;
+  right: 0;
+  display: none;
   height: 2px;
   background: radial-gradient(circle at 1px 1px, var(--is-foreground-low-contrast-primary-foreground) 1px, transparent 1.2px) 0 0 / 5px 2px repeat-x;
+  pointer-events: none;
+}
+.is-rtn-field--blank .is-rtn-field__line,
+.is-rtn-field:hover .is-rtn-field__line {
+  display: block;
+}
+.is-rtn-field:focus-within .is-rtn-field__line,
+.is-rtn-field--open .is-rtn-field__line {
+  display: block;
+  border-radius: 1px;
+  background: var(--is-button-accent);
+}
+/* Sex: a button that opens the Selection List below it */
+.is-rtn-field--select,
+.is-rtn-field--select button {
+  cursor: pointer;
+}
+.is-rtn-field__menu {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 14px);
+  left: -8px;
 }
 
 /* ---------- Record feature ---------- */
