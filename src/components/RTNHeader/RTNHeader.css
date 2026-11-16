@@ -182,8 +182,9 @@
   visibility: hidden;
   pointer-events: none;
 }
-.is-rtn-field input,
-.is-rtn-field button {
+/* Direct children only, so the Selection List that opens inside the sex field keeps its own styles */
+.is-rtn-field > input,
+.is-rtn-field > button {
   width: 100%;
   min-width: 0;
   margin: 0;
@@ -199,8 +200,8 @@
   white-space: pre;
   caret-color: var(--is-button-accent);
 }
-.is-rtn-field input::placeholder,
-.is-rtn-field--blank button,
+.is-rtn-field > input::placeholder,
+.is-rtn-field--blank > button,
 .is-rtn-field__mask {
   color: var(--is-foreground-low-contrast-primary-foreground);
   opacity: 1;
@@ -237,10 +238,16 @@
 }
 /* Sex: a button that opens the Selection List below it */
 .is-rtn-field--select,
-.is-rtn-field--select button {
+.is-rtn-field--select > button {
   cursor: pointer;
 }
 .is-rtn-field__menu {
+  /* Reset what the field passes down (text size, colour, cursor), so the Selection List looks as specified */
+  font-size: initial;
+  line-height: normal;
+  color: initial;
+  white-space: normal;
+  cursor: auto;
   position: absolute;
   z-index: 20;
   top: calc(100% + 14px);
