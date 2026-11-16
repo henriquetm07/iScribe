@@ -139,7 +139,8 @@
   font-family: var(--is-rtn-display);
   font-size: 20px;
   font-weight: 400;
-  line-height: 1.2;
+  /* Figma: Season Mix 20px, auto line height = 25px */
+  line-height: 25px;
   white-space: nowrap;
 }
 .is-rtn-patient__demo {
@@ -152,11 +153,11 @@
   line-height: 18px;
   white-space: nowrap;
 }
-/* Empty profile: fields 10px apart, each over the 2px dotted line 5px below it (in the flow, as in Figma) */
+/* Empty profile: fields 10px apart, each 5px taller for the dotted line under it (in the flow, as in Figma) */
 .is-rtn-patient--empty .is-rtn-patient__name,
 .is-rtn-patient--empty .is-rtn-patient__demo {
   gap: 10px;
-  padding-bottom: 7px;
+  padding-bottom: 5px;
 }
 
 /* ---------- Editable fields ---------- */
@@ -214,11 +215,13 @@
 .is-rtn-field__typed {
   visibility: hidden;
 }
-/* Dotted line under blank fields (Figma: round dots, 5px apart, 5px below the text). Filled fields show it
-   on hover, as a hint they can be edited; while editing it becomes a solid accent line. */
+/* Dotted line under blank fields (Figma: 2px round dots 5px apart, centred 5px below the text, Low Contrast
+   Primary Foreground at 20% opacity). Filled fields show it on hover, as a hint they can be edited; while
+   editing it becomes a solid accent line. */
 .is-rtn-field__line {
   position: absolute;
-  bottom: -7px;
+  bottom: -6px;
+  opacity: 0.2;
   left: 0;
   right: 0;
   display: none;
@@ -233,6 +236,7 @@
 .is-rtn-field:focus-within .is-rtn-field__line,
 .is-rtn-field--open .is-rtn-field__line {
   display: block;
+  opacity: 1;
   border-radius: 1px;
   background: var(--is-button-accent);
 }
