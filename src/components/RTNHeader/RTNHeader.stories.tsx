@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
-import { RTNHeader, RTNHeaderDetails, RTNHeaderPatient, RTNHeaderRecord, type RTNHeaderProps, type RTNPatient } from './RTNHeader';
+import { formatRTNDate, RTNHeader, RTNHeaderDetails, RTNHeaderPatient, RTNHeaderRecord, type RTNHeaderProps, type RTNPatient } from './RTNHeader';
 import { rtnHeaderSpecComment } from './RTNHeader.docs';
 
 /** The patient from the Figma example (sample photo served from .storybook/public/samples) */
@@ -26,8 +26,6 @@ const meta = {
     showPhoto: true,
     recordState: 'idle',
     labels: ['Visit', 'Room 12'],
-    date: 'Oct 23, 2026',
-    time: '11:00 AM',
     checkedIn: 'Checked in 11 min ago',
     duration: 160,
     position: 32,
@@ -39,6 +37,9 @@ const meta = {
     recordState: { control: 'inline-radio', options: ['idle', 'recording', 'paused', 'playing'] },
     duration: { control: { type: 'number', min: 0, max: 3600, step: 1 } },
     position: { control: { type: 'number', min: 0, max: 3600, step: 1 } },
+    // Today's date and the current time by default (pass date / time to the component to set them)
+    date: { table: { disable: true } },
+    time: { table: { disable: true } },
     patient: { table: { disable: true } },
     onMoreClick: { table: { disable: true } },
     onRecordStateChange: { table: { disable: true } },
@@ -124,7 +125,7 @@ export const RecordFeature: Story = {
         <div key={label}>
           <p style={caption}>{label}</p>
           <div style={{ display: 'flex' }}>
-            <RTNHeaderRecord state={state} duration={duration} position={32} title="Sarah Johnson • Visit • Oct 23, 2026" />
+            <RTNHeaderRecord state={state} duration={duration} position={32} title={`Sarah Johnson • Visit • ${formatRTNDate(new Date())}`} />
           </div>
         </div>
       ))}

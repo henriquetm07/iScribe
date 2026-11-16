@@ -1,4 +1,4 @@
-import { useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react';
 import { AnimatedIcon } from '../../icons/AnimatedIcon';
 import { Icon } from '../../icons/Icon';
 import { IconButton } from '../IconButton/IconButton';
@@ -13,14 +13,40 @@ import './RTNHeader.css';
  * and RTNHeader, which puts them together as in Figma "RTN Header (Web)".
  */
 
+/* ---------- Date and time ---------- */
+
+/** A date as the header shows it: "Nov 16, 2026" */
+export const formatRTNDate = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+/** A time as the header shows it: "3:20 PM" */
+export const formatRTNTime = (d: Date) => d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }).replace(/\s/g, ' ');
+
+/** The current date and time, refreshed on the minute while `live` (i.e. while the header is showing it) */
+const useNow = (live: boolean) => {
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    if (!live) return;
+    let timer: ReturnType<typeof setTimeout>;
+    const schedule = () => {
+      timer = setTimeout(() => {
+        setNow(new Date());
+        schedule();
+      }, 60_000 - (Date.now() % 60_000));
+    };
+    setNow(new Date());
+    schedule();
+    return () => clearTimeout(timer);
+  }, [live]);
+  return now;
+};
+
 /* ---------- Details ---------- */
 
 export interface RTNHeaderDetailsProps {
   /** Grey labels at the start of the row (Figma: Visit, Room 12) */
   labels?: string[];
-  /** Appointment date */
+  /** Appointment date, e.g. "Oct 23, 2026". Leave out to show today's date; pass "" to hide it */
   date?: string;
-  /** Appointment time (shown in semibold) */
+  /** Appointment time (shown in semibold), e.g. "11:00 AM". Leave out to show the current time; pass "" to hide it */
   time?: string;
   /** Check-in note at the end */
   checkedIn?: string;
@@ -32,32 +58,37 @@ export interface RTNHeaderDetailsProps {
 /** Figma "RTN Header Web Details": labels, date • time • check-in, and a "more" icon button on the right */
 export const RTNHeaderDetails = ({
   labels = ['Visit', 'Room 12'],
-  date = 'Oct 23, 2026',
-  time = '11:00 AM',
+  date: dateProp,
+  time: timeProp,
   checkedIn = 'Checked in 11 min ago',
   onMoreClick,
   className = '',
-}: RTNHeaderDetailsProps) => (
-  <div className={`is-rtn-details ${className}`}>
-    <div className="is-rtn-details__info">
-      {labels.length > 0 && (
-        <div className="is-rtn-details__labels">
-          {labels.map((label) => (
-            <span key={label} className="is-rtn-chip">
-              {label}
-            </span>
-          ))}
-        </div>
-      )}
-      {date && <span className="is-rtn-details__muted">{date}</span>}
-      {date && time && <span className="is-rtn-dot" aria-hidden="true" />}
-      {time && <span className="is-rtn-details__time">{time}</span>}
-      {(date || time) && checkedIn && <span className="is-rtn-dot" aria-hidden="true" />}
-      {checkedIn && <span className="is-rtn-details__muted">{checkedIn}</span>}
+}: RTNHeaderDetailsProps) => {
+  const now = useNow(dateProp === undefined || timeProp === undefined);
+  const date = dateProp ?? formatRTNDate(now);
+  const time = timeProp ?? formatRTNTime(now);
+  return (
+    <div className={`is-rtn-details ${className}`}>
+      <div className="is-rtn-details__info">
+        {labels.length > 0 && (
+          <div className="is-rtn-details__labels">
+            {labels.map((label) => (
+              <span key={label} className="is-rtn-chip">
+                {label}
+              </span>
+            ))}
+          </div>
+        )}
+        {date && <span className="is-rtn-details__muted">{date}</span>}
+        {date && time && <span className="is-rtn-dot" aria-hidden="true" />}
+        {time && <span className="is-rtn-details__time">{time}</span>}
+        {(date || time) && checkedIn && <span className="is-rtn-dot" aria-hidden="true" />}
+        {checkedIn && <span className="is-rtn-details__muted">{checkedIn}</span>}
+      </div>
+      <IconButton icon={<Icon name="meatballs" />} label="More options" variant="ghost" size="regular" onClick={onMoreClick} />
     </div>
-    <IconButton icon={<Icon name="meatballs" />} label="More options" variant="ghost" size="regular" onClick={onMoreClick} />
-  </div>
-);
+  );
+};
 
 /* ---------- Patient ---------- */
 
@@ -343,8 +374,8 @@ export interface RTNHeaderProps extends Omit<RTNHeaderDetailsProps, 'className'>
 /** Figma "RTN Header (Web)": details on top; the patient on the left and the record feature on the right */
 export const RTNHeader = ({
   labels = ['Visit', 'Room 12'],
-  date = 'Oct 23, 2026',
-  time = '11:00 AM',
+  date: dateProp,
+  time: timeProp,
   checkedIn = 'Checked in 11 min ago',
   onMoreClick,
   patient,
@@ -356,6 +387,10 @@ export const RTNHeader = ({
   className = '',
   style,
 }: RTNHeaderProps) => {
+  // Today's date and the current time unless given
+  const now = useNow(dateProp === undefined || timeProp === undefined);
+  const date = dateProp ?? formatRTNDate(now);
+  const time = timeProp ?? formatRTNTime(now);
   // The playback title, as in Figma: "Sarah Johnson • Visit • Oct 23, 2026"
   const title = [patient ? `${patient.firstName} ${patient.lastName}` : '', labels[0] ?? '', date ?? ''].filter(Boolean).join(' • ');
   return (
