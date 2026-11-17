@@ -1,0 +1,463 @@
+/*
+ * Schedule Side Bar and its panels — Figma "Schedule Side Tab" (1133:4037). Colours are the Figma variables, so
+ * light and dark mode follow data-theme.
+ */
+
+/* ---------- Side bar ---------- */
+.is-ssb {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 0;
+  background: var(--is-background-elevated-background);
+  color: var(--is-foreground-high-contrast-primary-foreground);
+  font-family: var(--is-font-ui);
+}
+.is-ssb--web {
+  width: 420px;
+}
+.is-ssb--collapsed {
+  width: 180px;
+}
+.is-ssb--chrome {
+  width: 360px;
+}
+
+/* Header: web 20px sides (20 top, 10 bottom); collapsed and Chrome 10px. Rows 10px apart. */
+.is-ssb__header {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px 20px 10px;
+}
+.is-ssb--collapsed .is-ssb__header,
+.is-ssb--chrome .is-ssb__header {
+  padding: 10px;
+}
+.is-ssb__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+}
+.is-ssb__days {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+.is-ssb__day {
+  white-space: nowrap;
+}
+.is-ssb__tools {
+  display: flex;
+  flex: none;
+  gap: 10px;
+}
+
+/* Collapsed: ≡ Schedule, then a line */
+.is-ssb__title-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 40px;
+}
+.is-ssb__title {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+}
+.is-ssb__separator {
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--is-surface-soft-contrast-background);
+}
+
+/* List area: applied filters, then the Schedule List filling the rest and scrolling */
+.is-ssb__list {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  padding: 0 20px;
+}
+.is-ssb--collapsed .is-ssb__list,
+.is-ssb--chrome .is-ssb__list {
+  padding: 0 10px;
+}
+.is-ssb__schedule {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.is-ssb--collapsed .is-ssb__schedule {
+  align-self: flex-start;
+}
+/* Chrome extension: the expanded appointments fill the narrower list */
+.is-ssb--chrome .is-ssb__schedule .is-sli--expanded {
+  width: 100%;
+}
+.is-ssb__empty {
+  margin: 20px 0;
+  font-size: 13px;
+  text-align: center;
+  color: var(--is-foreground-low-contrast-primary-foreground);
+}
+
+/* Chrome extension: New Note at the bottom, above a line */
+.is-ssb__bottom {
+  flex: none;
+  padding: 10px;
+  border-top: 1px solid var(--is-surface-soft-contrast-background);
+  background: var(--is-background-elevated-background);
+}
+.is-ssb__new-note {
+  width: 100%;
+}
+
+/* Floating panels open just under the header, over the list (collapsed: they reach past the side bar) */
+.is-ssb__panel {
+  position: absolute;
+  z-index: 20;
+  top: 148px;
+  right: 20px;
+}
+.is-ssb--collapsed .is-ssb__panel {
+  top: 152px;
+  right: auto;
+  left: 10px;
+}
+.is-ssb--chrome .is-ssb__panel {
+  top: 140px;
+  right: 10px;
+  left: 10px;
+}
+/* Chrome extension: panels take the side bar's width */
+.is-ssb--chrome .is-ssb__panel .is-sched-panel {
+  width: 100% !important;
+}
+.is-ssb--chrome .is-sched-cal__grid {
+  grid-template-columns: repeat(7, 1fr);
+  justify-items: center;
+}
+
+/* ---------- Provider name ---------- */
+.is-provider-name {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 30px;
+}
+.is-provider-name__who {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  white-space: nowrap;
+}
+
+/* ---------- Panel ---------- */
+.is-sched-panel {
+  display: flex;
+  flex-direction: column;
+  max-height: min(625px, 80vh);
+  overflow: hidden;
+  border-radius: 20px;
+  background: var(--is-background-elevated-background);
+  box-shadow: 0 0 20px var(--is-shadow-basic-shadow, rgba(0, 0, 0, 0.15));
+  color: var(--is-foreground-high-contrast-primary-foreground);
+  font-family: var(--is-font-ui);
+}
+.is-sched-panel--list {
+  max-height: min(774px, 85vh);
+}
+.is-sched-panel--fit,
+.is-sched-panel--calendar {
+  max-height: none;
+}
+/* Header: super soft grey, 20px padding, × 20px from the top right */
+.is-sched-panel__header {
+  position: relative;
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  min-height: 60px;
+  padding: 20px;
+  background: var(--is-surface-super-soft-contrast-background);
+}
+.is-sched-panel__title-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.is-sched-panel__icon,
+.is-sched-panel__back {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  color: var(--is-foreground-high-contrast-primary-foreground);
+}
+.is-sched-panel__back {
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+}
+.is-sched-panel__titles {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  padding-right: 30px;
+}
+.is-sched-panel__title {
+  margin: 0;
+  font-family: 'Season Mix', var(--is-font-ui);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: normal;
+}
+.is-sched-panel__subtitle {
+  margin: 0;
+  font-size: 15px;
+  color: var(--is-foreground-medium-contrast-primary-foreground);
+}
+.is-sched-panel__close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--is-foreground-high-contrast-primary-foreground);
+  cursor: pointer;
+}
+/* Body: 10px below the header, 20px sides, groups 10px apart, scrolls when tall */
+.is-sched-panel__body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  padding: 10px 20px 20px;
+  overflow-y: auto;
+}
+.is-sched-panel__group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.is-sched-panel__label {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 18px;
+}
+.is-sched-panel__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.is-sched-option.is-button--secondary:not(:hover) {
+  background: none;
+}
+.is-sched-panel__separator {
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--is-surface-soft-contrast-background);
+}
+.is-sched-panel__submenu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 18px;
+}
+.is-sched-panel__footer {
+  flex: none;
+  padding: 20px;
+  border-top: 1px solid var(--is-surface-soft-contrast-background);
+  background: var(--is-background-elevated-background);
+}
+
+/* Filter lists: search field in the header, options as full-width 40px rows */
+.is-sched-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--is-surface-soft-contrast-background);
+  border-radius: 12px; /* Round L */
+  background: var(--is-surface-super-soft-contrast-background);
+  color: var(--is-foreground-medium-contrast-primary-foreground);
+}
+.is-sched-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: none;
+  font: 500 14px var(--is-font-ui);
+  color: var(--is-foreground-high-contrast-primary-foreground);
+}
+.is-sched-search input::placeholder {
+  color: var(--is-foreground-medium-contrast-primary-foreground);
+}
+.is-sched-search:focus-within {
+  border-color: var(--is-surface-medium-contrast-background);
+}
+.is-sched-panel__list-label {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 18px;
+}
+.is-sched-list-option {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--is-button-secondarystroke);
+  border-radius: 12px;
+  background: none;
+  font: 600 13px var(--is-font-ui);
+  color: var(--is-foreground-high-contrast-primary-foreground);
+  text-align: left;
+  cursor: pointer;
+}
+.is-sched-list-option:hover,
+.is-sched-list-option--applied {
+  background: var(--is-button-secondary-default-bg);
+}
+.is-sched-panel__empty {
+  margin: 0;
+  font-size: 13px;
+  color: var(--is-foreground-low-contrast-primary-foreground);
+}
+
+/* Calendar: 36px days, 10px apart; the chosen day black, today outlined */
+.is-sched-panel--calendar .is-sched-panel__body {
+  gap: 0;
+  padding: 0;
+}
+.is-sched-cal__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+}
+.is-sched-cal__month {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 18px;
+}
+.is-sched-cal__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 36px);
+  gap: 10px;
+  padding: 0 10px 10px;
+}
+.is-sched-cal__weekday,
+.is-sched-cal__day {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  font-weight: 600;
+  line-height: 18px;
+}
+.is-sched-cal__weekday {
+  font-size: 14px;
+  color: var(--is-foreground-low-contrast-primary-foreground);
+}
+.is-sched-cal__day {
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 10px; /* Round M */
+  background: none;
+  font-family: var(--is-font-ui);
+  font-size: 15px;
+  color: var(--is-foreground-high-contrast-primary-foreground);
+  cursor: pointer;
+}
+.is-sched-cal__day:hover {
+  background: var(--is-surface-super-soft-contrast-background);
+}
+.is-sched-cal__day--today {
+  border-color: var(--is-foreground-high-contrast-primary-foreground);
+}
+.is-sched-cal__day--chosen,
+.is-sched-cal__day--chosen:hover {
+  border-color: transparent;
+  background: var(--is-button-secondary-foreground, var(--is-foreground-high-contrast-primary-foreground));
+  color: var(--is-foreground-high-contrast-secondary-foreground);
+}
+.is-sched-cal__footer {
+  display: flex;
+  padding: 10px;
+}
+
+/* ---------- Applied filters ---------- */
+.is-applied-filters {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: flex-start;
+  gap: 10px;
+}
+.is-applied-filters__row {
+  display: flex;
+  flex: 1 1 auto;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+.is-sched-chip {
+  flex: none;
+}
+.is-applied-filters__popover {
+  position: absolute;
+  z-index: 15;
+  top: 36px;
+  right: 0;
+}
+.is-applied-filters-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--is-surface-soft-contrast-background);
+  border-radius: 20px;
+  background: var(--is-background-elevated-background);
+  box-shadow: 0 0 20px var(--is-shadow-basic-shadow, rgba(0, 0, 0, 0.15));
+}
+.is-applied-filters-list__title {
+  margin: 0;
+  font-family: var(--is-font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 18px;
+  color: var(--is-foreground-high-contrast-primary-foreground);
+}

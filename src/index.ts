@@ -21,6 +21,36 @@ export {
   type ScheduleListItemSize,
   type VisitTypeProps,
 } from './components/ScheduleList/ScheduleList';
+export {
+  ScheduleSideBar,
+  ProviderName,
+  filterAndSortAppointments,
+  scheduleDayLabel,
+  scheduleShortDate,
+  type ScheduleSideBarProps,
+  type ScheduleSideBarAppointment,
+  type ScheduleSideBarPlatform,
+  type ProviderNameProps,
+} from './components/ScheduleSideBar/ScheduleSideBar';
+export {
+  SchedulePanel,
+  ScheduleFilterPanel,
+  ScheduleFilterListPanel,
+  ScheduleSortPanel,
+  ScheduleCalendarPanel,
+  AppliedFilters,
+  AppliedFiltersList,
+  FilterChip,
+  appliedFilterChips,
+  emptyScheduleFilters,
+  type SchedulePanelProps,
+  type ScheduleFilters,
+  type ScheduleEhrFilter,
+  type ScheduleSort,
+  type ScheduleSortKey,
+  type ScheduleSortDirection,
+  type AppliedFilterChip,
+} from './components/ScheduleSideBar/SchedulePanels';
 export { IconButton, type IconButtonProps } from './components/IconButton/IconButton';
 export { SelectionList, type SelectionListProps, type SelectionListOption } from './components/SelectionList/SelectionList';
 export { SelectionListItem, type SelectionListItemProps, type SelectionListDevice } from './components/SelectionList/SelectionListItem';
