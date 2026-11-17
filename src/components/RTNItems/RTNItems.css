@@ -192,6 +192,10 @@
   background: var(--is-labels-accent-2);
   color: var(--is-foreground-high-contrast-primary-foreground-2);
 }
+.is-rtn-label--plain {
+  background: var(--is-labels-low-contrast-2);
+  color: var(--is-foreground-high-contrast-primary-foreground);
+}
 .is-rtn-label--alert {
   background: var(--is-labels-alert);
   color: var(--is-foreground-high-contrast-secondary-foreground-2);
@@ -484,41 +488,6 @@
   gap: 10px;
 }
 
-/* Previous Note Summary: overlapping icon chips + "N sections pulled forward" */
-.is-rtn-summary {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.is-rtn-summary__icons {
-  display: flex;
-  align-items: center;
-}
-.is-rtn-summary__icon {
-  display: inline-flex;
-  padding: 5px;
-  margin-right: -6px;
-  background: var(--is-background-elevated-background);
-  border: 1px solid var(--is-surface-soft-contrast-background);
-  border-radius: 1000px;
-}
-.is-rtn-summary__icon:last-child {
-  margin-right: 0;
-}
-.is-rtn-summary__text {
-  font-size: 17px;
-  line-height: 18px;
-}
-.is-rtn-summary--iphone .is-rtn-summary__icon {
-  padding: 4px;
-  margin-right: -4px;
-}
-.is-rtn-summary--iphone .is-rtn-summary__icon:last-child {
-  margin-right: 0;
-}
-.is-rtn-summary--iphone .is-rtn-summary__text {
-  font-size: 15px;
-}
 
 /* Editable Text: click to edit */
 .is-rtn-editable {

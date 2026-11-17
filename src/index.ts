@@ -98,3 +98,23 @@ export {
   type RtnBillingProps,
   type RtnMainFrameProps,
 } from './components/RTNItems/RTNItems';
+export {
+  PreviousNoteFrame,
+  PreviousNoteSectionView,
+  PreviousNoteItem,
+  PreviousNoteSummary,
+  PreviousNoteStatusMessage,
+  AddFromPreviousButton,
+  CheckCounter,
+  DateAndProvider,
+  type PreviousNoteFrameProps,
+  type PreviousNoteFrameState,
+  type PreviousNoteSection,
+  type PreviousNoteEntry,
+  type PreviousNoteItemProps,
+  type PreviousNoteSummaryProps,
+  type PreviousNoteStatus,
+  type AddFromPreviousButtonProps,
+  type CheckCounterProps,
+  type DateAndProviderProps,
+} from './components/RTNItems/PreviousNote';

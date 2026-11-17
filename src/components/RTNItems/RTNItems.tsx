@@ -5,6 +5,7 @@ import { Button } from '../Button/Button';
 import { Tabs, type TabsOption } from '../Tabs/Tabs';
 import { Toggle } from '../Toggle/Toggle';
 import { createPortal } from 'react-dom';
+import { PreviousNoteSummary } from './PreviousNote';
 import './RTNItems.css';
 
 /** Figma Device: iPhone · iPad · Web. Web and iPad share sizes; Web drops the 80px minimum height when empty. */
@@ -89,7 +90,7 @@ export const RtnItemContent = ({ device = 'web', elevated, onRemove, removeLabel
 
 /* ------------------------------------------------------------------ Labels */
 
-export type RtnLabelTone = 'neutral' | 'accent' | 'alert';
+export type RtnLabelTone = 'neutral' | 'accent' | 'alert' | 'plain';
 
 /** Figma "Label" used inside RTN items: a pill with a code in Relative Mono. */
 export const RtnLabel = ({ device = 'web', tone = 'neutral', size, icon, children }: { device?: RtnDevice; tone?: RtnLabelTone; size?: 'small' | 'medium' | 'big'; icon?: IconName; children: ReactNode }) => {
@@ -457,8 +458,8 @@ export interface RtnMainFrameProps {
   /** Selected tab (Chart Prep · Previous Note · Current Note) */
   tab?: string;
   onTabChange?: (tab: string) => void;
-  /** "N sections pulled forward" line above the list; leave it out to hide it */
-  pulledForward?: number;
+  /** Sections pulled forward from the previous note: shows the Previous Note Summary above the list (leave it out to hide it) */
+  pulledForward?: { title: string; icon: IconName }[];
   /** Autosaved ✓ under the list (iPad / Web) */
   autosaved?: boolean;
   /** The RTN item cards */
@@ -472,16 +473,7 @@ export interface RtnMainFrameProps {
  */
 export const RtnMainFrame = ({ device = 'web', tab, onTabChange, pulledForward, autosaved = true, children, className }: RtnMainFrameProps) => {
   const tabs = <Tabs device={device} options={rtnTabs} value={tab} defaultValue="current-note" onChange={onTabChange} aria-label="Note" />;
-  const summary = pulledForward != null && (
-    <div className={cx('is-rtn-summary', small(device) && 'is-rtn-summary--iphone')}>
-      <span className="is-rtn-summary__icons">
-        {(['history', 'system', 'exam'] as IconName[]).map((n) => (
-          <span key={n} className="is-rtn-summary__icon"><Icon name={n} size={small(device) ? 16 : 20} /></span>
-        ))}
-      </span>
-      <span className="is-rtn-summary__text">{pulledForward} sections pulled forward</span>
-    </div>
-  );
+  const summary = pulledForward && pulledForward.length > 0 && <PreviousNoteSummary device={device} sections={pulledForward} />;
   if (small(device)) {
     return (
       <div className={cx('is-rtn-frame', 'is-rtn-frame--iphone', className)}>

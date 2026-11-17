@@ -10,7 +10,7 @@ const deviceLabel: Record<RtnDevice, string> = { iphone: 'iPhone', ipad: 'iPad',
 type Args = { device: RtnDevice; topic: RtnTopic; state: RtnSampleState };
 
 const meta = {
-  title: 'Components/RTN Items (Today)/RTN Item',
+  title: 'Components/RTN Notes/RTN Item (Today)',
   component: RtnSample,
   args: { device: 'web', topic: 'diagnoses', state: 'filled' },
   argTypes: {

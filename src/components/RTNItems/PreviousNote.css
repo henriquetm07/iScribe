@@ -1,0 +1,383 @@
+/*
+ * RTN Notes · Previous Note — Figma "RTN Items (Previous Note)" (812:8868). Sizes per Device (iPhone · iPad · Web);
+ * colors from the Semantic Colors variables, so light and dark mode follow data-theme.
+ */
+.is-pn-frame,
+.is-pn-section,
+.is-pn-item,
+.is-pn-summary,
+.is-pn-status,
+.is-pn-counter {
+  --is-pn-mono: 'Relative Mono Pro 10 Pitch', 'Relative Mono 10 Pitch', ui-monospace, 'SF Mono', SFMono-Regular, Menlo, monospace;
+  font-family: var(--is-font-ui);
+  color: var(--is-foreground-high-contrast-primary-foreground);
+}
+
+/* ---------- Add From Previous Item: Value (added) ---------- */
+.is-button.is-pn-add.is-pn-add--added {
+  --btn-bg: var(--is-status-background-positive);
+  --btn-border-width: 0px;
+  --btn-fg: var(--is-foreground-high-contrast-primary-foreground-2);
+}
+
+/* ---------- Check counter ---------- */
+.is-pn-counter {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+.is-pn-counter__badge {
+  position: absolute;
+  top: -9px;
+  right: -9px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  min-width: 18px;
+  padding: 0 2px;
+  border-radius: 1000px;
+  background: var(--is-status-background-positive);
+  color: var(--is-foreground-high-contrast-primary-foreground-2);
+  font-family: var(--is-pn-mono);
+  font-size: 10px;
+  line-height: 18px;
+  pointer-events: none;
+}
+.is-pn-counter--iphone .is-pn-counter__badge {
+  top: -8px;
+  right: -8px;
+  height: 16px;
+  min-width: 16px;
+  padding: 0 1px;
+  font-size: 9px;
+}
+.is-pn-counter--ipad .is-pn-counter__badge {
+  top: -10px;
+  right: -10px;
+  height: 20px;
+  min-width: 20px;
+  font-size: 12px;
+}
+
+/* ---------- Date and Provider ---------- */
+.is-pn-date {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+.is-pn-date__full {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+.is-pn-date__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.is-pn-date__date {
+  font-weight: 600;
+  font-size: 15px;
+  white-space: nowrap;
+}
+.is-pn-date__meta {
+  font-weight: 500;
+  font-size: 14px;
+}
+.is-pn-date--iphone .is-pn-date__date {
+  font-size: 14px;
+  line-height: 18px;
+}
+.is-pn-date--iphone .is-pn-date__meta {
+  font-size: 13px;
+  line-height: 18px;
+}
+.is-pn-date--ipad .is-pn-date__date {
+  font-size: 16px;
+}
+.is-pn-date--ipad .is-pn-date__meta {
+  font-size: 15px;
+}
+
+/* ---------- Section (header + items) ---------- */
+.is-pn-section {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.is-pn-section__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 39px;
+  margin: 0;
+  padding: 10px 0;
+  box-sizing: border-box;
+  font-weight: 500;
+  font-size: 16px;
+  white-space: nowrap;
+}
+.is-pn-section--iphone .is-pn-section__header {
+  height: 40px;
+}
+.is-pn-section--ipad .is-pn-section__header {
+  height: 44px;
+  font-size: 17px;
+}
+.is-pn-section__items {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.is-pn-section--iphone .is-pn-section__items {
+  gap: 10px;
+}
+
+/* ---------- Item ---------- */
+.is-pn-item {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+  padding: 20px;
+  overflow: hidden;
+  background: var(--is-surface-super-soft-contrast-background);
+  border: 1px solid var(--is-surface-soft-contrast-background);
+  border-radius: var(--is-roundness-20);
+}
+.is-pn-item--iphone {
+  gap: 10px;
+  padding: 10px;
+  border-radius: var(--is-roundness-12);
+}
+.is-pn-item__data {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+}
+.is-pn-item__text {
+  margin: 0;
+  font-size: 15px;
+  overflow-wrap: break-word;
+}
+
+/* ---------- Previous Note Summary ---------- */
+.is-pn-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+.is-pn-summary:focus-visible {
+  outline: 2px solid var(--is-labels-accent);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+.is-pn-summary__row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.is-pn-summary__row--compact {
+  gap: 10px;
+}
+.is-pn-summary__text {
+  font-size: 15px;
+  line-height: 18px;
+  white-space: nowrap;
+}
+.is-pn-summary--ipad .is-pn-summary__text {
+  font-size: 17px;
+}
+
+/* Previous note icon: a round chip; overlapping in the compact row */
+.is-pn-icons {
+  display: flex;
+  align-items: center;
+}
+.is-pn-icon {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 4px;
+  border-radius: 1000px;
+  background: var(--is-background-elevated-background);
+  border: 1px solid var(--is-surface-soft-contrast-background);
+}
+.is-pn-icons > .is-pn-icon + .is-pn-icon {
+  margin-left: -4px;
+}
+.is-pn-summary--ipad .is-pn-icon {
+  padding: 5px;
+}
+.is-pn-summary--ipad .is-pn-icons > .is-pn-icon + .is-pn-icon {
+  margin-left: -6px;
+}
+.is-pn-summary--expanded .is-pn-icon {
+  width: 24px;
+  height: 24px;
+}
+.is-pn-summary--ipad.is-pn-summary--expanded .is-pn-icon {
+  width: 30px;
+  height: 30px;
+}
+.is-pn-icon--plain {
+  border-color: transparent;
+}
+.is-pn-icon--neutral {
+  border-color: transparent;
+  background: var(--is-surface-elevated-inverted);
+  color: var(--is-foreground-high-contrast-secondary-foreground);
+}
+
+/* ---------- Loading / Error ---------- */
+.is-pn-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  max-width: 335px;
+  text-align: center;
+}
+.is-pn-status__text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.is-pn-status__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 18px;
+}
+.is-pn-status__body {
+  margin: 0;
+  font-size: 15px;
+  line-height: 20px;
+  color: var(--is-foreground-medium-contrast-primary-foreground);
+}
+.is-pn-status__retry {
+  width: 120px;
+}
+.is-pn-spin {
+  animation: is-pn-spin 900ms linear infinite;
+}
+@keyframes is-pn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-pn-spin {
+    animation-duration: 2.4s;
+  }
+}
+
+/* ---------- Main frame ---------- */
+.is-pn-frame {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 900px;
+  overflow: hidden;
+  background: var(--is-background-elevated-background);
+  border-radius: var(--is-roundness-30);
+}
+.is-pn-frame__top {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+}
+.is-pn-frame__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.is-pn-separator {
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--is-surface-soft-contrast-background);
+}
+.is-pn-frame__body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  background: var(--is-surface-super-soft-contrast-background);
+}
+.is-pn-frame--empty .is-pn-frame__body,
+.is-pn-frame--loading .is-pn-frame__body,
+.is-pn-frame--error .is-pn-frame__body {
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: 0 40px;
+}
+
+/* iPhone: a bottom sheet with a dragger */
+.is-pn-frame--iphone {
+  border-radius: var(--is-roundness-30) var(--is-roundness-30) 0 0;
+}
+.is-pn-frame--iphone .is-pn-frame__top {
+  gap: 20px;
+  padding-top: 0;
+}
+.is-pn-frame__dragger {
+  align-self: center;
+  width: 36px;
+  height: 4px;
+  margin: 12px 0 -8px;
+  border-radius: 20px;
+  background: var(--is-surface-medium-contrast-background);
+}
+.is-pn-frame--iphone .is-pn-frame__body {
+  padding: 10px;
+}
+.is-pn-frame--iphone.is-pn-frame--empty .is-pn-frame__body,
+.is-pn-frame--iphone.is-pn-frame--loading .is-pn-frame__body,
+.is-pn-frame--iphone.is-pn-frame--error .is-pn-frame__body {
+  min-height: 358px;
+  padding: 0 40px 30px;
+}
+
+/* Empty: "No Previous Notes" */
+.is-pn-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+.is-pn-empty__title {
+  margin: 0;
+  font-family: 'Season Mix', var(--is-font-ui);
+  font-size: 20px;
+}
+.is-pn-empty__body {
+  margin: 0;
+  font-size: 14px;
+  color: var(--is-foreground-medium-contrast-primary-foreground);
+}
