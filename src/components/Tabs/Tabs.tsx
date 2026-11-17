@@ -289,6 +289,10 @@ export const Tabs = ({
 
   useEffect(() => () => cancelAnimationFrame(sim.current.raf), []);
 
+  // The options' content, so a new but identical options array (e.g. written inline) doesn't re-measure:
+  // re-measuring snaps the glass to the selected tab, which would cut its slide short
+  const optionsKey = options.map((o) => `${o.value}\u0000${o.label}\u0000${o.count ?? ''}\u0000${o.disabled ? 1 : 0}`).join('\u0001');
+
   // Measure the tabs (and rebuild the lens map) whenever the layout can change
   useLayoutEffect(() => {
     const measure = () => {
@@ -317,7 +321,7 @@ export const Tabs = ({
     return () => ro.disconnect();
     // selectedIndex is read once per layout; moving between tabs is handled below
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [options, device, width, render]);
+  }, [optionsKey, device, width, render]);
 
   // A new selection: send the glass there on the spring
   useEffect(() => {
