@@ -39,7 +39,10 @@ export const SchedulePanel = ({ icon, title, subtitle, onBack, onClose, headerEx
     <header className="is-sched-panel__header">
       <div className="is-sched-panel__title-row">
         {onBack ? (
-          <IconButton variant="ghost" size="mini" label="Back" icon={<Icon name="chevron-left" />} onClick={onBack} className="is-sched-panel__back" />
+          // Figma "icon/chevron left": a plain 16px icon (no button background), high contrast
+          <button type="button" className="is-sched-panel__icon-action is-sched-panel__back" onClick={onBack} aria-label="Back">
+            <Icon name="chevron-left" size={16} />
+          </button>
         ) : (
           icon && (
             <span className="is-sched-panel__icon">
@@ -54,7 +57,10 @@ export const SchedulePanel = ({ icon, title, subtitle, onBack, onClose, headerEx
       </div>
       {headerExtra}
       {onClose && (
-        <IconButton variant="ghost" size="mini" label="Close" icon={<Icon name="close" />} onClick={onClose} className="is-sched-panel__close" />
+        // Figma "icon/close": a plain 16px icon, low contrast, 20px from the top right; no background on hover
+        <button type="button" className="is-sched-panel__icon-action is-sched-panel__close" onClick={onClose} aria-label="Close">
+          <Icon name="close" size={16} />
+        </button>
       )}
     </header>
     <div className="is-sched-panel__body">{children}</div>

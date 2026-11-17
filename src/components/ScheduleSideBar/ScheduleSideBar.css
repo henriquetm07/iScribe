@@ -213,10 +213,26 @@
   height: 24px;
   color: var(--is-foreground-high-contrast-primary-foreground);
 }
-/* Back: an Icon Button (ghost, mini) in the 24px icon slot */
-.is-sched-panel__back {
+/* Back and close: plain 16px icons you can click (Figma icon/chevron left, icon/close), no background */
+.is-sched-panel__icon-action {
+  display: grid;
   flex: none;
-  margin: 2px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+}
+.is-sched-panel__icon-action:focus-visible {
+  outline: 2px solid var(--is-color-periwinkle-main-lm);
+  outline-offset: 2px;
+}
+/* Back sits in the 24px icon slot, high contrast */
+.is-sched-panel__back {
+  width: 24px;
+  height: 24px;
+  color: var(--is-foreground-high-contrast-primary-foreground);
 }
 .is-sched-panel__titles {
   display: flex;
@@ -237,11 +253,14 @@
   font-size: 15px;
   color: var(--is-foreground-medium-contrast-primary-foreground);
 }
-/* Close: an Icon Button (ghost, mini), placed in the top right corner */
+/* Close: 16px, low contrast, 20px from the top right corner */
 .is-sched-panel__close {
   position: absolute;
-  top: 18px;
-  right: 18px;
+  top: 20px;
+  right: 20px;
+  width: 16px;
+  height: 16px;
+  color: var(--is-foreground-low-contrast-primary-foreground);
 }
 /* Body: 10px below the header, 20px sides, groups 10px apart, scrolls when tall */
 .is-sched-panel__body {
