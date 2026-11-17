@@ -138,6 +138,7 @@ export interface AppointmentStatusIconProps {
   /**
    * Animate on arrival (default true): when the status changes to Sent to EHR or Copied to EHR, its animation
    * plays once (Foundations / Animated Icons, "sent-to-ehr" and "copied-to-ehr"). The first render is static.
+   * Note in Progress plays "note-in-progress" every 5 seconds for as long as it is shown.
    */
   animate?: boolean;
   className?: string;
@@ -147,6 +148,11 @@ export interface AppointmentStatusIconProps {
 const arrivals: Partial<Record<AppointmentStatusValue, AnimatedIconName>> = {
   'sent-to-ehr': 'sent-to-ehr',
   'copied-to-ehr': 'copied-to-ehr',
+};
+
+/** Statuses that keep animating while shown: which animation, and how often it replays (seconds) */
+const working: Partial<Record<AppointmentStatusValue, { name: AnimatedIconName; every: number }>> = {
+  'note-in-progress': { name: 'note-in-progress', every: 5 },
 };
 
 /** Figma "Appointment Status Icons": the 20px icon for an appointment's status */
@@ -184,6 +190,31 @@ export const AppointmentStatusIcon = ({ status, size = 20, title, animate = true
           size={size}
           className="is-apt-flight__plane"
           // The static icon, until the animation player has loaded
+          fallback={
+            <svg width={size} height={size} viewBox="0 0 20 20" aria-hidden="true">
+              {drawing('f')}
+            </svg>
+          }
+        />
+      </span>
+    );
+  }
+
+  const work = animate ? working[status] : undefined;
+  if (work) {
+    // Plays now and every few seconds after; it starts and ends on the resting look, so the gaps look static
+    return (
+      <span
+        className={`is-apt-icon is-apt-working ${className}`}
+        style={{ width: size, height: size }}
+        role={name ? 'img' : undefined}
+        aria-label={name || undefined}
+        aria-hidden={name ? undefined : true}
+      >
+        <AnimatedIcon
+          name={work.name}
+          size={size}
+          repeatEvery={work.every}
           fallback={
             <svg width={size} height={size} viewBox="0 0 20 20" aria-hidden="true">
               {drawing('f')}

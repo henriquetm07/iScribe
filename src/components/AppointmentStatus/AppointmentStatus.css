@@ -67,6 +67,11 @@
 .is-apt-flight__plane {
   color: var(--is-status-foreground-positive);
 }
+/* Note in Progress: the waves animation, high contrast with the accent flash */
+.is-apt-working {
+  display: inline-grid;
+  color: var(--is-foreground-high-contrast-primary-foreground);
+}
 
 /* Icon + label: 8px apart, label Figtree Medium 11px / 18px, high contrast */
 .is-apt-status {

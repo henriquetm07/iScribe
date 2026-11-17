@@ -8,6 +8,7 @@ import chevronUpDown from './animated/chevron-up-down.json';
 import chevronLeftRight from './animated/chevron-left-right.json';
 import sentToEhr from './animated/sent-to-ehr.json';
 import copiedToEhr from './animated/copied-to-ehr.json';
+import noteInProgress from './animated/note-in-progress.json';
 
 export interface AnimatedIconData {
   /** The Lottie JSON */
@@ -25,6 +26,11 @@ export interface AnimatedIconData {
   states?: Record<string, readonly [from: number, to: number]>;
   /** Speed it plays at by default (1 = as designed); AnimatedIcon's `speed` prop overrides it */
   speed?: number;
+  /**
+   * For icons that flash to a second colour: the file's base and accent colours (hex). The base plays as
+   * currentColor and the accent as --is-animated-icon-accent (periwinkle by default), so both follow the theme.
+   */
+  accent?: { base: string; color: string };
 }
 
 export const animatedIcons = {
@@ -72,6 +78,13 @@ export const animatedIcons = {
       'The copy icon: two overlapping squares pull apart, swap places and settle back into the overlapped copy shape. Drawn on a 240 × 240 grid. Plays in Appointment Status when the status changes to Copied to EHR.',
     markers: { apart: 24, swapped: 48 },
     startsFrom: 'copy',
+  },
+  'note-in-progress': {
+    data: noteInProgress,
+    description:
+      'The iScribe waves in a circle light up in the accent colour one by one, inner to outer, then settle back. Drawn on a 240 × 240 grid. Plays in Appointment Status while the status is Note in Progress, every 5 seconds.',
+    markers: { inner: 5, middle: 20, outer: 35 },
+    accent: { base: '#1d1c1e', color: '#3966ff' },
   },
 } satisfies Record<string, AnimatedIconData>;
 

@@ -27,6 +27,9 @@ export const appointmentStatusSpecLines = (status: AppointmentStatusValue = 'new
   ...(status === 'sent-to-ehr'
     ? ['  Arrival     when the status changes to Sent to EHR, the paper plane flies off and back in once', '              (Animated Icons "sent-to-ehr", 1s); animate={false} turns it off']
     : []),
+  ...(status === 'note-in-progress'
+    ? ['  Animation   the waves light up in the accent colour one by one, inner to outer, every 5s', '              (Animated Icons "note-in-progress", 1s; accent var(--is-labels-accent)); animate={false} turns it off']
+    : []),
   ...(status === 'copied-to-ehr'
     ? ['  Arrival     when the status changes to Copied to EHR, the squares pull apart and swap once', '              (Animated Icons "copied-to-ehr", 1s); animate={false} turns it off']
     : []),

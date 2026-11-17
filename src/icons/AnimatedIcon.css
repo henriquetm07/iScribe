@@ -3,6 +3,8 @@
   display: inline-grid;
   flex-shrink: 0;
   vertical-align: middle;
+  /* The accent some animations flash to (e.g. note-in-progress); follows light / dark mode */
+  --is-animated-icon-accent: var(--is-labels-accent);
 }
 .is-animated-icon > * {
   grid-area: 1 / 1;

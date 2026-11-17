@@ -11,6 +11,8 @@ export interface AnimatedIconProps {
   autoplay?: boolean;
   /** Repeat forever instead of stopping on the last frame */
   loop?: boolean;
+  /** Play it again every this many seconds (counted from the start of each play), resting on the last frame in between */
+  repeatEvery?: number;
   /** Playback speed multiplier (1 = as designed). Leave out to use the icon's own speed (e.g. play-pause runs at 2×) */
   speed?: number;
   /**
@@ -39,6 +41,7 @@ export const AnimatedIcon = ({
   size = '1em',
   autoplay = true,
   loop = false,
+  repeatEvery,
   speed,
   state,
   onMarker,
@@ -91,6 +94,29 @@ export const AnimatedIcon = ({
           anim.destroy();
         };
         anim.setSpeed(speed ?? ('speed' in icon ? (icon.speed as number) : 1));
+        // Icons with an accent colour: every frame, colours between the file's base and accent are redrawn as a mix
+        // of currentColor and --is-animated-icon-accent, so the accent follows the theme like the rest
+        const accent = 'accent' in icon ? (icon.accent as { base: string; color: string }) : undefined;
+        if (accent) {
+          const hex = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+          const [from, to] = [hex(accent.base), hex(accent.color)];
+          const span = to.map((v, i) => v - from[i]);
+          const length = span.reduce((sum, v) => sum + v * v, 0);
+          const tint = () => {
+            box.current?.querySelectorAll<SVGElement>('[stroke], [fill]').forEach((el) => {
+              for (const attr of ['stroke', 'fill'] as const) {
+                const rgb = el.getAttribute(attr)?.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+                if (!rgb) continue;
+                const t = Math.min(1, Math.max(0, rgb.slice(1, 4).reduce((sum, v, i) => sum + (Number(v) - from[i]) * span[i], 0) / length));
+                el.style[attr] = t < 0.01 ? '' : `color-mix(in srgb, var(--is-animated-icon-accent) ${Math.round(t * 100)}%, currentColor)`;
+              }
+            });
+          };
+          // drawnFrame comes after lottie has written the frame's colours (enterFrame comes before)
+          anim.addEventListener('DOMLoaded', tint);
+          anim.addEventListener('drawnFrame', tint);
+          tint();
+        }
         setReady(true);
         // Icons with states: start on the end frame of the current state and wait for changes
         const states = 'states' in icon ? (icon.states as Record<string, readonly [number, number]>) : undefined;
@@ -109,6 +135,18 @@ export const AnimatedIcon = ({
         anim.addEventListener('loopComplete', () => fired.clear());
         anim.addEventListener('complete', finish);
         if (autoplay) anim.play();
+        // Replay on a timer (e.g. Note in Progress, every 5s)
+        if (repeatEvery && !loop) {
+          const timer = window.setInterval(() => {
+            fired.clear();
+            anim.goToAndPlay(0, true);
+          }, repeatEvery * 1000);
+          const stop = destroy;
+          destroy = () => {
+            window.clearInterval(timer);
+            stop();
+          };
+        }
       })
       // If the player can't load, still report the markers so nothing waits forever
       .catch(() => {
@@ -119,7 +157,7 @@ export const AnimatedIcon = ({
       cancelled = true;
       destroy();
     };
-  }, [name, autoplay, loop, speed]);
+  }, [name, autoplay, loop, repeatEvery, speed]);
 
   // Animate to a new state (play-pause: triangle ↔ bars)
   useEffect(() => {

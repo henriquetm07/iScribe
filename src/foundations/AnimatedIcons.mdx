@@ -14,10 +14,11 @@ import { AnimatedIcon } from 'iscribe';
 
 <AnimatedIcon name="arrow-to-check" size={24} />                       // plays once, stops on the last frame
 <AnimatedIcon name="arrow-to-check" size={24} loop />                  // repeats
+<AnimatedIcon name="note-in-progress" size={20} repeatEvery={5} />     // plays again every 5 seconds
 <AnimatedIcon name="arrow-to-check" onMarker={(m) => m === 'check' && showSuccess()} />
 ```
 
-- **Color** — like Icons, animated icons use `currentColor`, so they take the text color around them.
+- **Color** — like Icons, animated icons use `currentColor`, so they take the text color around them. Some flash to an accent (for example `note-in-progress`); that colour is `--is-animated-icon-accent`, periwinkle by default.
 - **Size** — `size` sets width and height. It defaults to `1em`.
 - **Markers** — named moments in the animation (for example `check`, when the check mark starts drawing). `onMarker` tells you when each one is reached, so other UI can change in step with the animation.
 - **Loading** — the Lottie player loads the first time an animated icon is shown. Pass `fallback` (usually the static icon it starts from) to show something meanwhile.
