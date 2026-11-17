@@ -5,6 +5,7 @@ import { AppointmentStatusIcon, appointmentStatusLabel, type AppointmentStatusVa
 import { Button } from '../Button/Button';
 import { IconButton } from '../IconButton/IconButton';
 import { EhrLogo, ehrLabel, type EhrName } from '../EhrIcon/EhrIcon';
+import { useThemeAround } from '../ScheduleList/ScheduleList';
 import './ScheduleSideBar.css';
 
 /*
@@ -79,12 +80,36 @@ const Group = ({ label, children }: { label: string; children: ReactNode }) => (
   </div>
 );
 
-/** An option: a regular Button — Primary when on, Secondary when off */
-const Option = ({ on, onClick, icon, children }: { on: boolean; onClick: () => void; icon?: ReactNode; children: ReactNode }) => (
-  <Button variant={on ? 'primary' : 'secondary'} size="regular" iconLeft={icon} aria-pressed={on} onClick={onClick}>
-    {children}
-  </Button>
-);
+/**
+ * An option: a regular Button — Primary when on, Secondary when off. With invertIcon, the icon switches to its
+ * other-mode version when the option is on (e.g. a status icon on the black Primary button uses its dark-mode colours).
+ */
+const Option = ({
+  on,
+  onClick,
+  icon,
+  invertIcon = false,
+  children,
+}: {
+  on: boolean;
+  onClick: () => void;
+  icon?: ReactNode;
+  invertIcon?: boolean;
+  children: ReactNode;
+}) => {
+  const ref = useRef<HTMLSpanElement>(null);
+  const around = useThemeAround(ref);
+  const iconNode = icon && (
+    <span ref={ref} className="is-sched-option__icon" data-theme={on && invertIcon ? (around === 'dark' ? 'light' : 'dark') : undefined}>
+      {icon}
+    </span>
+  );
+  return (
+    <Button variant={on ? 'primary' : 'secondary'} size="regular" iconLeft={iconNode} aria-pressed={on} onClick={onClick}>
+      {children}
+    </Button>
+  );
+};
 
 const toggle = <T,>(list: T[], value: T) => (list.includes(value) ? list.filter((v) => v !== value) : [...list, value]);
 
@@ -188,7 +213,7 @@ export const ScheduleFilterPanel = ({
       </Group>
       <Group label="Status">
         {filterStatuses.map((s) => (
-          <Option key={s} on={filters.statuses.includes(s)} icon={<AppointmentStatusIcon status={s} size={16} title="" animate={false} />} onClick={() => onChange({ ...filters, statuses: toggle(filters.statuses, s) })}>
+          <Option key={s} on={filters.statuses.includes(s)} invertIcon icon={<AppointmentStatusIcon status={s} size={16} title="" animate={false} />} onClick={() => onChange({ ...filters, statuses: toggle(filters.statuses, s) })}>
             {appointmentStatusLabel(s)}
           </Option>
         ))}

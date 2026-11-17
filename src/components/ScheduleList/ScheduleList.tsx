@@ -40,7 +40,8 @@ export const VisitType = ({ label = 'Visit', ehr, integrated = false, className 
 const themeAround = (el: Element | null): 'light' | 'dark' =>
   el?.parentElement?.closest('[data-theme]')?.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
 
-const useThemeAround = (ref: RefObject<HTMLElement | null>) => {
+/** The mode (light / dark) of the page around an element, following the Light / Dark toggle */
+export const useThemeAround = (ref: RefObject<HTMLElement | null>) => {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   useEffect(() => {
     const update = () => setTheme(themeAround(ref.current));

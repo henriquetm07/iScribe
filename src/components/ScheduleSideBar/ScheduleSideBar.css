@@ -342,6 +342,10 @@
   font-weight: 500;
   line-height: 18px;
 }
+/* An option's icon wrapper: no box of its own; only carries data-theme for the selected look */
+.is-sched-option__icon {
+  display: contents;
+}
 /* List rows: Buttons (secondary, regular) at full width, label on the left and × on the right */
 .is-sched-list-option {
   flex: none;
