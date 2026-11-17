@@ -191,10 +191,13 @@ export const ScheduleFilterPanel = ({
       subtitle="Select attributes to filter by"
       onClose={onClose}
       className={className}
+      // The bottom bar only appears once a filter is chosen (nothing to clear otherwise)
       footer={
-        <Button variant="outline" size="regular" onClick={() => onChange(emptyScheduleFilters)} disabled={appliedFilterChips(filters, onChange).length === 0}>
-          Clear all Filters
-        </Button>
+        appliedFilterChips(filters, onChange).length > 0 ? (
+          <Button variant="outline" size="regular" onClick={() => onChange(emptyScheduleFilters)}>
+            Clear all Filters
+          </Button>
+        ) : undefined
       }
     >
       <Group label="Appointment Type">
