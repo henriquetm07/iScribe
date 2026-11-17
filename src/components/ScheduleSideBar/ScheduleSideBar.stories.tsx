@@ -4,8 +4,8 @@ import { ProviderName, ScheduleSideBar } from './ScheduleSideBar';
 import { samplePending, sampleProviders, sampleDepartments, sampleSideBarAppointments } from './sampleSchedule';
 
 const caption = { fontFamily: 'var(--is-font-ui)', fontSize: 12, color: 'var(--is-foreground-low-contrast-primary-foreground)' } as const;
-/** The side bar sits on the page background, 760px tall here (974 in Figma) */
-const frame = { height: 760, display: 'flex', borderRadius: 20, overflow: 'hidden', border: '1px solid var(--is-surface-soft-contrast-background)' } as const;
+/** The side bar, 760px tall here (974 in Figma), outlined so its edge shows; panels can open past it */
+const frame = { height: 760, display: 'flex', outline: '1px solid var(--is-surface-soft-contrast-background)' } as const;
 
 const meta = {
   title: 'Components/Schedule Side Bar/Schedule Side Bar',

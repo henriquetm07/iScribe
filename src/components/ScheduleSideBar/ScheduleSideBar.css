@@ -94,6 +94,12 @@
   display: flex;
   flex: 1 1 auto;
   min-height: 0;
+  /* Scrolls without visible scrollbars, as in Figma (a scrollbar would also squeeze the cards) */
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+.is-ssb__schedule::-webkit-scrollbar {
+  display: none;
 }
 .is-ssb--collapsed .is-ssb__schedule {
   align-self: flex-start;
