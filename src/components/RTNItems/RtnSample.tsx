@@ -23,7 +23,7 @@ const PRO_DOC_TEXT =
  * A working RTN Item with the Figma sample content for each topic. Entries can be removed, the Pro Doc text edited,
  * the diagnosis toggled and the billing codes reordered.
  */
-export const RtnSample = ({ device = 'web', topic, state = 'filled' }: { device?: RtnDevice; topic: RtnTopic; state?: RtnSampleState }) => {
+export const RtnSample = ({ device = 'web', topic, state = 'filled', onAdd }: { device?: RtnDevice; topic: RtnTopic; state?: RtnSampleState; onAdd?: () => void }) => {
   const [removed, setRemoved] = useState<string[]>([]);
   const [editing, setEditing] = useState(state === 'edit');
   const [text, setText] = useState(PRO_DOC_TEXT);
@@ -109,7 +109,7 @@ export const RtnSample = ({ device = 'web', topic, state = 'filled' }: { device?
   })().filter(Boolean);
 
   return (
-    <RtnItem device={device} topic={topic}>
+    <RtnItem device={device} topic={topic} onAdd={onAdd}>
       {entries}
     </RtnItem>
   );

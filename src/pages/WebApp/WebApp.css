@@ -1,0 +1,62 @@
+/*
+ * Pages / Web App — page layout only; every part keeps its own component styles.
+ * 52px Web Nav Bar · Schedule Side Bar (420px, 180px collapsed) · Note Section on the base background.
+ */
+.is-webapp {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  min-height: 640px;
+  overflow: hidden;
+  background: var(--is-background-base-background);
+  font-family: var(--is-font-ui);
+  color: var(--is-foreground-high-contrast-primary-foreground);
+}
+.is-webapp__main {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.is-webapp__main > .is-ssb {
+  flex-shrink: 0;
+}
+
+/* Note Section: RTN Header on top, the board scrolls below it */
+.is-webapp__note {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+.is-webapp__note > .is-rtn {
+  flex-shrink: 0;
+}
+.is-webapp__board {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  min-height: 0;
+  overflow: auto;
+  padding: 30px 40px 80px;
+}
+.is-webapp__frame {
+  flex-shrink: 0;
+}
+/* Chart Prep isn't designed yet: a quiet placeholder */
+.is-webapp__chart-prep {
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  text-align: center;
+}
+
+/* Microphone settings: bottom-left corner of the Note Section */
+.is-webapp__mic {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+}

@@ -115,6 +115,7 @@ const preview: Preview = {
       storySort: { order: [
         'Introduction', 'Foundations', ['Colors', 'Variables', 'Icons', 'Animated Icons', 'Animations'],
         'Components', ['Appointment Status', 'Bottom Tab', ['Bottom Tab', 'Alert', 'Send Slider'], 'Button', 'Dropdown', 'EHR Icon', 'Icon Button', 'Record', ['Record Widget', 'Mini Record Widget iPhone', 'Mini Record Widget Web', 'Focus Mode', 'Parts'], 'RTN Header (Web)', 'RTN Notes', ['RTN Item (Today)', 'RTN Main Frame (Today)', 'RTN Main Frame (Previous Note)'], 'Schedule List', ['Schedule List', 'Schedule List Item'], 'Schedule Side Bar', ['Schedule Side Bar', 'Panels'], 'Selection List', ['Selection List', 'Selection List Item'], 'Tabs', ['Tabs', 'Tab Item'], 'Toggle', 'Web Nav Bar'],
+        'Pages', ['Web App'],
       ] },
     },
     controls: {

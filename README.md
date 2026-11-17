@@ -27,6 +27,7 @@ src/
   components/        One folder per component: .tsx, .css, .stories.tsx
   foundations/       Storybook pages for design foundations (Colors, Variables, Icons, Animated Icons)
   icons/             Icon and AnimatedIcon components, icon data, and animated/ (Lottie JSON files)
+  pages/             Full screens built from the components (Pages / Web App), behaviour included
   styles/colors.css  Color palette from the SuperConscious Figma design system (--is-color-*)
   styles/colors.ts   The same palette as data, used by the Colors page
   styles/variables.css  Every Figma variable: semantic colors (light/dark), roundness, text, button and label sizes
