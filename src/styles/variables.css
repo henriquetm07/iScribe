@@ -4,8 +4,9 @@
  * The Storybook Variables page reads src/styles/variables.ts; keep the two in sync.
  */
 
-/* Semantic Colors — Light Mode */
-:root {
+/* Semantic Colors — Light Mode (also inside a [data-theme='light'] block, e.g. a light panel on a dark page) */
+:root,
+[data-theme='light'] {
   --is-toggle-background-on: var(--is-color-tgrey-3);
   --is-toggle-foreground-on: var(--is-color-periwinkle-main-lm);
   --is-toggle-background-off: var(--is-color-tgrey-3);

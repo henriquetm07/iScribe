@@ -1,0 +1,30 @@
+/*
+ * EHR Icon and EHR Logos — Figma "EHR Icons" (1082:9313). Logos keep their brand colours; the link icon and the
+ * logo tile use the Figma variables, so light and dark mode follow data-theme.
+ */
+.is-ehr-logo {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  vertical-align: middle;
+  border-radius: 4px; /* Round XS */
+}
+/* Logos that need a backing (Veradigm): barely there in light mode, off-white in dark mode */
+.is-ehr-logo--tile {
+  background: var(--is-background-logo-background);
+}
+.is-ehr-logo__art {
+  position: absolute;
+}
+.is-ehr-logo__art > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* Not integrated: the link icon, low contrast */
+.is-ehr-link {
+  display: inline-block;
+  flex: none;
+  vertical-align: middle;
+  color: var(--is-foreground-low-contrast-primary-foreground);
+}
