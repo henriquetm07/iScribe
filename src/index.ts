@@ -9,6 +9,18 @@ export {
   type AppointmentStatusValue,
 } from './components/AppointmentStatus/AppointmentStatus';
 export { EhrIcon, EhrLogo, ehrs, ehrLabel, type EhrIconProps, type EhrLogoProps, type EhrName } from './components/EhrIcon/EhrIcon';
+export {
+  ScheduleList,
+  ScheduleListItem,
+  VisitType,
+  type ScheduleListProps,
+  type ScheduleListItemProps,
+  type ScheduleListEntry,
+  type ScheduleAppointment,
+  type ScheduleListItemState,
+  type ScheduleListItemSize,
+  type VisitTypeProps,
+} from './components/ScheduleList/ScheduleList';
 export { IconButton, type IconButtonProps } from './components/IconButton/IconButton';
 export { SelectionList, type SelectionListProps, type SelectionListOption } from './components/SelectionList/SelectionList';
 export { SelectionListItem, type SelectionListItemProps, type SelectionListDevice } from './components/SelectionList/SelectionListItem';

@@ -1,0 +1,213 @@
+/*
+ * Schedule List — Figma "Schedule List" (1133:6822). Colours are the Figma variables, so light and dark mode follow
+ * data-theme. Selected items are drawn in the other mode (data-theme on the item).
+ */
+
+/* ---------- Visit type ---------- */
+.is-visit-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+}
+.is-visit-type__label {
+  font-family: var(--is-font-ui);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--is-foreground-high-contrast-primary-foreground);
+  white-space: nowrap;
+}
+
+/* ---------- Item ---------- */
+.is-sli {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: none;
+  height: 100px;
+  overflow: hidden;
+  border-radius: 16px; /* Round XL */
+  background: var(--is-background-elevated-background);
+  color: var(--is-foreground-high-contrast-primary-foreground);
+  font-family: var(--is-font-ui);
+  text-align: left;
+}
+.is-sli--compact {
+  width: 130px;
+}
+.is-sli--expanded {
+  width: 360px;
+}
+.is-sli[role='button'] {
+  cursor: pointer;
+}
+.is-sli[role='button']:focus-visible {
+  outline: 2px solid var(--is-color-periwinkle-main-lm);
+  outline-offset: 2px;
+}
+
+/* Compact: status, name, time and visit type stacked, 5px apart */
+.is-sli__summary {
+  display: flex;
+  flex: 1 0 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 0;
+  height: 100%;
+  padding: 0 10px;
+}
+
+/* Name: Figtree SemiBold, 12px compact (cut off with …), 14px expanded */
+.is-sli__name {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 18px;
+  white-space: nowrap;
+}
+.is-sli__name--compact {
+  align-self: stretch;
+  overflow: hidden;
+  font-size: 12px;
+  text-align: center;
+  text-overflow: ellipsis;
+}
+
+/* Time: Relative Mono 13px, like the record timer */
+.is-sli__time {
+  font-family: 'Relative Mono Pro 10 Pitch', 'Relative Mono 10 Pitch', ui-monospace, 'SF Mono', SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: -0.165px;
+  white-space: nowrap;
+}
+
+/* Expanded: 120px column (photo, time, visit type) with a 1px line, then the patient */
+.is-sli__side {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 120px;
+  height: 100%;
+  padding: 0 10px;
+  border-right: 1px solid var(--is-surface-soft-contrast-background);
+}
+.is-sli--selected .is-sli__side {
+  border-right-color: var(--is-surface-medium-contrast-background);
+}
+.is-sli__photo {
+  display: block;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  overflow: hidden;
+  border-radius: 10px; /* Round M */
+  background: var(--is-surface-medium-contrast-background);
+}
+.is-sli__photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.is-sli__visit {
+  display: flex;
+  flex: 1 0 0;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-width: 0;
+  height: 100%;
+  padding: 10px;
+}
+/* Sex, date of birth, age: Figtree 11px, medium contrast, 10px apart */
+.is-sli__info {
+  display: flex;
+  gap: 10px;
+  font-size: 11px;
+  line-height: 18px;
+  color: var(--is-foreground-medium-contrast-primary-foreground);
+  white-space: nowrap;
+}
+.is-sli__status {
+  margin-top: 8px;
+}
+
+/* ⋮ in the top right corner */
+.is-sli__more {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--is-foreground-low-contrast-primary-foreground);
+  cursor: pointer;
+}
+.is-sli__more:hover {
+  color: var(--is-foreground-high-contrast-primary-foreground);
+}
+
+/* Syncing: the loading-appointment animation on a periwinkle tint, the phone and "Syncing note…" centred */
+.is-sli--syncing {
+  --is-sli-syncing-tint: rgba(214, 219, 254, 0.3);
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(var(--is-sli-syncing-tint), var(--is-sli-syncing-tint)), var(--is-background-elevated-background);
+}
+[data-theme='dark'] .is-sli--syncing {
+  --is-sli-syncing-tint: rgba(84, 121, 255, 0.08);
+}
+.is-sli__pulse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  line-height: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.is-sli__phone,
+.is-sli__syncing-label {
+  position: relative;
+}
+.is-sli__phone {
+  display: block;
+  flex: none;
+}
+.is-sli__phone-body {
+  fill: var(--is-foreground-high-contrast-primary-foreground);
+}
+.is-sli__phone-waves {
+  fill: var(--is-background-elevated-background);
+}
+.is-sli__syncing-label {
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ---------- List ---------- */
+.is-schedule-list {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 10px;
+  box-sizing: border-box;
+  padding: 10px;
+  overflow-y: auto;
+  border-radius: 20px 20px 0 0; /* Round XXL, top corners */
+  background: var(--is-surface-super-soft-contrast-background);
+}
+.is-schedule-list__row {
+  display: flex;
+}
