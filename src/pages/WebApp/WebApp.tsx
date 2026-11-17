@@ -203,11 +203,21 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
   const updateNew = (id: string, change: Partial<NewNote>) => setNewNotes((list) => list.map((n) => (n.id === id ? { ...n, ...change } : n)));
   const start = (id: string) => setNewNotes((list) => list.map((n) => (n.id === id && !n.started ? { ...n, started: true } : n)));
 
+  /** Leaving a new note that was never touched (no demographics, recording or items) erases it */
+  const dropUntouched = (list: NewNote[], leaving: string) => list.filter((n) => n.id !== leaving || n.started);
+
+  /** Open another note from the schedule */
+  const select = (id: string) => {
+    if (id === selectedId) return;
+    setNewNotes((list) => dropUntouched(list, selectedId));
+    setSelectedId(id);
+  };
+
   /** "New Note": an empty note at the current time, opened at once */
   const createNote = () => {
     const created = new Date();
     const note: NewNote = { id: `new-${created.getTime()}`, created, time: clockTime(created), started: false };
-    setNewNotes((list) => [...list, note]);
+    setNewNotes((list) => [...dropUntouched(list, selectedId), note]);
     setSelectedId(note.id);
   };
 
@@ -237,7 +247,7 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
           appointments={appointments}
           pending={samplePending}
           selectedId={selectedId}
-          onSelect={setSelectedId}
+          onSelect={select}
           onNewNote={createNote}
           providers={sampleProviders}
           departments={sampleDepartments}

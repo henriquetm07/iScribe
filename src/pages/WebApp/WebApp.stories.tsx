@@ -94,7 +94,7 @@ type Story = StoryObj<typeof meta>;
  *
  * New Note (top left) opens an empty note at the current time: its card in the side bar shows placeholders and
  * "New Note" until the demographics are filled in, a recording starts or something is added to the note; then it
- * becomes "Note in Progress".
+ * becomes "Note in Progress". A new note left untouched is erased when you open another note.
  */
 export const Expanded: Story = {};
 
