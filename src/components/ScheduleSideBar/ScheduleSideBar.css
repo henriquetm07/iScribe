@@ -173,7 +173,6 @@
 .is-sched-panel {
   display: flex;
   flex-direction: column;
-  max-height: min(625px, 80vh);
   overflow: hidden;
   border-radius: 20px;
   background: var(--is-background-elevated-background);
@@ -181,12 +180,9 @@
   color: var(--is-foreground-high-contrast-primary-foreground);
   font-family: var(--is-font-ui);
 }
+/* Panels grow to fit everything; only the long Providers / Departments lists scroll */
 .is-sched-panel--list {
   max-height: min(774px, 85vh);
-}
-.is-sched-panel--fit,
-.is-sched-panel--calendar {
-  max-height: none;
 }
 /* Header: super soft grey, 20px padding, × 20px from the top right */
 .is-sched-panel__header {
