@@ -56,13 +56,13 @@
 }
 
 /* Hover (Figma "Hover": Super Soft Contrast Background) */
-.is-selection-list-item:hover:not(:disabled),
+.is-selection-list-item:hover:not(:disabled):where(:not([class*='--iphone'], [class*='--ipad'], [class*='--iphone'] *, [class*='--ipad'] *)),
 .is-selection-list-item[data-state='hover'] {
   background: var(--is-surface-super-soft-contrast-background);
 }
 /* Selected (Figma "Selected": Soft Selection) */
 .is-selection-list-item--selected,
-.is-selection-list-item--selected:hover:not(:disabled) {
+.is-selection-list-item--selected:hover:not(:disabled):where(:not([class*='--iphone'], [class*='--ipad'], [class*='--iphone'] *, [class*='--ipad'] *)) {
   background: var(--is-surface-soft-selection);
 }
 /* Destructive (Figma "Destructive": Status / Foreground / Alert) */

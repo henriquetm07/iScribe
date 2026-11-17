@@ -43,7 +43,8 @@
   --rec-btn-bg: var(--is-button-primary-default-bg);
   --rec-btn-fg: var(--is-foreground-high-contrast-secondary-foreground);
 }
-.is-rec-btn--primary:is(:hover, :active, :focus-visible) {
+.is-rec-btn--primary:is(:active, :focus-visible),
+.is-rec-btn--primary:hover:where(:not([class*='--iphone'], [class*='--ipad'], [class*='--iphone'] *, [class*='--ipad'] *)) {
   --rec-btn-bg: var(--is-button-primary-active-bg);
 }
 /* Secondary: Elevated Background with the Secondary Stroke (hover = Secondary Active) */
@@ -52,7 +53,8 @@
   --rec-btn-fg: var(--is-foreground-high-contrast-primary-foreground);
   border-color: var(--is-button-secondarystroke);
 }
-.is-rec-btn--secondary:is(:hover, :active, :focus-visible) {
+.is-rec-btn--secondary:is(:active, :focus-visible),
+.is-rec-btn--secondary:hover:where(:not([class*='--iphone'], [class*='--ipad'], [class*='--iphone'] *, [class*='--ipad'] *)) {
   --rec-btn-bg: var(--is-button-secondary-active-bg);
 }
 /* Destructive: stop and delete (hover = Destructive Active) */
@@ -60,7 +62,8 @@
   --rec-btn-bg: var(--is-button-destructive);
   --rec-btn-fg: var(--is-foreground-high-contrast-secondary-foreground-2);
 }
-.is-rec-btn--destructive:is(:hover, :active, :focus-visible) {
+.is-rec-btn--destructive:is(:active, :focus-visible),
+.is-rec-btn--destructive:hover:where(:not([class*='--iphone'], [class*='--ipad'], [class*='--iphone'] *, [class*='--ipad'] *)) {
   --rec-btn-bg: var(--is-button-destructive-acive);
 }
 .is-rec-btn:focus-visible {

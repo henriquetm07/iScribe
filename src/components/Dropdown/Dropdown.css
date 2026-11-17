@@ -49,10 +49,11 @@
  * Hover and press: the same behaviour as the secondary Button — the secondary active background, and the
  * corners ease rounder by 1/8 of the height (Web 10→13.5 · iPhone 12→18.25 · iPad 16→23.5)
  */
-.is-dropdown-field:is(:hover, :active):not(:disabled) {
+.is-dropdown-field:active:not(:disabled),
+.is-dropdown-field:hover:not(:disabled):where(:not([class*='--iphone'], [class*='--ipad'], [class*='--iphone'] *, [class*='--ipad'] *)) {
   background: var(--is-button-secondary-active-bg);
 }
-.is-dropdown-field:hover:not(:disabled) {
+.is-dropdown-field:hover:not(:disabled):where(:not([class*='--iphone'], [class*='--ipad'], [class*='--iphone'] *, [class*='--ipad'] *)) {
   border-radius: calc(var(--dd-radius) + var(--dd-height) / 8);
 }
 @media (prefers-reduced-motion: reduce) {

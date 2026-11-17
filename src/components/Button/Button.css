@@ -51,8 +51,13 @@
     border-radius 220ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/*
+ * Hover never applies on iPhone or iPad (touch): every hover rule in the system carries the guard
+ *   :where(:not([class*='--iphone'], [class*='--ipad'], [class*='--iphone'] *, [class*='--ipad'] *))
+ * so it is skipped on, and inside, any component drawn with an iPhone or iPad device class.
+ */
 /* Hover: corners ease to the size's hover radius; fully rounded (pill) buttons keep their shape */
-.is-button:not(.is-button--rounded):hover:not(:disabled) {
+.is-button:not(.is-button--rounded):hover:not(:disabled):where(:not([class*='--iphone'], [class*='--ipad'], [class*='--iphone'] *, [class*='--ipad'] *)) {
   border-radius: var(--btn-radius-hover);
 }
 
@@ -150,7 +155,8 @@
   --btn-bg: var(--is-button-primary-default-bg);
   --btn-fg: var(--is-foreground-high-contrast-secondary-foreground);
 }
-.is-button--primary:is(:hover, :active, [data-state='active'], :focus-visible, [data-state='focus']) {
+.is-button--primary:is(:active, [data-state='active'], :focus-visible, [data-state='focus']),
+.is-button--primary:hover:where(:not([class*='--iphone'], [class*='--ipad'], [class*='--iphone'] *, [class*='--ipad'] *)) {
   --btn-bg: var(--is-button-primary-active-bg);
 }
 
@@ -160,7 +166,8 @@
   --btn-border: var(--is-button-secondarystroke);
   --btn-border-width: 1px;
 }
-.is-button--secondary:is(:hover, :active, [data-state='active'], :focus-visible, [data-state='focus']) {
+.is-button--secondary:is(:active, [data-state='active'], :focus-visible, [data-state='focus']),
+.is-button--secondary:hover:where(:not([class*='--iphone'], [class*='--ipad'], [class*='--iphone'] *, [class*='--ipad'] *)) {
   --btn-bg: var(--is-button-secondary-active-bg);
 }
 
@@ -168,7 +175,8 @@
 .is-button--outline {
   --btn-border: var(--is-foreground-high-contrast-primary-foreground);
 }
-.is-button--outline:is(:hover, :active, [data-state='active']) {
+.is-button--outline:is(:active, [data-state='active']),
+.is-button--outline:hover:where(:not([class*='--iphone'], [class*='--ipad'], [class*='--iphone'] *, [class*='--ipad'] *)) {
   --btn-bg: var(--is-button-ghost-active-bg);
 }
 .is-button--outline:is(:focus-visible, [data-state='focus']) {
@@ -176,7 +184,8 @@
 }
 
 /* ---------- Ghost ---------- */
-.is-button--ghost:is(:hover, :active, [data-state='active'], :focus-visible, [data-state='focus']) {
+.is-button--ghost:is(:active, [data-state='active'], :focus-visible, [data-state='focus']),
+.is-button--ghost:hover:where(:not([class*='--iphone'], [class*='--ipad'], [class*='--iphone'] *, [class*='--ipad'] *)) {
   --btn-bg: var(--is-button-ghost-active-bg);
 }
 .is-button--ghost:disabled {
@@ -188,7 +197,8 @@
   --btn-bg: var(--is-button-destructive);
   --btn-fg: var(--is-foreground-high-contrast-secondary-foreground-2);
 }
-.is-button--destructive:is(:hover, :active, [data-state='active'], :focus-visible, [data-state='focus']) {
+.is-button--destructive:is(:active, [data-state='active'], :focus-visible, [data-state='focus']),
+.is-button--destructive:hover:where(:not([class*='--iphone'], [class*='--ipad'], [class*='--iphone'] *, [class*='--ipad'] *)) {
   --btn-bg: var(--is-button-destructive-acive);
 }
 
@@ -197,7 +207,8 @@
   --btn-border: var(--is-button-destructive);
   --btn-fg: var(--is-button-destructive);
 }
-.is-button--destructive-outline:is(:hover, :active, [data-state='active'], :focus-visible, [data-state='focus']) {
+.is-button--destructive-outline:is(:active, [data-state='active'], :focus-visible, [data-state='focus']),
+.is-button--destructive-outline:hover:where(:not([class*='--iphone'], [class*='--ipad'], [class*='--iphone'] *, [class*='--ipad'] *)) {
   --btn-bg: var(--is-button-ghost-active-bg);
   --btn-border: var(--is-button-destructive-acive);
   --btn-fg: var(--is-button-destructive-acive);

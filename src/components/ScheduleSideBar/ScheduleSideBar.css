@@ -399,14 +399,14 @@
   color: var(--is-foreground-high-contrast-primary-foreground);
   cursor: pointer;
 }
-.is-sched-cal__day:hover {
+.is-sched-cal__day:hover:where(:not([class*='--iphone'], [class*='--ipad'], [class*='--iphone'] *, [class*='--ipad'] *)) {
   background: var(--is-surface-super-soft-contrast-background);
 }
 .is-sched-cal__day--today {
   border-color: var(--is-foreground-high-contrast-primary-foreground);
 }
 .is-sched-cal__day--chosen,
-.is-sched-cal__day--chosen:hover {
+.is-sched-cal__day--chosen:hover:where(:not([class*='--iphone'], [class*='--ipad'], [class*='--iphone'] *, [class*='--ipad'] *)) {
   border-color: transparent;
   background: var(--is-button-secondary-foreground, var(--is-foreground-high-contrast-primary-foreground));
   color: var(--is-foreground-high-contrast-secondary-foreground);

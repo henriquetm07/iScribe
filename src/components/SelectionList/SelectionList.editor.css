@@ -128,7 +128,7 @@
 .is-sl-editor__grip > * + * {
   left: 1.75px;
 }
-.is-sl-editor__handle:hover {
+.is-sl-editor__handle:hover:where(:not([class*='--iphone'], [class*='--ipad'], [class*='--iphone'] *, [class*='--ipad'] *)) {
   background: var(--is-surface-super-soft-contrast-background);
   color: var(--is-foreground-high-contrast-primary-foreground);
 }

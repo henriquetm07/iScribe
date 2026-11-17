@@ -36,12 +36,19 @@ src/
   index.ts           Library exports
 ```
 
+## Touch devices: no hover
+
+Anything drawn for iPhone or iPad has no hover state. Every `:hover` rule carries the guard
+`:where(:not([class*='--iphone'], [class*='--ipad'], [class*='--iphone'] *, [class*='--ipad'] *))`, so it is skipped
+on, and inside, any component with an iPhone or iPad device class (for example a Button inside an iPhone RTN Item).
+Pressed (`:active`) and keyboard focus states still apply. Use the same guard on any new hover rule.
+
 ## Components
 
 Storybook lists them all under **Components**.
 
 - **Button** — primary, secondary, outline, ghost, destructive and destructive-outline variants; six sizes (Mini–XXL); square or rounded; optional left/right icons; every size and color comes from the Figma variables, with light and dark mode
-- **SelectionList** / **SelectionListItem** — a card of selectable rows for iPhone, iPad and Web (Figma "Selection List"): one selected value with a check mark, hover, destructive rows, optional icons, keyboard navigation and a scroller after `visibleRows`
+- **SelectionList** / **SelectionListItem** — a card of selectable rows for iPhone, iPad and Web (Figma "Selection List"): one selected value with a check mark, hover (Web only), destructive rows, optional icons, keyboard navigation and a scroller after `visibleRows`
 - **Dropdown** / **DropdownField** — a field for Web, iPhone and iPad (Figma "Dropdown") with Default and Active states; when active it opens a **SelectionList** of the options (same device and width). Keyboard: ↓ / Enter / Space open, Escape closes
 - **IconButton** — icon-only, square (or circle) version of the Button with the same variants, states, sizes and hover behaviour; requires a `label` for screen readers and the tooltip
 - **Tabs** / **TabItem** — a pill-shaped bar of equal-width tabs for iPhone, iPad and Web (Figma "Tabs"): the selected tab is periwinkle, optional count badges, keyboard ← / → / Home / End. The glass selection is a web imitation; in the iOS apps, use the native iOS glass effect (SwiftUI `.glassEffect` / UIKit `UIGlassEffect`)

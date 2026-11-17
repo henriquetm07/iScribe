@@ -28,7 +28,7 @@ const small = (device: RtnDevice) => device === 'iphone';
 
 /** Counter Label (Figma "Label", 738:6481): the number of items next to a topic title. */
 export const RtnCounter = ({ device = 'web', count }: { device?: RtnDevice; count: number | string }) => (
-  <span className={cx('is-rtn-counter', `is-rtn-counter--${small(device) ? 'iphone' : 'ipad'}`)}>{count}</span>
+  <span className={cx('is-rtn-counter', `is-rtn-counter--${device}`)}>{count}</span>
 );
 
 export interface RtnItemHeaderProps {
@@ -46,7 +46,7 @@ export const RtnItemHeader = ({ device = 'web', topic, title, count = 0, onAdd }
   const t = topicOf(topic);
   const iconSize = small(device) ? 16 : 20;
   return (
-    <div className={cx('is-rtn-header', `is-rtn-header--${small(device) ? 'iphone' : 'ipad'}`)}>
+    <div className={cx('is-rtn-header', `is-rtn-header--${device}`)}>
       <div className="is-rtn-header__label">
         <Icon name={t.icon} size={iconSize} className="is-rtn-header__icon" />
         <span className="is-rtn-header__title">{title ?? t.label}</span>
@@ -76,7 +76,7 @@ export interface RtnItemContentProps {
 
 /** RTN Item Content, 765:701: one entry inside a topic card, with the × on the right. */
 export const RtnItemContent = ({ device = 'web', elevated, onRemove, removeLabel = 'Remove', tightClose, children, className }: RtnItemContentProps) => (
-  <div className={cx('is-rtn-content', `is-rtn-content--${small(device) ? 'iphone' : 'ipad'}`, elevated && 'is-rtn-content--elevated', tightClose && 'is-rtn-content--tight', className)}>
+  <div className={cx('is-rtn-content', `is-rtn-content--${device}`, elevated && 'is-rtn-content--elevated', tightClose && 'is-rtn-content--tight', className)}>
     <div className="is-rtn-content__body">{children}</div>
     {onRemove && (
       <button type="button" className="is-rtn-icon-action is-rtn-content__close" aria-label={removeLabel} onClick={onRemove}>

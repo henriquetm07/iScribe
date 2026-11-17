@@ -236,7 +236,7 @@
   pointer-events: none;
 }
 .is-rtn-field--blank .is-rtn-field__line,
-.is-rtn-field:hover .is-rtn-field__line {
+.is-rtn-field:hover:where(:not([class*='--iphone'], [class*='--ipad'], [class*='--iphone'] *, [class*='--ipad'] *)) .is-rtn-field__line {
   display: block;
 }
 .is-rtn-field:focus-within .is-rtn-field__line,
@@ -320,7 +320,7 @@
   cursor: pointer;
   transition: color 150ms ease;
 }
-.is-rtn-rec__play:hover {
+.is-rtn-rec__play:hover:where(:not([class*='--iphone'], [class*='--ipad'], [class*='--iphone'] *, [class*='--ipad'] *)) {
   color: var(--is-foreground-high-contrast-primary-foreground);
 }
 .is-rtn-rec__play:focus-visible {
