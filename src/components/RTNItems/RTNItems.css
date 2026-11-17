@@ -1,0 +1,466 @@
+/*
+ * RTN Items (Today) — Figma page "RTN Items (Today)" (738:862).
+ * Sizes follow the Figma Device variants: iPhone, iPad and Web (iPad and Web share sizes).
+ * Colors come from the Semantic Colors variables, so light and dark mode follow data-theme.
+ * Codes and counters use Relative Mono 10 Pitch, as in Figma (with system monospace as fallback).
+ */
+.is-rtn-item,
+.is-rtn-frame,
+.is-rtn-counter,
+.is-rtn-label,
+.is-billing-code {
+  --is-rtn-mono: 'Relative Mono Pro 10 Pitch', 'Relative Mono 10 Pitch', ui-monospace, 'SF Mono', SFMono-Regular, Menlo, monospace;
+}
+
+/* ---------- Card ---------- */
+.is-rtn-item {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  padding: 20px;
+  overflow: hidden;
+  font-family: var(--is-font-ui);
+  color: var(--is-foreground-high-contrast-primary-foreground);
+  background: var(--is-surface-super-soft-contrast-background);
+  border: 1px solid var(--is-surface-medium-contrast-background);
+  border-radius: var(--is-roundness-20);
+}
+.is-rtn-item--ipad,
+.is-rtn-item--web:not(.is-rtn-item--empty) {
+  min-height: 80px;
+}
+.is-rtn-item--iphone {
+  gap: 10px;
+  min-height: 60px;
+  padding: 10px;
+  border-radius: var(--is-roundness-16);
+}
+
+/* ---------- Header ---------- */
+.is-rtn-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+.is-rtn-header__label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.is-rtn-header__icon {
+  flex-shrink: 0;
+}
+.is-rtn-header__title {
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 18px;
+  white-space: nowrap;
+}
+.is-rtn-header--iphone .is-rtn-header__title {
+  font-size: 16px;
+}
+
+/* Counter Label: 6 × 3 padding, Relative Mono 15px (13px on iPhone), low contrast */
+.is-rtn-counter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 6px;
+  border-radius: var(--is-roundness-8);
+  font-family: var(--is-rtn-mono);
+  font-size: 15px;
+  line-height: 18px;
+  color: var(--is-foreground-low-contrast-primary-foreground);
+}
+.is-rtn-counter--iphone {
+  font-size: 13px;
+}
+
+/* Plain icon actions (+ and ×): no background, only the pointer */
+.is-rtn-icon-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+.is-rtn-icon-action:focus-visible {
+  outline: 2px solid var(--is-labels-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.is-rtn-content__close {
+  color: var(--is-foreground-low-contrast-primary-foreground);
+}
+
+/* ---------- Content box ---------- */
+.is-rtn-content {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 40px;
+  width: 100%;
+  padding: 20px;
+  overflow: hidden;
+  background: var(--is-surface-super-soft-contrast-light);
+  border: 1px solid var(--is-surface-soft-contrast-light-2);
+  border-radius: var(--is-roundness-12);
+}
+.is-rtn-content--iphone {
+  gap: 20px;
+  padding: 10px;
+}
+.is-rtn-content--tight {
+  gap: 10px;
+}
+.is-rtn-content--elevated {
+  background: var(--is-background-elevated-background);
+}
+.is-rtn-content__body {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* ---------- Text ---------- */
+.is-rtn-text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 20px;
+  overflow-wrap: break-word;
+}
+.is-rtn-text--large {
+  font-size: 17px;
+}
+.is-rtn-text--iphone {
+  font-size: 15px;
+}
+
+/* ---------- Labels (codes) ---------- */
+.is-rtn-label {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  gap: 2px;
+  min-width: 44px;
+  padding: 2px var(--is-label-big-padding);
+  height: var(--is-label-big-height);
+  border-radius: 1000px;
+  font-family: var(--is-rtn-mono);
+  font-size: var(--is-label-big-font-size);
+  line-height: 18px;
+  white-space: nowrap;
+}
+.is-rtn-label__icon {
+  width: var(--is-label-big-icon-size);
+  height: var(--is-label-big-icon-size);
+}
+.is-rtn-label--medium {
+  height: var(--is-label-medium-height);
+  padding: 2px var(--is-label-medium-padding);
+  font-size: var(--is-label-medium-font-size);
+}
+.is-rtn-label--medium .is-rtn-label__icon {
+  width: var(--is-label-medium-icon-size);
+  height: var(--is-label-medium-icon-size);
+}
+.is-rtn-label--small {
+  height: var(--is-label-small-height);
+  padding: 2px var(--is-label-small-padding);
+  font-size: var(--is-label-small-font-size);
+}
+.is-rtn-label--small .is-rtn-label__icon {
+  width: var(--is-label-small-icon-size);
+  height: var(--is-label-small-icon-size);
+}
+.is-rtn-label--neutral {
+  background: var(--is-labels-low-contrast);
+  color: var(--is-foreground-high-contrast-primary-foreground);
+}
+.is-rtn-label--accent {
+  background: var(--is-labels-accent-2);
+  color: var(--is-foreground-high-contrast-primary-foreground-2);
+}
+.is-rtn-label--alert {
+  background: var(--is-labels-alert);
+  color: var(--is-foreground-high-contrast-secondary-foreground-2);
+}
+
+/* ---------- Stacked content (Diagnosis, Billing, Editing, Image) ---------- */
+.is-rtn-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+.is-rtn-stack > .is-rtn-text {
+  align-self: stretch;
+}
+
+.is-rtn-active {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.is-rtn-active__label {
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 20px;
+}
+.is-rtn-active__label--iphone {
+  font-size: 13px;
+}
+
+.is-rtn-order {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.is-rtn-order > .is-rtn-label {
+  align-self: center;
+}
+
+/* ---------- Editing ---------- */
+.is-rtn-editing {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.is-rtn-editing__box {
+  display: flex;
+  padding: 4px 8px;
+  background: var(--is-background-elevated-background);
+  border: 1px solid var(--is-surface-soft-contrast-background);
+  border-radius: var(--is-roundness-12);
+}
+.is-rtn-editing__input {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  resize: none;
+  overflow: hidden;
+  background: none;
+  font-family: inherit;
+  line-height: 20px;
+  color: inherit;
+}
+.is-rtn-editing__actions {
+  display: flex;
+  gap: 10px;
+}
+.is-rtn-editing__actions > .is-button {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* ---------- Image ---------- */
+.is-rtn-image {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+.is-rtn-image__img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 237 / 180;
+  object-fit: cover;
+  border-radius: var(--is-roundness-12);
+}
+.is-rtn-image__caption {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: none;
+  font-family: inherit;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--is-foreground-medium-contrast-primary-foreground);
+}
+.is-rtn-image__caption::placeholder {
+  color: var(--is-foreground-medium-contrast-primary-foreground);
+}
+
+/* ---------- Billing codes ---------- */
+.is-rtn-codes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+}
+.is-rtn-codes--dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+.is-billing-code {
+  font-family: var(--is-rtn-mono);
+  font-weight: 400;
+  cursor: grab;
+  touch-action: none;
+}
+.is-billing-code__remove {
+  display: inline-flex;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+.is-billing-code__remove > svg {
+  width: 100%;
+  height: 100%;
+}
+.is-billing-code-cell {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+/* The slot a code was lifted from: a soft placeholder, the code floats above it tilted 15° */
+.is-billing-code-cell--empty {
+  background: var(--is-surface-soft-contrast-background);
+  border-radius: var(--is-roundness-10);
+}
+.is-billing-code-cell__sizer {
+  display: inline-flex;
+  visibility: hidden;
+}
+.is-billing-code-cell--empty > .is-billing-code {
+  position: absolute;
+  left: -7px;
+  top: -31px;
+}
+.is-billing-code--lifted {
+  transform: rotate(15deg);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  z-index: 1;
+  cursor: grabbing;
+}
+
+/* ---------- Main frame ---------- */
+.is-rtn-frame {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  max-width: 900px;
+  overflow: hidden;
+  font-family: var(--is-font-ui);
+  color: var(--is-foreground-high-contrast-primary-foreground);
+  background: var(--is-background-elevated-background);
+  border: 1px solid var(--is-surface-super-soft-contrast-background);
+  border-radius: var(--is-roundness-30);
+}
+.is-rtn-frame__tabs {
+  padding: 20px;
+}
+.is-rtn-frame__note {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  background: var(--is-surface-super-soft-contrast-background);
+}
+.is-rtn-frame__list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.is-rtn-frame__bottom {
+  display: flex;
+  justify-content: flex-end;
+}
+.is-rtn-frame__autosaved {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--is-foreground-low-contrast-primary-foreground);
+}
+
+/* iPhone: a bottom sheet with a dragger */
+.is-rtn-frame--iphone {
+  gap: 20px;
+  min-width: 375px;
+  padding: 0 20px 60px;
+  border: 0;
+  border-radius: var(--is-roundness-30) var(--is-roundness-30) 0 0;
+  overflow: visible;
+}
+.is-rtn-frame__dragger {
+  align-self: center;
+  width: 36px;
+  height: 4px;
+  margin: 12px 0 -8px;
+  border-radius: 20px;
+  background: var(--is-surface-medium-contrast-background);
+}
+.is-rtn-frame--iphone .is-rtn-frame__list {
+  gap: 10px;
+}
+
+/* Previous Note Summary: overlapping icon chips + "N sections pulled forward" */
+.is-rtn-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.is-rtn-summary__icons {
+  display: flex;
+  align-items: center;
+}
+.is-rtn-summary__icon {
+  display: inline-flex;
+  padding: 5px;
+  margin-right: -6px;
+  background: var(--is-background-elevated-background);
+  border: 1px solid var(--is-surface-soft-contrast-background);
+  border-radius: 1000px;
+}
+.is-rtn-summary__icon:last-child {
+  margin-right: 0;
+}
+.is-rtn-summary__text {
+  font-size: 17px;
+  line-height: 18px;
+}
+.is-rtn-summary--iphone .is-rtn-summary__icon {
+  padding: 4px;
+  margin-right: -4px;
+}
+.is-rtn-summary--iphone .is-rtn-summary__icon:last-child {
+  margin-right: 0;
+}
+.is-rtn-summary--iphone .is-rtn-summary__text {
+  font-size: 15px;
+}
+
+/* Editable Text: click to edit */
+.is-rtn-editable {
+  cursor: text;
+  outline: none;
+}
+.is-rtn-editable:focus-visible {
+  outline: 2px solid var(--is-labels-accent);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
