@@ -66,3 +66,15 @@
   left: 20px;
   bottom: 20px;
 }
+
+/* On the docs page the app sits in a 760px box instead of filling the window */
+.is-webapp-docs-frame {
+  height: 760px;
+  overflow: hidden;
+  border-radius: 12px;
+  outline: 1px solid var(--is-surface-soft-contrast-background);
+}
+.is-webapp-docs-frame > .is-webapp {
+  height: 100%;
+  min-height: 0;
+}

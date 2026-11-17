@@ -1,31 +1,68 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { ReactNode } from 'react';
 import { Icon } from '../../icons/Icon';
 import { Button } from '../../components/Button/Button';
 import { WebApp } from './WebApp';
 
-/** Inside Storybook (the preview frame): offer this page on its own in a new browser tab, full window */
-const inStorybookFrame = () => {
-  if (new URLSearchParams(window.location.search).get('viewMode') !== 'story') return false;
+/** Where this page is being shown: the story canvas inside Storybook, a docs page, or on its own (full window) */
+const where = (): 'canvas' | 'docs' | 'standalone' => {
+  if (new URLSearchParams(window.location.search).get('viewMode') === 'docs') return 'docs';
   try {
-    return window.self !== window.top;
+    return window.self !== window.top ? 'canvas' : 'standalone';
   } catch {
-    return true;
+    return 'canvas';
   }
 };
 
-const OpenFullWindow = () =>
-  inStorybookFrame() ? (
-    <div style={{ position: 'fixed', right: 20, bottom: 20, zIndex: 1000 }}>
-      <Button
-        variant="primary"
-        size="regular"
-        iconLeft={<Icon name="maximize" />}
-        onClick={() => window.open(window.location.href, '_blank', 'noopener,noreferrer')}
-      >
-        Open in new tab
-      </Button>
-    </div>
-  ) : null;
+/** The story on its own, full window (no Storybook sidebar or panels) */
+const standaloneUrl = (storyId: string) => {
+  const url = new URL(window.location.href);
+  url.search = '';
+  url.hash = '';
+  url.pathname = url.pathname.replace(/[^/]*$/, 'iframe.html');
+  url.searchParams.set('id', storyId);
+  url.searchParams.set('viewMode', 'story');
+  return url.toString();
+};
+
+const OpenButton = ({ storyId }: { storyId: string }) => (
+  <Button
+    variant="primary"
+    size="regular"
+    iconLeft={<Icon name="maximize" />}
+    onClick={() => window.open(standaloneUrl(storyId), '_blank', 'noopener,noreferrer')}
+  >
+    Open in new tab
+  </Button>
+);
+
+/**
+ * "Open in new tab": floating bottom-right on the story canvas, in a bar above the page on the docs page, and hidden
+ * once the page is open on its own.
+ */
+const OpenFullWindow = ({ storyId, children }: { storyId: string; children: ReactNode }) => {
+  const mode = where();
+  if (mode === 'docs') {
+    return (
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '0 0 12px' }}>
+          <OpenButton storyId={storyId} />
+        </div>
+        <div className="is-webapp-docs-frame">{children}</div>
+      </div>
+    );
+  }
+  return (
+    <>
+      {children}
+      {mode === 'canvas' && (
+        <div style={{ position: 'fixed', right: 20, bottom: 20, zIndex: 1000 }}>
+          <OpenButton storyId={storyId} />
+        </div>
+      )}
+    </>
+  );
+};
 
 const meta = {
   title: 'Pages/Web App',
@@ -37,11 +74,10 @@ const meta = {
     visitDate: { table: { disable: true } },
   },
   parameters: { layout: 'fullscreen' },
-  render: (args) => (
-    <>
+  render: (args, context) => (
+    <OpenFullWindow storyId={context.id}>
       <WebApp key={String(args.defaultCollapsed)} {...args} />
-      <OpenFullWindow />
-    </>
+    </OpenFullWindow>
   ),
 } satisfies Meta<typeof WebApp>;
 
@@ -49,7 +85,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /**
- * "Open in new tab" (bottom-right) opens this page on its own, full window, without the Storybook frame.
+ * "Open in new tab" (bottom-right, or above the page on this docs page) opens it on its own, full window, without the Storybook frame.
  *
  * The web app with Sarah Johnson's visit open. Everything works as in its component: pick another appointment in the
  * side bar, collapse it, filter and sort; edit the patient, Start Recording; switch Chart Prep · Previous Note ·
