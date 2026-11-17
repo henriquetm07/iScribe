@@ -1,0 +1,15 @@
+/* Animations gallery: the Animated Icons tiles (AnimatedIconGallery.css), with a stage that fits the larger previews */
+.is-anim-tile--wide {
+  grid-template-columns: auto 1fr;
+}
+@media (max-width: 560px) {
+  .is-anim-tile--wide {
+    grid-template-columns: 1fr;
+  }
+}
+.is-animation-stage {
+  min-width: 200px;
+  padding: 12px;
+  overflow: hidden;
+  background: var(--is-background-base-background);
+}

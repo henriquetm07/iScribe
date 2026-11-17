@@ -5,7 +5,7 @@ import './Animation.css';
 export type AnimationTheme = 'auto' | 'light' | 'dark';
 
 export interface AnimationProps {
-  /** Which animation. See Animations in the sidebar. */
+  /** Which animation. See Foundations / Animations. */
   name: AnimationName;
   /** Which version: auto follows the page's light / dark mode (default); light or dark forces one */
   theme?: AnimationTheme;
