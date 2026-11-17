@@ -61,6 +61,23 @@ export const SendToEhr: Story = {
   },
 };
 
+/** Copying a note: when the status changes to Copied to EHR, the squares pull apart and swap once. */
+export const CopyToEhr: Story = {
+  name: 'Copy to EHR',
+  parameters: { controls: { disable: true } },
+  render: function Render() {
+    const [copied, setCopied] = useState(false);
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
+        <AppointmentStatus status={copied ? 'copied-to-ehr' : 'note-in-progress'} />
+        <Button size="small" variant="secondary" onClick={() => setCopied((c) => !c)}>
+          {copied ? 'Reset' : 'Copy to EHR'}
+        </Button>
+      </div>
+    );
+  },
+};
+
 /** Every status, as in the Figma sheet: the icons on their own, and with their labels. */
 export const AllStatuses: Story = {
   name: 'All statuses',

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { AnimatedIcon } from '../../icons/AnimatedIcon';
+import type { AnimatedIconName } from '../../icons/animatedIcons';
 import './AppointmentStatus.css';
 
 /*
@@ -97,11 +98,15 @@ const artwork: Record<AppointmentStatusValue, ReactNode> = {
       </svg>
     </>
   ),
-  // Positive: "copy" on a green disc
+  // Positive: "copy" on a green disc. The squares are drawn exactly as the last frame of the "copied-to-ehr"
+  // animation (two 62px rounded squares, overlapping, on its 240 grid), so the animation and the icon match.
   'copied-to-ehr': (
     <>
       <path className="is-apt-fill-bg-positive" fillRule="evenodd" d="M10 0C15.5228 0 20 4.47715 20 10C20 15.5228 15.5228 20 10 20C4.47715 20 0 15.5228 0 10C0 4.47715 4.47715 0 10 0Z" />
-      <path className="is-apt-fill-fg-positive" fillRule="evenodd" d="M13.3465 5.31006C14.0882 5.31027 14.6898 5.91161 14.6898 6.65338V11.2772C14.6896 12.0188 14.0881 12.6203 13.3465 12.6205H12.6206V13.3464C12.6204 14.088 12.0189 14.6895 11.2773 14.6897H6.6535C5.91173 14.6897 5.31039 14.0881 5.31018 13.3464V8.72259C5.31018 7.98069 5.91161 7.37926 6.6535 7.37926H7.37939V6.65338C7.37939 5.91148 7.98081 5.31006 8.72271 5.31006H13.3465ZM6.6535 8.27481C6.4062 8.27481 6.20573 8.47529 6.20573 8.72259V13.3464C6.20594 13.5935 6.40633 13.7941 6.6535 13.7941H11.2773C11.5243 13.7939 11.7249 13.5934 11.7251 13.3464V8.72259C11.7251 8.47541 11.5244 8.27502 11.2773 8.27481H6.6535ZM8.72271 6.20561C8.47541 6.20561 8.27493 6.40608 8.27493 6.65338V7.37926H11.2773C12.019 7.37947 12.6206 7.98082 12.6206 8.72259V11.7249H13.3465C13.5935 11.7247 13.7941 11.5242 13.7943 11.2772V6.65338C13.7943 6.40621 13.5936 6.20581 13.3465 6.20561H8.72271Z" />
+      <svg width="20" height="20" viewBox="0 0 240 240" className="is-apt-squares">
+        <rect x="97" y="79" width="62" height="62" rx="8" />
+        <rect x="79" y="97" width="62" height="62" rx="8" />
+      </svg>
     </>
   ),
   // Alert: "alert" on a pink disc
@@ -125,28 +130,35 @@ export interface AppointmentStatusIconProps {
   /** Accessible name. Defaults to the status label; pass "" when a visible label sits next to it. */
   title?: string;
   /**
-   * Animate on arrival (default true): when the status changes to "sent-to-ehr", the paper plane flies off
-   * and back in once (Foundations / Animated Icons, "sent-to-ehr"). The first render is static.
+   * Animate on arrival (default true): when the status changes to Sent to EHR or Copied to EHR, its animation
+   * plays once (Foundations / Animated Icons, "sent-to-ehr" and "copied-to-ehr"). The first render is static.
    */
   animate?: boolean;
   className?: string;
 }
 
+/** Statuses that play a one-time animation when an appointment changes to them, on their green disc */
+const arrivals: Partial<Record<AppointmentStatusValue, AnimatedIconName>> = {
+  'sent-to-ehr': 'sent-to-ehr',
+  'copied-to-ehr': 'copied-to-ehr',
+};
+
 /** Figma "Appointment Status Icons": the 20px icon for an appointment's status */
 export const AppointmentStatusIcon = ({ status, size = 20, title, animate = true, className = '' }: AppointmentStatusIconProps) => {
   const name = title ?? appointmentStatusLabel(status);
-  // Play the paper plane once when the status becomes "Sent to EHR" (not when it starts there)
+  // Play the arrival animation once when the status becomes Sent to EHR or Copied to EHR (not when it starts there)
   const previous = useRef(status);
   const [flying, setFlying] = useState(false);
   useEffect(() => {
-    if (status !== previous.current) setFlying(animate && status === 'sent-to-ehr');
+    if (status !== previous.current) setFlying(animate && status in arrivals);
     previous.current = status;
   }, [status, animate]);
 
-  if (flying && status === 'sent-to-ehr') {
-    // The green disc stays put; the plane (240-grid animation, which lines up with the static icon) flies on top,
-    // clipped to the circle. When it lands it stays on its last frame — identical to the static icon — rather than
-    // swapping back, so there is no hand-off to see. Changing the status again resets it.
+  const arrival = flying ? arrivals[status] : undefined;
+  if (arrival) {
+    // The green disc stays put; the animation (240 grid, lined up with the static icon) plays on top, clipped to
+    // the circle. When it ends it stays on its last frame — identical to the static icon — rather than swapping
+    // back, so there is no hand-off to see. Changing the status again resets it.
     return (
       <span
         className={`is-apt-icon is-apt-flight ${className}`}
@@ -159,13 +171,13 @@ export const AppointmentStatusIcon = ({ status, size = 20, title, animate = true
           <path className="is-apt-fill-bg-positive" d="M10 0C15.5228 0 20 4.47715 20 10C20 15.5228 15.5228 20 10 20C4.47715 20 0 15.5228 0 10C0 4.47715 4.47715 0 10 0Z" />
         </svg>
         <AnimatedIcon
-          name="sent-to-ehr"
+          name={arrival}
           size={size}
           className="is-apt-flight__plane"
-          // The static plane, until the animation player has loaded
+          // The static icon, until the animation player has loaded
           fallback={
             <svg width={size} height={size} viewBox="0 0 20 20" aria-hidden="true">
-              {artwork['sent-to-ehr']}
+              {artwork[status]}
             </svg>
           }
         />
@@ -195,7 +207,7 @@ export interface AppointmentStatusProps {
   status: AppointmentStatusValue;
   /** Text next to the icon; defaults to the status name (e.g. "Sent to EHR") */
   label?: string;
-  /** Play the paper plane when the status changes to "sent-to-ehr" (default true) */
+  /** Play the one-time animation when the status changes to Sent to EHR or Copied to EHR (default true) */
   animate?: boolean;
   className?: string;
 }

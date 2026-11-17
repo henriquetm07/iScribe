@@ -12,7 +12,7 @@ const look: Record<AppointmentStatusValue, string> = {
   'checked-out': 'patient in a dotted circle with a dotted diagonal, medium contrast',
   'note-in-progress': 'iScribe waves in a 1px circle, high contrast',
   'sent-to-ehr': '"send" plane (thin line, round corners) in var(--is-status-foreground-positive) on a var(--is-status-background-positive) disc',
-  'copied-to-ehr': '"copy" in var(--is-status-foreground-positive) on a var(--is-status-background-positive) disc',
+  'copied-to-ehr': '"copy" (two overlapping rounded squares, thin line) in var(--is-status-foreground-positive) on a var(--is-status-background-positive) disc',
   failed: '"alert" in var(--is-status-foreground-alert) on a var(--is-status-background-alert) disc',
 };
 
@@ -26,6 +26,9 @@ export const appointmentStatusSpecLines = (status: AppointmentStatusValue = 'new
   '              medium = var(--is-foreground-medium-contrast-primary-foreground)',
   ...(status === 'sent-to-ehr'
     ? ['  Arrival     when the status changes to Sent to EHR, the paper plane flies off and back in once', '              (Animated Icons "sent-to-ehr", 1s); animate={false} turns it off']
+    : []),
+  ...(status === 'copied-to-ehr'
+    ? ['  Arrival     when the status changes to Copied to EHR, the squares pull apart and swap once', '              (Animated Icons "copied-to-ehr", 1s); animate={false} turns it off']
     : []),
   ...(withLabel
     ? [
