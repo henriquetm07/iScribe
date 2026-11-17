@@ -1,0 +1,26 @@
+/* Animation — a Lottie animation in its own colours, in a box of the given size */
+.is-animation {
+  display: inline-grid;
+  overflow: hidden;
+  vertical-align: middle;
+}
+.is-animation__player {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+.is-animation__player svg {
+  display: block;
+}
+/* theme="auto": the light version, or the dark one inside dark mode */
+.is-animation--auto > .is-animation__dark {
+  display: none;
+}
+[data-theme='dark'] .is-animation--auto > .is-animation__light {
+  display: none;
+}
+[data-theme='dark'] .is-animation--auto > .is-animation__dark {
+  display: block;
+}

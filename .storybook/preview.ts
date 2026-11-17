@@ -115,6 +115,7 @@ const preview: Preview = {
       storySort: { order: [
         'Introduction', 'Foundations', ['Colors', 'Variables', 'Icons', 'Animated Icons'],
         'Components', ['Appointment Status', 'Bottom Tab', ['Bottom Tab', 'Alert', 'Send Slider'], 'Button', 'Dropdown', 'EHR Icon', 'Icon Button', 'Record', ['Record Widget', 'Mini Record Widget iPhone', 'Mini Record Widget Web', 'Focus Mode', 'Parts'], 'RTN Header (Web)', 'Selection List', ['Selection List', 'Selection List Item'], 'Tabs', ['Tabs', 'Tab Item'], 'Toggle', 'Web Nav Bar'],
+        'Animations',
       ] },
     },
     controls: {

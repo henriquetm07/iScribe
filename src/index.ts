@@ -26,3 +26,5 @@ export { Logo, type LogoProps } from './icons/Logo';
 export { ChromeIcon } from './icons/ChromeIcon';
 export { AnimatedIcon, type AnimatedIconProps } from './icons/AnimatedIcon';
 export { animatedIcons, animatedIconNames, type AnimatedIconName } from './icons/animatedIcons';
+export { Animation, type AnimationProps, type AnimationTheme } from './animations/Animation';
+export { animations, animationNames, type AnimationName } from './animations/animations';
