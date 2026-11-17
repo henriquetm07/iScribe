@@ -138,24 +138,11 @@
   margin-top: 8px;
 }
 
-/* ⋮ in the top right corner */
+/* ⋮ in the top right corner: an Icon Button (ghost, mini, 20px) */
 .is-sli__more {
   position: absolute;
   top: 5px;
   right: 5px;
-  display: grid;
-  place-items: center;
-  width: 20px;
-  height: 20px;
-  padding: 0;
-  border: 0;
-  border-radius: 4px;
-  background: none;
-  color: var(--is-foreground-low-contrast-primary-foreground);
-  cursor: pointer;
-}
-.is-sli__more:hover {
-  color: var(--is-foreground-high-contrast-primary-foreground);
 }
 
 /* Syncing: the loading-appointment animation on a periwinkle tint, the phone and "Syncing note…" centred */

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode, type RefObject } from 'react';
 import { Animation } from '../../animations/Animation';
 import { Icon } from '../../icons/Icon';
+import { IconButton } from '../IconButton/IconButton';
 import { AppointmentStatus, AppointmentStatusIcon, type AppointmentStatusValue } from '../AppointmentStatus/AppointmentStatus';
 import { EhrIcon, type EhrName } from '../EhrIcon/EhrIcon';
 import './ScheduleList.css';
@@ -186,17 +187,17 @@ export const ScheduleListItem = ({
     >
       {content}
       {onMoreInfo && (
-        <button
-          type="button"
+        <IconButton
+          variant="ghost"
+          size="mini"
+          label={`More about ${name}`}
+          icon={<Icon name="kebab" />}
           className="is-sli__more"
-          aria-label={`More about ${name}`}
           onClick={(e) => {
             e.stopPropagation();
             onMoreInfo();
           }}
-        >
-          <Icon name="kebab" size={20} />
-        </button>
+        />
       )}
     </div>
   );

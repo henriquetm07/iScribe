@@ -27,7 +27,7 @@ export const scheduleListItemSpecLines = ({ state = 'active', size = 'compact' }
           '              medium contrast, 10px apart · 8px · Appointment Status',
         ]),
   '  Visit type  EHR Icon 20px + label Figtree Medium 11px, 4px apart',
-  '  More        ⋮ 20px, 5px from the top right corner, low contrast (when onMoreInfo is set)',
+  '  More        ⋮ Icon Button (ghost, mini), 5px from the top right corner (when onMoreInfo is set)',
 ];
 
 export const scheduleListItemSpecComment = (props: ScheduleListItemProps) => asComment(scheduleListItemSpecLines(props));

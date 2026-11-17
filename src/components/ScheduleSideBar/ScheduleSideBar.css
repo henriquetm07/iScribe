@@ -205,8 +205,7 @@
   align-items: flex-start;
   gap: 10px;
 }
-.is-sched-panel__icon,
-.is-sched-panel__back {
+.is-sched-panel__icon {
   display: grid;
   flex: none;
   place-items: center;
@@ -214,12 +213,10 @@
   height: 24px;
   color: var(--is-foreground-high-contrast-primary-foreground);
 }
+/* Back: an Icon Button (ghost, mini) in the 24px icon slot */
 .is-sched-panel__back {
-  padding: 0;
-  border: 0;
-  border-radius: 6px;
-  background: none;
-  cursor: pointer;
+  flex: none;
+  margin: 2px;
 }
 .is-sched-panel__titles {
   display: flex;
@@ -240,19 +237,11 @@
   font-size: 15px;
   color: var(--is-foreground-medium-contrast-primary-foreground);
 }
+/* Close: an Icon Button (ghost, mini), placed in the top right corner */
 .is-sched-panel__close {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  display: grid;
-  place-items: center;
-  width: 16px;
-  height: 16px;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--is-foreground-high-contrast-primary-foreground);
-  cursor: pointer;
+  top: 18px;
+  right: 18px;
 }
 /* Body: 10px below the header, 20px sides, groups 10px apart, scrolls when tall */
 .is-sched-panel__body {
@@ -279,9 +268,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-}
-.is-sched-option.is-button--secondary:not(:hover) {
-  background: none;
 }
 .is-sched-panel__separator {
   width: 100%;
@@ -337,24 +323,11 @@
   font-weight: 500;
   line-height: 18px;
 }
+/* List rows: Buttons (secondary, regular) at full width, label on the left and × on the right */
 .is-sched-list-option {
-  display: flex;
   flex: none;
-  align-items: center;
+  width: 100%;
   justify-content: space-between;
-  height: 40px;
-  padding: 0 12px;
-  border: 1px solid var(--is-button-secondarystroke);
-  border-radius: 12px;
-  background: none;
-  font: 600 13px var(--is-font-ui);
-  color: var(--is-foreground-high-contrast-primary-foreground);
-  text-align: left;
-  cursor: pointer;
-}
-.is-sched-list-option:hover,
-.is-sched-list-option--applied {
-  background: var(--is-button-secondary-default-bg);
 }
 .is-sched-panel__empty {
   margin: 0;

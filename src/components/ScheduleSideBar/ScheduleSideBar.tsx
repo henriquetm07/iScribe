@@ -288,8 +288,6 @@ export const ScheduleSideBar = ({
         )}
         <Tabs
           device="web"
-          tint="white"
-          width="100%"
           value={tab}
           onChange={setTab}
           aria-label="Schedule or pending notes"

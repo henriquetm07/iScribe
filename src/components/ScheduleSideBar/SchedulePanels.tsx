@@ -39,9 +39,7 @@ export const SchedulePanel = ({ icon, title, subtitle, onBack, onClose, headerEx
     <header className="is-sched-panel__header">
       <div className="is-sched-panel__title-row">
         {onBack ? (
-          <button type="button" className="is-sched-panel__back" onClick={onBack} aria-label="Back">
-            <Icon name="chevron-left" size={16} />
-          </button>
+          <IconButton variant="ghost" size="mini" label="Back" icon={<Icon name="chevron-left" />} onClick={onBack} className="is-sched-panel__back" />
         ) : (
           icon && (
             <span className="is-sched-panel__icon">
@@ -56,9 +54,7 @@ export const SchedulePanel = ({ icon, title, subtitle, onBack, onClose, headerEx
       </div>
       {headerExtra}
       {onClose && (
-        <button type="button" className="is-sched-panel__close" onClick={onClose} aria-label="Close">
-          <Icon name="close" size={16} />
-        </button>
+        <IconButton variant="ghost" size="mini" label="Close" icon={<Icon name="close" />} onClick={onClose} className="is-sched-panel__close" />
       )}
     </header>
     <div className="is-sched-panel__body">{children}</div>
@@ -74,9 +70,9 @@ const Group = ({ label, children }: { label: string; children: ReactNode }) => (
   </div>
 );
 
-/** An option: a 40px Button, black (primary) when on */
+/** An option: a regular Button — Primary when on, Secondary when off */
 const Option = ({ on, onClick, icon, children }: { on: boolean; onClick: () => void; icon?: ReactNode; children: ReactNode }) => (
-  <Button variant={on ? 'primary' : 'secondary'} size="regular" iconLeft={icon} aria-pressed={on} onClick={onClick} className="is-sched-option">
+  <Button variant={on ? 'primary' : 'secondary'} size="regular" iconLeft={icon} aria-pressed={on} onClick={onClick}>
     {children}
   </Button>
 );
@@ -231,18 +227,25 @@ export const ScheduleFilterListPanel = ({ title, options, selected, onChange, on
         <>
           <p className="is-sched-panel__list-label">Applied Filters</p>
           {selected.map((o) => (
-            <button key={o} type="button" className="is-sched-list-option is-sched-list-option--applied" onClick={() => onChange(selected.filter((s) => s !== o))}>
-              <span>{o}</span>
-              <Icon name="close" size={16} title={`Remove ${o}`} />
-            </button>
+            <Button
+              key={o}
+              variant="secondary"
+              size="regular"
+              iconRight={<Icon name="close" />}
+              aria-label={`Remove ${o}`}
+              onClick={() => onChange(selected.filter((s) => s !== o))}
+              className="is-sched-list-option"
+            >
+              {o}
+            </Button>
           ))}
         </>
       )}
       <p className="is-sched-panel__list-label">{title}</p>
       {shown.map((o) => (
-        <button key={o} type="button" className="is-sched-list-option" onClick={() => onChange([...selected, o])}>
-          <span>{o}</span>
-        </button>
+        <Button key={o} variant="secondary" size="regular" onClick={() => onChange([...selected, o])} className="is-sched-list-option">
+          {o}
+        </Button>
       ))}
       {shown.length === 0 && <p className="is-sched-panel__empty">No {title.toLowerCase()} found</p>}
     </SchedulePanel>
