@@ -20,7 +20,7 @@ export const CURSORS: { value: CursorMode; label: string; hint: string }[] = [
   { value: 'default', label: 'Default', hint: 'iScribe cursor' },
   { value: 'presentation', label: 'Presentation', hint: 'Big, bold and labeled' },
   { value: 'touch', label: 'Touch', hint: 'A 44px fingertip (no hover)' },
-  { value: '90s', label: "90's Whimsy", hint: 'Feeling old and sparkly, but mainly old' },
+  { value: '90s', label: "90's", hint: 'Feeling old' },
 ];
 
 export const asCursor = (value: unknown): CursorMode =>
