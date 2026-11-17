@@ -7,6 +7,7 @@ import playPause from './animated/play-pause.json';
 import chevronUpDown from './animated/chevron-up-down.json';
 import chevronLeftRight from './animated/chevron-left-right.json';
 import sentToEhr from './animated/sent-to-ehr.json';
+import copiedToEhr from './animated/copied-to-ehr.json';
 
 export interface AnimatedIconData {
   /** The Lottie JSON */
@@ -64,6 +65,13 @@ export const animatedIcons = {
       'A paper plane dips, flies off to the top right, then glides back in from the bottom left and settles. Drawn on a 240 × 240 grid, so the plane sits at the size of the static "send" icon. Plays in Appointment Status when the status changes to Sent to EHR.',
     markers: { away: 16.5, back: 40.5 },
     startsFrom: 'send',
+  },
+  'copied-to-ehr': {
+    data: copiedToEhr,
+    description:
+      'Two overlapping squares pull apart and swap places, front to back. Drawn on a 240 × 240 grid. Plays in Appointment Status when the status changes to Copied to EHR.',
+    markers: { apart: 24, swapped: 48 },
+    startsFrom: 'copy',
   },
 } satisfies Record<string, AnimatedIconData>;
 
