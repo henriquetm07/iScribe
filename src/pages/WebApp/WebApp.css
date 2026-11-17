@@ -41,10 +41,16 @@
   gap: 30px;
   min-height: 0;
   overflow: auto;
+  /* Room for the scrollbar is always kept, so the note (and its tabs) never change width when the content grows */
+  scrollbar-gutter: stable;
   padding: 30px 40px 80px;
 }
 .is-webapp__frame {
   flex-shrink: 0;
+}
+/* Same 1px edge on Current and Previous Note, so switching tabs never resizes the tab bar mid-slide */
+.is-webapp__frame.is-pn-frame {
+  border: 1px solid var(--is-surface-super-soft-contrast-background);
 }
 /* Chart Prep isn't designed yet: a quiet placeholder */
 .is-webapp__chart-prep {
