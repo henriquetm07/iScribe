@@ -180,6 +180,15 @@
   color: var(--is-foreground-high-contrast-primary-foreground);
   font-family: var(--is-font-ui);
 }
+/* Filter with a Departments / Providers list open: the list sits 10px to the right of the panel, top aligned */
+.is-sched-filter {
+  position: relative;
+}
+.is-sched-filter__side {
+  position: absolute;
+  top: 0;
+  left: calc(100% + 10px);
+}
 /* Panels grow to fit everything; only the long Providers / Departments lists scroll */
 .is-sched-panel--list {
   max-height: min(774px, 85vh);

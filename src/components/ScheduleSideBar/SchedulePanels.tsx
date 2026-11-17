@@ -152,13 +152,18 @@ export interface ScheduleFilterPanelProps {
   /** Lists opened from the panel: Departments and Providers */
   departments?: string[];
   providers?: string[];
+  /**
+   * Where the Departments / Providers lists open: "side" — next to the Filter panel, to its right and top aligned
+   * (Web, default); "replace" — in place of the Filter panel, with ‹ back (Chrome extension, where there is no room)
+   */
+  listPlacement?: 'side' | 'replace';
   onClose?: () => void;
   className?: string;
 }
 
 /**
  * Figma "Filter": appointment type, EHR and status options, then Departments and Providers, which open their
- * own lists (ScheduleFilterListPanel). "Clear all Filters" at the bottom.
+ * own lists (ScheduleFilterListPanel) beside the panel. "Clear all Filters" at the bottom.
  */
 export const ScheduleFilterPanel = ({
   filters,
@@ -167,24 +172,26 @@ export const ScheduleFilterPanel = ({
   ehrs = ['none', 'athena'],
   departments = [],
   providers = [],
+  listPlacement = 'side',
   onClose,
   className,
 }: ScheduleFilterPanelProps) => {
   const [list, setList] = useState<'departments' | 'providers' | null>(null);
-  if (list) {
-    return (
-      <ScheduleFilterListPanel
-        title={list === 'providers' ? 'Providers' : 'Departments'}
-        options={list === 'providers' ? providers : departments}
-        selected={filters[list]}
-        onChange={(next) => onChange({ ...filters, [list]: next })}
-        onBack={() => setList(null)}
-        className={className}
-      />
-    );
-  }
+  const listPanel = (which: 'departments' | 'providers', replace: boolean) => (
+    <ScheduleFilterListPanel
+      title={which === 'providers' ? 'Providers' : 'Departments'}
+      options={which === 'providers' ? providers : departments}
+      selected={filters[which]}
+      onChange={(next) => onChange({ ...filters, [which]: next })}
+      onBack={replace ? () => setList(null) : undefined}
+      onClose={replace ? undefined : () => setList(null)}
+      className={replace ? className : undefined}
+    />
+  );
+  if (list && listPlacement === 'replace') return listPanel(list, true);
   const count = (n: number) => (n ? ` (${n})` : '');
-  return (
+  const open = (which: 'departments' | 'providers') => setList((l) => (l === which ? null : which));
+  const filterPanel = (
     <SchedulePanel
       icon="filter"
       title="Filter"
@@ -224,13 +231,37 @@ export const ScheduleFilterPanel = ({
       <hr className="is-sched-panel__separator" />
       <div className="is-sched-panel__submenu">
         <span>Departments{count(filters.departments.length)}</span>
-        <IconButton variant="secondary" size="regular" label="Filter by department" icon={<Icon name="chevron-right" />} onClick={() => setList('departments')} />
+        <IconButton
+          variant="secondary"
+          size="regular"
+          label="Filter by department"
+          icon={<Icon name="chevron-right" />}
+          aria-expanded={list === 'departments'}
+          data-state={list === 'departments' ? 'active' : undefined}
+          onClick={() => open('departments')}
+        />
       </div>
       <div className="is-sched-panel__submenu">
         <span>Providers{count(filters.providers.length)}</span>
-        <IconButton variant="secondary" size="regular" label="Filter by provider" icon={<Icon name="chevron-right" />} onClick={() => setList('providers')} />
+        <IconButton
+          variant="secondary"
+          size="regular"
+          label="Filter by provider"
+          icon={<Icon name="chevron-right" />}
+          aria-expanded={list === 'providers'}
+          data-state={list === 'providers' ? 'active' : undefined}
+          onClick={() => open('providers')}
+        />
       </div>
     </SchedulePanel>
+  );
+  if (listPlacement === 'replace') return filterPanel;
+  // The list opens next to the Filter panel: 10px to its right, top aligned
+  return (
+    <div className="is-sched-filter">
+      {filterPanel}
+      {list && <div className="is-sched-filter__side">{listPanel(list, false)}</div>}
+    </div>
   );
 };
 
@@ -240,18 +271,22 @@ export interface ScheduleFilterListPanelProps {
   options: string[];
   selected: string[];
   onChange: (next: string[]) => void;
+  /** ‹ back (when the list replaces the Filter panel, as in the Chrome extension) */
   onBack?: () => void;
+  /** × close (when the list opens beside the Filter panel) */
+  onClose?: () => void;
   className?: string;
 }
 
-/** Figma "Filter Submenu": ‹ back, a search field, the applied ones (with ×), then every option */
-export const ScheduleFilterListPanel = ({ title, options, selected, onChange, onBack, className }: ScheduleFilterListPanelProps) => {
+/** Figma "Filter Submenu": ‹ back (or ×), a search field, the applied ones (with ×), then every option */
+export const ScheduleFilterListPanel = ({ title, options, selected, onChange, onBack, onClose, className }: ScheduleFilterListPanelProps) => {
   const [query, setQuery] = useState('');
   const shown = options.filter((o) => !selected.includes(o) && o.toLowerCase().includes(query.trim().toLowerCase()));
   return (
     <SchedulePanel
       title={`${title} Filter`}
       onBack={onBack}
+      onClose={onClose}
       className={`is-sched-panel--list ${className ?? ''}`}
       headerExtra={
         <label className="is-sched-search">

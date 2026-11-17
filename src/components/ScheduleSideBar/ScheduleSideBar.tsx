@@ -240,7 +240,7 @@ export const ScheduleSideBar = ({
   let panelNode: ReactNode = null;
   if (panel === 'filter')
     panelNode = (
-      <ScheduleFilterPanel filters={filters} onChange={setFilters} appointmentTypes={appointmentTypes} ehrs={ehrs} departments={departments} providers={providers} onClose={close} />
+      <ScheduleFilterPanel filters={filters} onChange={setFilters} appointmentTypes={appointmentTypes} ehrs={ehrs} departments={departments} providers={providers} listPlacement={chrome ? 'replace' : 'side'} onClose={close} />
     );
   if (panel === 'sort') panelNode = <ScheduleSortPanel sort={sort} onChange={setSort} onClose={close} />;
   if (panel === 'calendar')
