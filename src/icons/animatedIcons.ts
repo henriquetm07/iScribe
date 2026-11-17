@@ -83,7 +83,7 @@ export const animatedIcons = {
     data: noteInProgress,
     description:
       'The iScribe waves in a circle light up in the accent colour one by one, inner to outer, then settle back. Drawn on a 240 × 240 grid. Plays in Appointment Status while the status is Note in Progress, every 5 seconds.',
-    markers: { inner: 5, middle: 20, outer: 35 },
+    markers: { inner: 5, middle: 12, outer: 20 },
     accent: { base: '#1d1c1e', color: '#3966ff' },
   },
 } satisfies Record<string, AnimatedIconData>;
