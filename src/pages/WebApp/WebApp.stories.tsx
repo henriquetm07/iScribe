@@ -91,6 +91,10 @@ type Story = StoryObj<typeof meta>;
  * side bar, collapse it, filter and sort; edit the patient, Start Recording; switch Chart Prep · Previous Note ·
  * Current Note. On the Current Note, + fills a topic; on the Previous Note, + adds an entry and the Check counter
  * adds the whole note — what you add shows on the Current Note as "sections pulled forward".
+ *
+ * New Note (top left) opens an empty note at the current time: its card in the side bar shows placeholders and
+ * "New Note" until the demographics are filled in, a recording starts or something is added to the note; then it
+ * becomes "Note in Progress".
  */
 export const Expanded: Story = {};
 

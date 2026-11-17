@@ -1,8 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Icon } from '../../icons/Icon';
 import type { IconName } from '../../icons/icons';
 import { IconButton } from '../../components/IconButton/IconButton';
-import { RTNHeader, type RTNPatient } from '../../components/RTNHeader/RTNHeader';
+import { formatRTNDate, RTNHeader, type RTNPatient } from '../../components/RTNHeader/RTNHeader';
 import { rtnTabs, type RtnTopic } from '../../components/RTNItems/RTNItems';
 import { RtnSample } from '../../components/RTNItems/RtnSample';
 import {
@@ -51,24 +51,72 @@ const toPatient = (a: ScheduleSideBarAppointment): RTNPatient => {
   return { firstName, lastName: rest.join(' '), sex: a.sex ?? '', dob: a.dateOfBirth ?? '', age: a.age ?? '', photo: a.photo };
 };
 
+/** "4:49 PM": the time format the schedule uses */
+const clockTime = (d: Date) => {
+  const h = d.getHours();
+  return `${h % 12 || 12}:${String(d.getMinutes()).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`;
+};
+
+/** A note started with "New Note": no patient yet, at the time it was created */
+interface NewNote {
+  id: string;
+  created: Date;
+  time: string;
+  /** The demographics as typed in the RTN Header (none until the user fills them in) */
+  patient?: RTNPatient;
+  /** Becomes "Note in Progress" once the demographics change, a recording starts or an item is added */
+  started: boolean;
+}
+
+/** The card for a new note in the Schedule Side Bar: placeholders until the demographics are filled in */
+const newNoteCard = (n: NewNote): ScheduleSideBarAppointment => {
+  const p = n.patient;
+  const name = p ? `${p.firstName} ${p.lastName}`.trim() : '';
+  return {
+    id: n.id,
+    name: name || 'Patient Name',
+    time: n.time,
+    status: n.started ? 'note-in-progress' : 'new-note',
+    sex: p?.sex || 'Sex',
+    dateOfBirth: p?.dob || 'DOB',
+    age: p?.age || 'Age',
+    visitType: 'Visit',
+    ehr: 'athena',
+    integrated: false,
+    appointmentType: 'Office Visit',
+  };
+};
+
 /** The note for one visit: tabs, then today's note, the previous note or chart prep. One Tabs, so the selector slides. */
-const VisitNote = ({ sections }: { sections: PreviousNoteSection[] }) => {
+const VisitNote = ({ sections, onActivity }: { sections: PreviousNoteSection[]; onActivity?: () => void }) => {
   const [tab, setTab] = useState('current-note');
   const [filled, setFilled] = useState<RtnTopic[]>([]);
   const [added, setAdded] = useState<string[]>([]);
   const allIds = sections.flatMap((s) => s.entries.map((e) => e.id));
-  const toggle = (id: string) => setAdded((a) => (a.includes(id) ? a.filter((x) => x !== id) : [...a, id]));
+  const toggle = (id: string) => {
+    setAdded((a) => (a.includes(id) ? a.filter((x) => x !== id) : [...a, id]));
+    onActivity?.();
+  };
   // Sections with something added from the previous note are "pulled forward" into today's note
   const pulled = sections
     .filter((s) => s.entries.some((e) => added.includes(e.id)))
     .map((s) => ({ title: s.title, icon: s.icon as IconName }));
   const previous = tab === 'previous-note';
 
+  // A new patient has no previous note
+  const noPrevious = sections.length === 0;
+
   return (
-    <div className={previous ? 'is-pn-frame is-pn-frame--web is-pn-frame--default is-webapp__frame' : 'is-rtn-frame is-rtn-frame--web is-webapp__frame'}>
+    <div
+      className={
+        previous
+          ? `is-pn-frame is-pn-frame--web is-pn-frame--${noPrevious ? 'empty' : 'default'} is-webapp__frame`
+          : 'is-rtn-frame is-rtn-frame--web is-webapp__frame'
+      }
+    >
       <div className={previous ? 'is-pn-frame__top' : 'is-rtn-frame__tabs'}>
         <Tabs device="web" options={rtnTabs} value={tab} onChange={setTab} aria-label="Note" />
-        {previous && (
+        {previous && !noPrevious && (
           <div className="is-pn-frame__header">
             <DateAndProvider
               device="web"
@@ -77,16 +125,28 @@ const VisitNote = ({ sections }: { sections: PreviousNoteSection[] }) => {
               timeSpan={samplePreviousNote.timeSpan}
               provider={samplePreviousNote.provider}
             />
-            <CheckCounter device="web" count={added.length} onClick={() => setAdded(added.length === allIds.length ? [] : allIds)} />
+            <CheckCounter
+              device="web"
+              count={added.length}
+              onClick={() => {
+                setAdded(added.length === allIds.length ? [] : allIds);
+                onActivity?.();
+              }}
+            />
           </div>
         )}
       </div>
       {previous && <hr className="is-pn-separator" />}
       {previous ? (
         <div className="is-pn-frame__body">
-          {sections.map((s) => (
-            <PreviousNoteSectionView key={s.id} device="web" section={s} added={added} onAdd={toggle} />
-          ))}
+          {noPrevious ? (
+            <div className="is-pn-empty">
+              <p className="is-pn-empty__title">No Previous Notes</p>
+              <p className="is-pn-empty__body">This patient is new to the practice, so there’s no prior history.</p>
+            </div>
+          ) : (
+            sections.map((s) => <PreviousNoteSectionView key={s.id} device="web" section={s} added={added} onAdd={toggle} />)
+          )}
         </div>
       ) : tab === 'current-note' ? (
         <div className="is-rtn-frame__note">
@@ -98,7 +158,10 @@ const VisitNote = ({ sections }: { sections: PreviousNoteSection[] }) => {
                 device="web"
                 topic={t}
                 state={filled.includes(t) ? 'filled' : 'empty'}
-                onAdd={() => setFilled((f) => (f.includes(t) ? f : [...f, t]))}
+                onAdd={() => {
+                  setFilled((f) => (f.includes(t) ? f : [...f, t]));
+                  onActivity?.();
+                }}
               />
             ))}
           </div>
@@ -128,11 +191,34 @@ export interface WebAppProps {
 /** Pages / Web App: the iScribe web app with a visit open (Figma "Web App V2" › Note Section). */
 export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visitDate = 'Oct 23, 2026' }: WebAppProps) => {
   const [selectedId, setSelectedId] = useState(defaultSelectedId);
+  const [newNotes, setNewNotes] = useState<NewNote[]>([]);
+  const appointments = useMemo(() => [...sampleSideBarAppointments, ...newNotes.map(newNoteCard)], [newNotes]);
+  const newNote = newNotes.find((n) => n.id === selectedId);
   const appointment = useMemo(
-    () => [...sampleSideBarAppointments, ...samplePending].find((a) => a.id === selectedId) ?? sampleSideBarAppointments[0],
-    [selectedId],
+    () => [...appointments, ...samplePending].find((a) => a.id === selectedId) ?? sampleSideBarAppointments[0],
+    [appointments, selectedId],
   );
   const sections = samplePreviousNote.sections as PreviousNoteSection[];
+
+  const updateNew = (id: string, change: Partial<NewNote>) => setNewNotes((list) => list.map((n) => (n.id === id ? { ...n, ...change } : n)));
+  const start = (id: string) => setNewNotes((list) => list.map((n) => (n.id === id && !n.started ? { ...n, started: true } : n)));
+
+  /** "New Note": an empty note at the current time, opened at once */
+  const createNote = () => {
+    const created = new Date();
+    const note: NewNote = { id: `new-${created.getTime()}`, created, time: clockTime(created), started: false };
+    setNewNotes((list) => [...list, note]);
+    setSelectedId(note.id);
+  };
+
+  // Bring the newly selected card into view in the side bar
+  useEffect(() => {
+    if (!selectedId.startsWith('new-')) return;
+    const frame = requestAnimationFrame(() =>
+      document.querySelector('.is-webapp .is-ssb .is-sli--selected')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }),
+    );
+    return () => cancelAnimationFrame(frame);
+  }, [selectedId]);
 
   return (
     <div className="is-webapp">
@@ -148,23 +234,41 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
         <ScheduleSideBar
           platform="web"
           defaultCollapsed={defaultCollapsed}
-          appointments={sampleSideBarAppointments}
+          appointments={appointments}
           pending={samplePending}
           selectedId={selectedId}
           onSelect={setSelectedId}
+          onNewNote={createNote}
           providers={sampleProviders}
           departments={sampleDepartments}
         />
         <section className="is-webapp__note" aria-label="Visit note">
-          <RTNHeader
-            key={appointment.id}
-            labels={[appointment.visitType ?? 'Visit', 'Room 12']}
-            date={visitDate}
-            time={appointment.time}
-            patient={toPatient(appointment)}
-          />
+          {newNote ? (
+            <RTNHeader
+              key={newNote.id}
+              labels={['Visit']}
+              date={formatRTNDate(newNote.created)}
+              time={newNote.time}
+              checkedIn=""
+              patient={newNote.patient ?? null}
+              onPatientChange={(patient) => updateNew(newNote.id, { patient, started: true })}
+              onRecordStateChange={(state) => state !== 'idle' && start(newNote.id)}
+            />
+          ) : (
+            <RTNHeader
+              key={appointment.id}
+              labels={[appointment.visitType ?? 'Visit', 'Room 12']}
+              date={visitDate}
+              time={appointment.time}
+              patient={toPatient(appointment)}
+            />
+          )}
           <div className="is-webapp__board">
-            <VisitNote key={appointment.id} sections={sections} />
+            <VisitNote
+              key={appointment.id}
+              sections={newNote ? [] : sections}
+              onActivity={newNote ? () => start(newNote.id) : undefined}
+            />
           </div>
           <IconButton className="is-webapp__mic" variant="secondary" size="regular" icon={<Icon name="mic" />} label="Microphone settings" />
         </section>
