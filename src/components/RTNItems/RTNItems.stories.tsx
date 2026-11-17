@@ -71,7 +71,7 @@ export const AllVariants: Story = {
 /** Procedure Documentation: click the text to edit it, then Discard or Save. */
 export const Editing: Story = { args: { topic: 'pro-doc', state: 'edit' } };
 
-/** Billing: drag a code by any part of it (or focus it and use the arrow keys) to reorder; Delete removes it. */
+/** Billing: hold a code by its double kebab and drag it to another position (or focus it and use the arrow keys); Delete removes it. */
 export const Reordering: Story = { args: { topic: 'billing', state: 'filled' } };
 
 /** RTN Item Header (Today), Counter Label and Billing Code on their own. */

@@ -308,15 +308,34 @@
   gap: 10px;
   width: 100%;
 }
-.is-rtn-codes--dragging {
+.is-rtn-codes--dragging,
+.is-rtn-codes--dragging .is-billing-code,
+.is-rtn-codes--dragging .is-billing-code__handle {
   cursor: grabbing;
   user-select: none;
 }
 .is-billing-code {
   font-family: var(--is-rtn-mono);
   font-weight: 400;
+  cursor: default;
+}
+/* Drag handle: the double kebab. Its hit area reaches the code's left edge and full height. */
+.is-billing-code__handle {
+  position: relative;
+  display: inline-flex;
+  width: 100%;
+  height: 100%;
   cursor: grab;
   touch-action: none;
+}
+.is-billing-code__handle::before {
+  content: '';
+  position: absolute;
+  inset: -12px -3px -12px -12px;
+}
+.is-billing-code__handle > svg {
+  width: 100%;
+  height: 100%;
 }
 .is-billing-code__remove {
   display: inline-flex;

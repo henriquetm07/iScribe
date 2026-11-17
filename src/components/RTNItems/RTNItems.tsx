@@ -195,7 +195,7 @@ export interface BillingCodeProps {
   onRemove?: () => void;
   /** Drawn lifted (tilted 15° with a blur behind it) while being dragged */
   lifted?: boolean;
-  /** Start dragging (pointer down anywhere on the code except ×) */
+  /** Start dragging: called when the drag handle (the double kebab on the left) is pressed */
   onDragStart?: (e: ReactPointerEvent<HTMLButtonElement>) => void;
   /** Move one place earlier (-1) or later (+1), from the keyboard (arrow keys) */
   onMove?: (step: -1 | 1) => void;
@@ -204,8 +204,8 @@ export interface BillingCodeProps {
 
 /**
  * Billing Code (Figma 797:4007): a secondary Button (Small on iPhone, Regular on iPad / Web) with the drag handle
- * (kebab 2 columns) on the left, the code in Relative Mono and × on the right. Drag it to reorder; from the
- * keyboard, arrow keys move it and Delete removes it.
+ * (kebab 2 columns) on the left, the code in Relative Mono and × on the right. Hold the double kebab and drag to
+ * reorder; from the keyboard, arrow keys move it and Delete removes it.
  */
 export const BillingCode = ({ device = 'web', code, onRemove, lifted, onDragStart, onMove, style }: BillingCodeProps) => (
   <Button
@@ -215,7 +215,7 @@ export const BillingCode = ({ device = 'web', code, onRemove, lifted, onDragStar
     style={style}
     aria-label={`${code}. Arrow keys to move, Delete to remove`}
     onPointerDown={(e) => {
-      if ((e.target as HTMLElement).closest('.is-billing-code__remove')) return;
+      if (!(e.target as HTMLElement).closest('.is-billing-code__handle')) return;
       onDragStart?.(e);
     }}
     onKeyDown={(e: KeyboardEvent<HTMLButtonElement>) => {
@@ -223,7 +223,11 @@ export const BillingCode = ({ device = 'web', code, onRemove, lifted, onDragStar
       else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); onMove?.(1); }
       else if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); onRemove?.(); }
     }}
-    iconLeft={<Icon name="kebab-2-columns" />}
+    iconLeft={
+      <span className="is-billing-code__handle" title="Drag to reorder">
+        <Icon name="kebab-2-columns" />
+      </span>
+    }
     iconRight={
       <span className="is-billing-code__remove" onClick={(e) => { e.stopPropagation(); onRemove?.(); }}>
         <Icon name="close" />
@@ -238,7 +242,7 @@ export interface RtnBillingProps {
   device?: RtnDevice;
   /** E&M code, shown in the accent label */
   emCode: string;
-  /** Diagnosis codes, in order. Drag a code to reorder it. */
+  /** Diagnosis codes, in order. Hold a code's double kebab and drag it to reorder. */
   codes: string[];
   onCodesChange?: (codes: string[]) => void;
   onAddCode?: () => void;
