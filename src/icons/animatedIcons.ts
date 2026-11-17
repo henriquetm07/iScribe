@@ -69,7 +69,7 @@ export const animatedIcons = {
   'copied-to-ehr': {
     data: copiedToEhr,
     description:
-      'Two overlapping squares pull apart and swap places, front to back. Drawn on a 240 × 240 grid. Plays in Appointment Status when the status changes to Copied to EHR.',
+      'The copy icon: two overlapping squares pull apart, swap places and settle back into the overlapped copy shape. Drawn on a 240 × 240 grid. Plays in Appointment Status when the status changes to Copied to EHR.',
     markers: { apart: 24, swapped: 48 },
     startsFrom: 'copy',
   },

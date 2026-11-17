@@ -40,8 +40,9 @@
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-/* Copied to EHR squares: drawn like the animation's last frame (10 on its 240 grid ≈ 0.83px), sharp joins */
-.is-apt-squares rect {
+/* Copied to EHR squares: drawn like the animation's first and last frame (10 on its 240 grid ≈ 0.83px) */
+/* Direct children only: the mask's own rects keep their white / black fills */
+.is-apt-squares > rect {
   fill: none;
   stroke: var(--is-status-foreground-positive);
   stroke-width: 10;
