@@ -57,9 +57,12 @@ export const SchedulePanel = ({ icon, title, subtitle, onBack, onClose, headerEx
       </div>
       {headerExtra}
       {onClose && (
-        // Figma "icon/close": a plain 16px icon, low contrast, 20px from the top right; no background on hover
+        // Figma "icon/close" (16px, its own drawing: larger and bolder than the 12px-grid "close" icon scaled up),
+        // low contrast, 20px from the top right; a plain icon with no background on hover
         <button type="button" className="is-sched-panel__icon-action is-sched-panel__close" onClick={onClose} aria-label="Close">
-          <Icon name="close" size={16} />
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M3.47192 3.47193C3.78434 3.15951 4.29075 3.15951 4.60317 3.47193L8.00317 6.87037L11.3969 3.47818C11.7093 3.16576 12.2157 3.16576 12.5282 3.47818C12.8404 3.79062 12.8405 4.29708 12.5282 4.60943L9.13442 8.00162L12.5235 11.3907C12.8359 11.7031 12.8359 12.2111 12.5235 12.5235C12.2113 12.8356 11.7047 12.8351 11.3922 12.5235L8.00317 9.13443L4.60942 12.5282C4.29707 12.8405 3.79061 12.8404 3.47817 12.5282C3.16575 12.2158 3.16575 11.7094 3.47817 11.3969L6.87192 8.00318L3.47192 4.60318C3.15951 4.29078 3.15955 3.78435 3.47192 3.47193Z" />
+          </svg>
         </button>
       )}
     </header>
