@@ -166,6 +166,9 @@ export const Tabs = ({
   const [inner, setInner] = useState(defaultValue ?? options[0]?.value);
   const selected = value !== undefined ? value : inner;
   const selectedIndex = Math.max(0, options.findIndex((o) => o.value === selected));
+  // The latest selection, for measurements that run later (a resize) — never a stale one
+  const selectedRef = useRef(selectedIndex);
+  selectedRef.current = selectedIndex;
 
   const uid = useId().replace(/[^a-zA-Z0-9_-]/g, '');
   const filterId = `is-tabs-lens-${uid}`;
@@ -300,10 +303,15 @@ export const Tabs = ({
       s.slots = tabs.current.map((t) =>
         t ? { c: t.offsetLeft + t.offsetWidth / 2, top: t.offsetTop, w: t.offsetWidth, h: t.offsetHeight } : { c: 0, top: 0, w: 0, h: 0 },
       );
-      const slot = s.slots[selectedIndex];
+      const slot = s.slots[selectedRef.current];
       if (!slot || !slot.w) return;
-      s.x = s.target = slot.c;
-      s.v = 0;
+      if (s.raf && !s.dragging) {
+        // Mid-slide (e.g. the page around the bar changed size as the tab changed): keep sliding to the new spot
+        s.target = slot.c;
+      } else if (!s.dragging) {
+        s.x = s.target = slot.c;
+        s.v = 0;
+      }
       if (clone.current && bar.current) {
         // The copy inside the lens uses the bar's exact box, so its labels line up with the real ones
         const cs = getComputedStyle(bar.current);
@@ -319,7 +327,7 @@ export const Tabs = ({
     const ro = new ResizeObserver(measure);
     if (bar.current) ro.observe(bar.current);
     return () => ro.disconnect();
-    // selectedIndex is read once per layout; moving between tabs is handled below
+    // The selection is read from selectedRef; moving between tabs is handled below
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [optionsKey, device, width, render]);
 
