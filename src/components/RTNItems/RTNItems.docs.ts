@@ -13,7 +13,7 @@ export const rtnItemSpecLines = ({ device = 'web' }: { device?: RtnDevice }) => 
     ? '  Card        padding 10, 10px apart, corners 16px, min height 60px'
     : `  Card        padding 20, 12px apart, corners 20px (Round XXL)${device === 'ipad' ? ', min height 80px' : ', min height 80px once filled'}`,
   '              super-soft contrast background, 1px medium contrast line',
-  `  Header      10px side padding · icon ${isPhone(device) ? 16 : 20}px · title Figtree Medium ${isPhone(device) ? 16 : 18}px · counter Relative Mono ${isPhone(device) ? 13 : 15}px low contrast · + ${isPhone(device) ? 16 : 18}px`,
+  `  Header      10px side padding · icon ${isPhone(device) ? 16 : 20}px · title Figtree Medium ${isPhone(device) ? 16 : 17}px · counter Relative Mono ${isPhone(device) ? 13 : 15}px low contrast · + ${isPhone(device) ? 16 : 18}px`,
   `  Entry       padding ${isPhone(device) ? 10 : 20}, corners 12px, super-soft contrast light, 1px soft contrast light 2 line; × ${isPhone(device) ? 16 : 20}px ${isPhone(device) ? 20 : 40}px from the content`,
   '',
   '  Content types (Container Content):',
