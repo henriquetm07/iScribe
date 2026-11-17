@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Animation, type AnimationTheme } from '../animations/Animation';
+import { Animation } from '../animations/Animation';
 import { animationNames, animations, type AnimationData, type AnimationName } from '../animations/animations';
 import { lottieInfo } from '../icons/animatedIcons';
 import { Icon } from '../icons/Icon';
@@ -7,19 +7,17 @@ import './AnimatedIconGallery.css';
 import './AnimationGallery.css';
 
 const sizes = [120, 180, 240, 360] as const;
-const themes: { value: AnimationTheme; label: string }[] = [
-  { value: 'auto', label: 'Follow mode' },
-  { value: 'light', label: 'Light' },
-  { value: 'dark', label: 'Dark' },
-];
 
-/** One animation: a preview you can replay, its timing and versions, and copyable code. Same layout as Animated Icons. */
-const Tile = ({ name, size, theme }: { name: AnimationName; size: number; theme: AnimationTheme }) => {
+/**
+ * One animation: a preview you can replay, its timing and versions, and copyable code. Same layout as Animated Icons.
+ * The preview follows the site's Light / Dark toggle, like the animation does in the product.
+ */
+const Tile = ({ name, size }: { name: AnimationName; size: number }) => {
   const animation: AnimationData = animations[name];
   const info = lottieInfo(animation.light);
   const [run, setRun] = useState(0);
   const [copied, setCopied] = useState(false);
-  const code = `<Animation name="${name}"${theme === 'auto' ? '' : ` theme="${theme}"`} />`;
+  const code = `<Animation name="${name}" />`;
   const copy = () => {
     navigator.clipboard?.writeText(code).catch(() => {});
     setCopied(true);
@@ -29,15 +27,14 @@ const Tile = ({ name, size, theme }: { name: AnimationName; size: number; theme:
 
   return (
     <article className="is-anim-tile is-anim-tile--wide">
-      {/* The stage takes the chosen mode's background, so each version is seen where it will be used */}
+      {/* The stage is the page background, so each version is seen where it will be used */}
       <button
         type="button"
         className="is-anim-tile__stage is-animation-stage"
-        data-theme={theme === 'auto' ? undefined : theme}
         onClick={() => setRun((r) => r + 1)}
         title="Replay"
       >
-        <Animation key={`${run}-${size}-${theme}`} name={name} theme={theme} width={size} height={height} />
+        <Animation key={`${run}-${size}`} name={name} width={size} height={height} />
         <span className="is-anim-tile__replay">
           <Icon name="reload" size={12} /> Replay
         </span>
@@ -66,10 +63,9 @@ const Tile = ({ name, size, theme }: { name: AnimationName; size: number; theme:
   );
 };
 
-/** Every animation, with size and light / dark controls. */
+/** Every animation, with size controls. Light / dark follows the site's toggle. */
 export const AnimationGallery = () => {
   const [size, setSize] = useState<(typeof sizes)[number]>(180);
-  const [theme, setTheme] = useState<AnimationTheme>('auto');
 
   return (
     <div className="is-anim-gallery sb-unstyled">
@@ -81,16 +77,9 @@ export const AnimationGallery = () => {
             </button>
           ))}
         </div>
-        <div className="is-anim-gallery__group" role="group" aria-label="Version">
-          {themes.map((t) => (
-            <button key={t.value} type="button" aria-pressed={theme === t.value} onClick={() => setTheme(t.value)}>
-              {t.label}
-            </button>
-          ))}
-        </div>
       </div>
       {animationNames.map((name) => (
-        <Tile key={name} name={name} size={size} theme={theme} />
+        <Tile key={name} name={name} size={size} />
       ))}
     </div>
   );
