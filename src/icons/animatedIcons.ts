@@ -7,7 +7,6 @@ import playPause from './animated/play-pause.json';
 import chevronUpDown from './animated/chevron-up-down.json';
 import chevronLeftRight from './animated/chevron-left-right.json';
 import sentToEhr from './animated/sent-to-ehr.json';
-import sentToEhrExpanded from './animated/sent-to-ehr-expanded.json';
 
 export interface AnimatedIconData {
   /** The Lottie JSON */
@@ -62,14 +61,7 @@ export const animatedIcons = {
   'sent-to-ehr': {
     data: sentToEhr,
     description:
-      'A paper plane dips, flies off to the top right, then glides back in from the bottom left and settles. For "Sent to EHR" (see Components / Appointment Status).',
-    markers: { away: 16.5, back: 40.5 },
-    startsFrom: 'send',
-  },
-  'sent-to-ehr-expanded': {
-    data: sentToEhrExpanded,
-    description:
-      'The same paper plane flight on a grid twice as big (240 × 240), so the plane is drawn at half the size and stays in view for more of its flight before leaving at the top right.',
+      'A paper plane dips, flies off to the top right, then glides back in from the bottom left and settles. Drawn on a 240 × 240 grid, so the plane sits at the size of the static "send" icon. Plays in Appointment Status when the status changes to Sent to EHR.',
     markers: { away: 16.5, back: 40.5 },
     startsFrom: 'send',
   },

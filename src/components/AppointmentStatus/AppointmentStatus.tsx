@@ -84,7 +84,7 @@ const artwork: Record<AppointmentStatusValue, ReactNode> = {
       <path className="is-apt-fill-hi" fillRule="evenodd" d="M12.4416 13.6749C11.0892 12.2322 8.9138 12.2322 7.56144 13.6749C7.30448 13.949 6.87546 13.9615 6.60321 13.7028C6.33095 13.444 6.31856 13.0121 6.57552 12.7379C8.46293 10.7244 11.5401 10.7244 13.4275 12.7379C13.6845 13.0121 13.6721 13.444 13.3998 13.7028C13.1275 13.9615 12.6985 13.949 12.4416 13.6749Z" />
     </>
   ),
-  // Positive: "send" on a green disc. The plane is drawn exactly as in the "sent-to-ehr-expanded" animation
+  // Positive: "send" on a green disc. The plane is drawn exactly as in the "sent-to-ehr" animation
   // (a thin round-cornered line on its 240 grid), so the animation hands back to this icon without a jump.
   'sent-to-ehr': (
     <>
@@ -126,7 +126,7 @@ export interface AppointmentStatusIconProps {
   title?: string;
   /**
    * Animate on arrival (default true): when the status changes to "sent-to-ehr", the paper plane flies off
-   * and back in once (Foundations / Animated Icons, "sent-to-ehr-expanded"). The first render is static.
+   * and back in once (Foundations / Animated Icons, "sent-to-ehr"). The first render is static.
    */
   animate?: boolean;
   className?: string;
@@ -159,7 +159,7 @@ export const AppointmentStatusIcon = ({ status, size = 20, title, animate = true
           <path className="is-apt-fill-bg-positive" d="M10 0C15.5228 0 20 4.47715 20 10C20 15.5228 15.5228 20 10 20C4.47715 20 0 15.5228 0 10C0 4.47715 4.47715 0 10 0Z" />
         </svg>
         <AnimatedIcon
-          name="sent-to-ehr-expanded"
+          name="sent-to-ehr"
           size={size}
           className="is-apt-flight__plane"
           // The static plane, until the animation player has loaded
