@@ -374,6 +374,53 @@
   cursor: grabbing;
 }
 
+/*
+ * Holding a code: it is drawn in a layer above everything on the page, follows the pointer, pivots 15° around the
+ * point where it was grabbed, grows slightly and casts a shadow. On release it glides into its new slot.
+ */
+.is-billing-code-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  pointer-events: none;
+}
+.is-billing-code--held,
+.is-billing-code--dropping {
+  position: fixed;
+  margin: 0;
+  pointer-events: none;
+  background-color: color-mix(in srgb, var(--is-background-elevated-background) 85%, transparent);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+}
+.is-billing-code--held {
+  transform: rotate(15deg) scale(1.06);
+  box-shadow:
+    0 14px 28px -8px var(--is-shadow-basic-shadow),
+    0 3px 8px -2px var(--is-shadow-basic-shadow);
+  animation: is-billing-code-pickup 160ms cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+.is-billing-code--dropping {
+  transform: none;
+  box-shadow: none;
+  transition:
+    left 180ms cubic-bezier(0.2, 0, 0, 1),
+    top 180ms cubic-bezier(0.2, 0, 0, 1),
+    transform 180ms cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 180ms ease;
+}
+@keyframes is-billing-code-pickup {
+  from {
+    transform: none;
+    box-shadow: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-billing-code--held {
+    animation: none;
+  }
+}
+
 /* ---------- Main frame ---------- */
 .is-rtn-frame {
   box-sizing: border-box;

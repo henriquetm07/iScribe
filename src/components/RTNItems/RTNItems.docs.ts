@@ -24,7 +24,8 @@ export const rtnItemSpecLines = ({ device = 'web' }: { device?: RtnDevice }) => 
   `    Diagnosis      name · ICD code label (${isPhone(device) ? 'Small' : 'Big'}, low contrast) · Toggle ${isPhone(device) ? 'Default' : 'XL'} + "Active problem" Figtree Medium ${isPhone(device) ? 13 : 15}px`,
   `    Order + Label  name, then a red alert label with the alert icon (${isPhone(device) ? 'Medium' : 'Big'})`,
   `    Billing        E&M code (accent label) · Billing Codes (Button secondary ${isPhone(device) ? 'Small' : 'Regular'}, Relative Mono, drag handle + ×) · Add Code (Button primary ${isPhone(device) ? 'Small' : 'Regular'})`,
-  '                   While dragging, the code tilts 15° with a 5px blur behind it and leaves a soft placeholder in its slot',
+  '                   Hold the double kebab to pick a code up: it floats above the whole page, tilted 15° around the grab point,',
+  '                   6% larger with a shadow and a 5px blur behind it, and leaves a soft placeholder; on release it glides into place',
 ];
 
 export const rtnItemSpecComment = (props: { device?: RtnDevice }) => asComment(rtnItemSpecLines(props));

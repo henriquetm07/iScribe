@@ -4,6 +4,7 @@ import type { IconName } from '../../icons/icons';
 import { Button } from '../Button/Button';
 import { Tabs, type TabsOption } from '../Tabs/Tabs';
 import { Toggle } from '../Toggle/Toggle';
+import { createPortal } from 'react-dom';
 import './RTNItems.css';
 
 /** Figma Device: iPhone · iPad · Web. Web and iPad share sizes; Web drops the 80px minimum height when empty. */
@@ -200,6 +201,7 @@ export interface BillingCodeProps {
   /** Move one place earlier (-1) or later (+1), from the keyboard (arrow keys) */
   onMove?: (step: -1 | 1) => void;
   style?: CSSProperties;
+  className?: string;
 }
 
 /**
@@ -207,11 +209,11 @@ export interface BillingCodeProps {
  * (kebab 2 columns) on the left, the code in Relative Mono and × on the right. Hold the double kebab and drag to
  * reorder; from the keyboard, arrow keys move it and Delete removes it.
  */
-export const BillingCode = ({ device = 'web', code, onRemove, lifted, onDragStart, onMove, style }: BillingCodeProps) => (
+export const BillingCode = ({ device = 'web', code, onRemove, lifted, onDragStart, onMove, style, className }: BillingCodeProps) => (
   <Button
     variant="secondary"
     size={small(device) ? 'small' : 'regular'}
-    className={cx('is-billing-code', lifted && 'is-billing-code--lifted')}
+    className={cx('is-billing-code', lifted && 'is-billing-code--lifted', className)}
     style={style}
     aria-label={`${code}. Arrow keys to move, Delete to remove`}
     onPointerDown={(e) => {
@@ -250,9 +252,27 @@ export interface RtnBillingProps {
   reorderingIndex?: number;
 }
 
-type Drag = { from: number; to: number; x: number; y: number; dx: number; dy: number };
+type Drag = {
+  from: number;
+  to: number;
+  x: number;
+  y: number;
+  dx: number;
+  dy: number;
+  /** Where the code settles when released (the placeholder's position), while it animates back into the list */
+  drop?: { left: number; top: number };
+  /** data-theme of the nearest themed ancestor, so the floating code keeps its colors outside the card */
+  theme?: string;
+};
 
-/** Container Content · Billing: E&M code, the reorderable codes and "Add Code". */
+const DROP_MS = 180;
+
+/**
+ * Container Content · Billing: E&M code, the reorderable codes and "Add Code".
+ * Holding a code's double kebab picks it up: it tilts 15°, grows slightly and casts a shadow, and floats above
+ * everything on the page (rendered in a layer on top of the document) while it follows the pointer. The other codes
+ * make room as it moves; on release it settles into its new slot.
+ */
 export const RtnBilling = ({ device = 'web', emCode, codes, onCodesChange, onAddCode, reorderingIndex }: RtnBillingProps) => {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [drag, setDrag] = useState<Drag | null>(null);
@@ -272,17 +292,19 @@ export const RtnBilling = ({ device = 'web', emCode, codes, onCodesChange, onAdd
   const preview = drag ? undefined : reorderingIndex;
 
   const start = (i: number) => (e: ReactPointerEvent<HTMLButtonElement>) => {
-    if (e.button !== 0) return;
+    if (e.button !== 0 || dragRef.current) return;
     e.preventDefault();
     const r = e.currentTarget.getBoundingClientRect();
-    update({ from: i, to: i, x: e.clientX, y: e.clientY, dx: e.clientX - r.left, dy: e.clientY - r.top });
+    const theme = e.currentTarget.closest('[data-theme]')?.getAttribute('data-theme') ?? undefined;
+    update({ from: i, to: i, x: e.clientX, y: e.clientY, dx: e.clientX - r.left, dy: e.clientY - r.top, theme });
   };
 
   useEffect(() => {
     if (!dragging) return;
+    let timer: number | undefined;
     const move = (e: PointerEvent) => {
       const d = dragRef.current;
-      if (!d) return;
+      if (!d || d.drop) return;
       let to = d.to;
       const wrap = wrapRef.current;
       if (wrap) {
@@ -295,7 +317,7 @@ export const RtnBilling = ({ device = 'web', emCode, codes, onCodesChange, onAdd
       }
       update({ ...d, x: e.clientX, y: e.clientY, to });
     };
-    const up = () => {
+    const finish = () => {
       const d = dragRef.current;
       update(null);
       if (d && d.from !== d.to) {
@@ -305,10 +327,24 @@ export const RtnBilling = ({ device = 'web', emCode, codes, onCodesChange, onAdd
         latest.current.onCodesChange?.(next);
       }
     };
+    const up = () => {
+      const d = dragRef.current;
+      if (!d || d.drop) return;
+      // Settle: glide into the placeholder, then commit the new order
+      const slot = wrapRef.current?.querySelector<HTMLElement>('.is-billing-code-cell--held');
+      const r = slot?.getBoundingClientRect();
+      if (!r || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { finish(); return; }
+      update({ ...d, drop: { left: r.left, top: r.top } });
+      timer = window.setTimeout(finish, DROP_MS);
+    };
+    const cursor = document.body.style.cursor;
+    document.body.style.cursor = 'grabbing';
     window.addEventListener('pointermove', move);
     window.addEventListener('pointerup', up);
     window.addEventListener('pointercancel', up);
     return () => {
+      document.body.style.cursor = cursor;
+      window.clearTimeout(timer);
       window.removeEventListener('pointermove', move);
       window.removeEventListener('pointerup', up);
       window.removeEventListener('pointercancel', up);
@@ -323,36 +359,54 @@ export const RtnBilling = ({ device = 'web', emCode, codes, onCodesChange, onAdd
     onCodesChange?.(next);
   };
 
+  // The held code, floating above the whole page
+  const floating =
+    drag && typeof document !== 'undefined'
+      ? createPortal(
+          <div className="is-billing-code-layer" data-theme={drag.theme}>
+            <BillingCode
+              device={device}
+              code={codes[drag.from]}
+              className={drag.drop ? 'is-billing-code--dropping' : 'is-billing-code--held'}
+              style={{
+                left: drag.drop ? drag.drop.left : drag.x - drag.dx,
+                top: drag.drop ? drag.drop.top : drag.y - drag.dy,
+                transformOrigin: `${drag.dx}px ${drag.dy}px`,
+              }}
+            />
+          </div>,
+          document.body,
+        )
+      : null;
+
   return (
     <div className="is-rtn-stack">
       <RtnLabel device={device} size={small(device) ? 'medium' : 'big'} tone="accent">{emCode}</RtnLabel>
       <div className={cx('is-rtn-codes', dragging && 'is-rtn-codes--dragging')} ref={wrapRef}>
         {order.map((i, slot) => {
-          const isDragged = drag?.from === i;
-          const lifted = isDragged || preview === i;
-          const chip = (
-            <BillingCode
-              device={device}
-              code={codes[i]}
-              lifted={lifted}
-              onRemove={() => onCodesChange?.(codes.filter((_, k) => k !== i))}
-              onDragStart={start(i)}
-              onMove={moveBy(i)}
-              style={isDragged && drag ? { position: 'fixed', left: drag.x - drag.dx, top: drag.y - drag.dy, zIndex: 1000 } : undefined}
-            />
-          );
+          const held = drag?.from === i;
+          const lifted = preview === i;
           return (
             <span
               key={`${codes[i]}-${i}`}
-              className={cx('is-billing-code-cell', lifted && 'is-billing-code-cell--empty')}
+              className={cx('is-billing-code-cell', (held || lifted) && 'is-billing-code-cell--empty', held && 'is-billing-code-cell--held')}
               data-code-slot={slot}
             >
-              {lifted && (
+              {held || lifted ? (
                 <span className="is-billing-code-cell__sizer" aria-hidden="true" inert>
                   <BillingCode device={device} code={codes[i]} />
                 </span>
+              ) : null}
+              {!held && (
+                <BillingCode
+                  device={device}
+                  code={codes[i]}
+                  lifted={lifted}
+                  onRemove={() => onCodesChange?.(codes.filter((_, k) => k !== i))}
+                  onDragStart={start(i)}
+                  onMove={moveBy(i)}
+                />
               )}
-              {chip}
             </span>
           );
         })}
@@ -360,6 +414,7 @@ export const RtnBilling = ({ device = 'web', emCode, codes, onCodesChange, onAdd
           Add Code
         </Button>
       </div>
+      {floating}
     </div>
   );
 };
