@@ -106,13 +106,17 @@ export const AllStates: Story = {
         <span style={caption}>Open - error</span>
         <MicSettingsPanel error onClose={() => {}} />
       </div>
-      <div style={{ display: 'grid', gap: 8, paddingTop: 130 }}>
+      <div style={{ display: 'grid', gap: 8 }}>
         <span style={caption}>Selection Active</span>
-        <MicSettingsPanel defaultMenuOpen onClose={() => {}} />
+        <div style={{ paddingTop: 116 }}>
+          <MicSettingsPanel defaultMenuOpen onClose={() => {}} />
+        </div>
       </div>
-      <div style={{ display: 'grid', gap: 8, paddingTop: 130 }}>
+      <div style={{ display: 'grid', gap: 8 }}>
         <span style={caption}>Selection Error</span>
-        <MicSettingsPanel error defaultMenuOpen onClose={() => {}} />
+        <div style={{ paddingTop: 116 }}>
+          <MicSettingsPanel error defaultMenuOpen onClose={() => {}} />
+        </div>
       </div>
       <div style={{ display: 'grid', gap: 8, gridColumn: '1 / -1' }}>
         <span style={caption}>Input level</span>
