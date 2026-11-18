@@ -233,17 +233,19 @@ const DemographicsTip = ({ onClose }: { onClose: () => void }) => {
   useLayoutEffect(() => {
     const note = ref.current?.parentElement;
     if (!note) return;
+    // The demographics text itself (name + sex/DOB/age), so the tip follows it as the fields fill in
+    const target = () => note.querySelector('.is-rtn-patient__info') ?? note.querySelector('.is-rtn-patient');
     const measure = () => {
-      const patient = note.querySelector('.is-rtn-patient');
+      const patient = target();
       if (!patient) return;
       const n = note.getBoundingClientRect();
       const r = patient.getBoundingClientRect();
-      setPos({ left: r.right - n.left + 20, top: r.top - n.top + r.height / 2 });
+      setPos({ left: r.right - n.left + 14, top: r.top - n.top + r.height / 2 });
     };
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(note);
-    const patient = note.querySelector('.is-rtn-patient');
+    const patient = target();
     if (patient) ro.observe(patient);
     return () => ro.disconnect();
   }, []);
