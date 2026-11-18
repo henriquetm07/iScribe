@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Icon } from '../../icons/Icon';
 import type { IconName } from '../../icons/icons';
-import { IconButton } from '../../components/IconButton/IconButton';
+import { MicSettings } from '../../components/MicSettings/MicSettings';
 import { formatRTNDate, RTNHeader, type RTNPatient } from '../../components/RTNHeader/RTNHeader';
 import { RtnDiagnosis, RtnItem, RtnItemContent, RtnOrder, RtnText, rtnTabs } from '../../components/RTNItems/RTNItems';
 import { DrawerSample, drawerSampleKinds, type DrawerSampleKind } from '../../components/Drawer/DrawerSample';
@@ -26,7 +26,7 @@ import './WebApp.css';
  * Pages / Web App — Figma "Web App V2" › Note Section (5094:35817).
  * Web Nav Bar on top; the Schedule Side Bar on the left (420px, or 180px collapsed); the Note Section on the right:
  * RTN Header (Web), then the note board with the RTN note (Chart Prep · Previous Note · Current Note) and the
- * microphone settings button in the bottom-left corner. Every part is the Storybook component, behaviour included.
+ * Mic Settings in the bottom-left corner (the mic opens the Microphone Settings card above it). Every part is the Storybook component, behaviour included.
  * The + on Macros, Diagnoses or Orders opens that Drawer from the right, over everything; what is picked there
  * shows up in the note (× removes it, here or in the drawer).
  * A new note shows the "Say it, don't type it" tooltip next to the demographics until it is closed or a recording starts.
@@ -258,6 +258,22 @@ const DemographicsTip = ({ onClose }: { onClose: () => void }) => {
   );
 };
 
+/** Mic Settings with an input level that moves like a voice while the card is open (sample data) */
+const WebAppMicSettings = () => {
+  const [open, setOpen] = useState(false);
+  const [level, setLevel] = useState(1 / 3);
+  useEffect(() => {
+    if (!open) return;
+    let t = 0;
+    const id = window.setInterval(() => {
+      t += 1;
+      setLevel(Math.max(0.04, 0.3 + 0.22 * Math.sin(t / 2.3) + 0.14 * Math.sin(t * 1.7) + (Math.random() - 0.5) * 0.12));
+    }, 90);
+    return () => window.clearInterval(id);
+  }, [open]);
+  return <MicSettings placement="top" open={open} onOpenChange={setOpen} level={level} />;
+};
+
 export interface WebAppProps {
   /** Start with the Schedule Side Bar collapsed (180px) */
   defaultCollapsed?: boolean;
@@ -367,7 +383,9 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
               onActivity={newNote ? () => start(newNote.id) : undefined}
             />
           </div>
-          <IconButton className="is-webapp__mic" variant="secondary" size="regular" icon={<Icon name="mic" />} label="Microphone settings" />
+          <div className="is-webapp__mic">
+            <WebAppMicSettings />
+          </div>
         </section>
       </div>
     </div>
