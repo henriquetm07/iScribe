@@ -277,7 +277,7 @@
 
 /*
  * Copy from Previous Note Item — Figma 831:10473 (the "Add from Previous Note" checklist).
- * iPhone 32px rows, corners 8 · Web rows sized by the 30px + · iPad 50px rows, corners 10. 15px (iPad 17px) names.
+ * iPhone 32px rows, corners 8 · Web 40px rows · iPad 50px rows, corners 10 — the same height added or not. 15px (iPad 17px) names.
  * Added (Figma "Value"): Status / Background / Positive (green), dark text, a check instead of the +.
  */
 .is-drawer-check {
@@ -299,8 +299,9 @@
   cursor: pointer;
   transition: background-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
 }
+/* Web: 40px rows (the 30px + and 5px padding), added or not */
 .is-drawer-check--web {
-  min-height: 0;
+  min-height: 40px;
 }
 .is-drawer-check--ipad {
   height: 50px;
