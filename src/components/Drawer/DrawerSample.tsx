@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { IconName } from '../../icons/icons';
 import { Drawer, type DrawerProps } from './Drawer';
 import { DrawerDiagnosesListItem, DrawerList, DrawerListTitle, DrawerMacroListItem, DrawerNoResults } from './DrawerList';
@@ -7,6 +7,10 @@ import { DrawerDiagnosesListItem, DrawerList, DrawerListTitle, DrawerMacroListIt
  * Working samples of the Drawer for each kind of content in Figma: "Drawer - Macros" (918:11601),
  * "Drawer - Diagnoses" (947:1517) and "Drawer - Orders" (3134:36940).
  */
+
+/** Wipe timings (match Drawer.css) */
+const WIPE_OUT_MS = 220;
+const WIPE_IN_MS = 300;
 
 export type DrawerSampleKind = 'macros' | 'diagnoses' | 'orders';
 
@@ -81,7 +85,7 @@ export interface DrawerSampleProps extends Omit<DrawerProps, 'children' | 'searc
 
 /**
  * A working Drawer for Macros, Diagnoses or Orders: search filters the list ("Search Results"), + adds an item (it
- * moves up to "Added …"), × removes it, and a search with no match shows "No results". No filter button.
+ * wipes out of its place and wipes in on top of "Added …"), × removes it, and a search with no match shows "No results". No filter button.
  */
 export const DrawerSample = ({
   kind = 'macros',
@@ -100,7 +104,32 @@ export const DrawerSample = ({
   const list = items ?? k.items;
   const [query, setQuery] = useState(defaultQuery);
   const [added, setAdded] = useState<string[]>(defaultAdded ?? k.added);
-  const toggle = (id: string) => setAdded((a) => (a.includes(id) ? a.filter((x) => x !== id) : [...a, id]));
+  // Adding plays a wipe: the item wipes out of its place, then wipes in on top as Added
+  const [leaving, setLeaving] = useState<string | null>(null);
+  const [entering, setEntering] = useState<string | null>(null);
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  useEffect(() => () => timers.current.forEach(clearTimeout), []);
+  const later = (fn: () => void, ms: number) => timers.current.push(setTimeout(fn, ms));
+  const toggle = (id: string) => {
+    if (added.includes(id)) {
+      setAdded((a) => a.filter((x) => x !== id));
+      return;
+    }
+    if (leaving) return;
+    const reduced = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) {
+      setAdded((a) => [id, ...a]);
+      return;
+    }
+    setLeaving(id);
+    later(() => {
+      setLeaving(null);
+      setAdded((a) => [id, ...a]);
+      setEntering(id);
+      later(() => setEntering((e) => (e === id ? null : e)), WIPE_IN_MS);
+    }, WIPE_OUT_MS);
+  };
+  const motionOf = (id: string) => (leaving === id ? 'wipe-out' : entering === id ? 'wipe-in' : undefined);
   const q = query.trim().toLowerCase();
 
   const item = (it: SampleDrawerItem) =>
@@ -113,9 +142,18 @@ export const DrawerSample = ({
         source={it.source}
         added={added.includes(it.id)}
         onToggle={() => toggle(it.id)}
+        motion={motionOf(it.id)}
       />
     ) : (
-      <DrawerDiagnosesListItem key={it.id} device={device} name={it.name} label={it.label} added={added.includes(it.id)} onToggle={() => toggle(it.id)} />
+      <DrawerDiagnosesListItem
+        key={it.id}
+        device={device}
+        name={it.name}
+        label={it.label}
+        added={added.includes(it.id)}
+        onToggle={() => toggle(it.id)}
+        motion={motionOf(it.id)}
+      />
     );
 
   let content: ReactNode;

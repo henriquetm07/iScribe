@@ -21,6 +21,12 @@ export const DrawerListTitle = ({ device = 'iphone', children }: { device?: Draw
   <p className={`is-drawer-list__title is-drawer-list__title--${device}`}>{children}</p>
 );
 
+/** The wipe played when an item gets added: out of its place (bottom to top), then in as Added (bottom to top) */
+export type DrawerItemMotion = 'wipe-out' | 'wipe-in';
+
+const itemClass = (device: DrawerDevice, added: boolean, motion?: DrawerItemMotion) =>
+  ['is-drawer-item', `is-drawer-item--${device}`, added && 'is-drawer-item--added', motion && `is-drawer-item--${motion}`].filter(Boolean).join(' ');
+
 export interface DrawerMacroListItemProps {
   device?: DrawerDevice;
   /** The macro's name */
@@ -33,15 +39,17 @@ export interface DrawerMacroListItemProps {
   added?: boolean;
   /** Called with the tap: adds it, or removes it when added */
   onToggle?: () => void;
+  /** Wipe animation to play (see DrawerSample) */
+  motion?: DrawerItemMotion;
 }
 
 /** Figma "Drawer Macro List Item": Default (outlined, +) or Added (dark, ×) */
-export const DrawerMacroListItem = ({ device = 'iphone', name, section, source, added = false, onToggle }: DrawerMacroListItemProps) => {
+export const DrawerMacroListItem = ({ device = 'iphone', name, section, source, added = false, onToggle, motion }: DrawerMacroListItemProps) => {
   const big = device === 'ipad';
   return (
     <button
       type="button"
-      className={['is-drawer-item', `is-drawer-item--${device}`, added && 'is-drawer-item--added'].filter(Boolean).join(' ')}
+      className={itemClass(device, added, motion)}
       aria-pressed={added}
       aria-label={`${added ? 'Remove' : 'Add'} ${name}`}
       onClick={onToggle}
@@ -76,17 +84,19 @@ export interface DrawerDiagnosesListItemProps {
   added?: boolean;
   /** Called with the tap: adds it, or removes it when added */
   onToggle?: () => void;
+  /** Wipe animation to play (see DrawerSample) */
+  motion?: DrawerItemMotion;
 }
 
 /** Figma "Drawer Diagnoses List Item" (Diagnoses and Orders): name and label, Default (+) or Added (dark, ×) */
-export const DrawerDiagnosesListItem = ({ device = 'iphone', name, label, added = false, onToggle }: DrawerDiagnosesListItemProps) => {
+export const DrawerDiagnosesListItem = ({ device = 'iphone', name, label, added = false, onToggle, motion }: DrawerDiagnosesListItemProps) => {
   const big = device === 'ipad';
   const ref = useRef<HTMLSpanElement>(null);
   const around = useThemeAround(ref);
   return (
     <button
       type="button"
-      className={['is-drawer-item', `is-drawer-item--${device}`, added && 'is-drawer-item--added'].filter(Boolean).join(' ')}
+      className={itemClass(device, added, motion)}
       aria-pressed={added}
       aria-label={`${added ? 'Remove' : 'Add'} ${name} (${label})`}
       onClick={onToggle}

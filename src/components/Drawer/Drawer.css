@@ -191,6 +191,40 @@
   box-sizing: border-box;
 }
 
+/*
+ * Adding an item: it wipes out of its place from bottom to top, then wipes in (also bottom to top) as Added,
+ * on top of the list
+ */
+.is-drawer-item--wipe-out {
+  pointer-events: none;
+  animation: is-drawer-wipe-out 220ms cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+.is-drawer-item--wipe-in {
+  animation: is-drawer-wipe-in 300ms cubic-bezier(0, 0, 0.2, 1) both;
+}
+@keyframes is-drawer-wipe-out {
+  from {
+    clip-path: inset(0 0 0 0 round var(--is-round-xl, 16px));
+  }
+  to {
+    clip-path: inset(0 0 100% 0 round var(--is-round-xl, 16px));
+  }
+}
+@keyframes is-drawer-wipe-in {
+  from {
+    clip-path: inset(100% 0 0 0 round var(--is-round-xl, 16px));
+  }
+  to {
+    clip-path: inset(0 0 0 0 round var(--is-round-xl, 16px));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-drawer-item--wipe-out,
+  .is-drawer-item--wipe-in {
+    animation: none;
+  }
+}
+
 /* No results */
 .is-drawer-empty {
   box-sizing: border-box;

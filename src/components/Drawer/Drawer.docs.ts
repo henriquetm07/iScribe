@@ -28,6 +28,8 @@ export const drawerSpecLines = ({ device = 'iphone' }: { device?: DrawerDevice }
     '                    order type · Added keeps the label, in its dark version',
     `    No results      50px icon · Figtree Medium ${ipad ? 15 : 13}px, 70px above and below`,
     '',
+    '  Adding an item: it wipes out of its place from bottom to top (220ms), then wipes in on top of',
+    '  "Added …" as the dark Added item, also bottom to top (300ms).',
     '  Closes with ×, a tap on the dimmed page or Escape.',
   ];
 };
