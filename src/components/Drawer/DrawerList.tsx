@@ -21,7 +21,7 @@ export const DrawerListTitle = ({ device = 'iphone', children }: { device?: Draw
   <p className={`is-drawer-list__title is-drawer-list__title--${device}`}>{children}</p>
 );
 
-/** The wipe played when an item gets added: out of its place (bottom to top), then in as Added (bottom to top) */
+/** The wipe played when an item gets added: out of its place (bottom to top), then in as Added (top to bottom) */
 export type DrawerItemMotion = 'wipe-out' | 'wipe-in';
 
 const itemClass = (device: DrawerDevice, added: boolean, motion?: DrawerItemMotion) =>

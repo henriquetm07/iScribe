@@ -192,7 +192,7 @@
 }
 
 /*
- * Adding an item: it wipes out of its place from bottom to top, then wipes in (also bottom to top) as Added,
+ * Adding an item: it wipes out of its place from bottom to top, then wipes in from top to bottom as Added,
  * on top of the list
  */
 .is-drawer-item--wipe-out {
@@ -212,7 +212,7 @@
 }
 @keyframes is-drawer-wipe-in {
   from {
-    clip-path: inset(100% 0 0 0 round var(--is-round-xl, 16px));
+    clip-path: inset(0 0 100% 0 round var(--is-round-xl, 16px));
   }
   to {
     clip-path: inset(0 0 0 0 round var(--is-round-xl, 16px));
