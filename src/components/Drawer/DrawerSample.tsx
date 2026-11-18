@@ -65,7 +65,7 @@ export const drawerSampleKinds: Record<
 > = {
   macros: { label: 'Macros', title: 'Add Macros', icon: 'macros', placeholder: 'Search Macros...', noun: 'Macros', items: sampleMacros, filter: false, added: ['m1'] },
   diagnoses: { label: 'Diagnoses', title: 'Add Diagnoses', icon: 'diagnosis', placeholder: 'Search Diagnoses...', noun: 'Diagnoses', items: sampleDiagnoses, filter: false, added: ['d1'] },
-  orders: { label: 'Orders', title: 'Add Orders', icon: 'order', placeholder: 'Search Orders...', noun: 'Orders', items: sampleOrders, filter: true, added: ['o1'] },
+  orders: { label: 'Orders', title: 'Add Orders', icon: 'order', placeholder: 'Search Orders...', noun: 'Orders', items: sampleOrders, filter: false, added: ['o1'] },
 };
 
 export interface DrawerSampleProps extends Omit<DrawerProps, 'children' | 'searchValue' | 'onSearchChange'> {
@@ -81,7 +81,7 @@ export interface DrawerSampleProps extends Omit<DrawerProps, 'children' | 'searc
 
 /**
  * A working Drawer for Macros, Diagnoses or Orders: search filters the list ("Search Results"), + adds an item (it
- * moves up to "Added …"), × removes it, and a search with no match shows "No results". Orders keep the filter button.
+ * moves up to "Added …"), × removes it, and a search with no match shows "No results". No filter button.
  */
 export const DrawerSample = ({
   kind = 'macros',

@@ -16,7 +16,7 @@ export const drawerSpecLines = ({ device = 'iphone' }: { device?: DrawerDevice }
       ? '  Drawer      sheet from the bottom, full width, 634–660px tall, top corners 30px'
       : '  Drawer      panel from the right, full height, up to 500px wide',
     '              elevated background, shadow 0 0 20px basic shadow · slides in/out in 320ms',
-    `  Header      Drawer Header (${name[device]}): title, ×, search (with × to clear); filter button for Orders only`,
+    `  Header      Drawer Header (${name[device]}): title, ×, search (with × to clear); no filter button`,
     '  Main area   the content, under the header; scrolls when taller than the drawer',
     '',
     '  Content (Figma "List items"): 20px padding, 10px apart',

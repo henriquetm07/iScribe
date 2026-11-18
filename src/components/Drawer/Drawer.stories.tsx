@@ -72,7 +72,7 @@ const meta = {
     icon: { control: 'select', options: ['macros', 'diagnosis', 'order'], description: 'Icon before the title (default: the content’s)' },
     title: { control: 'text', description: 'Title (default: “Add Macros”, “Add Diagnoses” or “Add Orders”)' },
     searchPlaceholder: { control: 'text' },
-    filter: { control: 'boolean', description: 'Filter button next to the search field (default: only for Orders)' },
+    filter: { control: 'boolean', description: 'Filter button next to the search field (default: off)' },
     filterCount: { control: { type: 'number', min: 0, max: 999 } },
     open: { description: 'Shown or hidden. It slides in and out.' },
     children: { table: { disable: true } },
