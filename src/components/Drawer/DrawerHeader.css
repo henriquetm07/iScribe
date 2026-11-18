@@ -1,0 +1,186 @@
+/*
+ * Drawer Header — Figma "Drawer - Header" (915:13996). Colors are the --is- variables, so light and dark
+ * mode follow data-theme. Titles use Season Mix (licensed; Figtree where it isn't installed).
+ */
+
+/* ---------- Drawer Header Title ---------- */
+.is-drawer-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  font-family: var(--is-font-ui);
+}
+.is-drawer-title__icon {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: var(--is-foreground-high-contrast-primary-foreground);
+}
+.is-drawer-title--ipad .is-drawer-title__icon {
+  width: 30px;
+  height: 30px;
+}
+.is-drawer-title__text {
+  display: flex;
+  flex: 1 0 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  min-width: 0;
+}
+.is-drawer-title--iphone .is-drawer-title__text {
+  gap: 5px;
+  padding-right: 30px; /* room for the × */
+}
+.is-drawer-title__name {
+  margin: 0;
+  font-family: 'Season Mix', var(--is-font-ui);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: normal;
+  white-space: nowrap;
+  color: var(--is-foreground-high-contrast-primary-foreground);
+}
+.is-drawer-title--ipad .is-drawer-title__name {
+  font-size: 24px;
+}
+.is-drawer-title__description {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: normal;
+  color: var(--is-foreground-medium-contrast-primary-foreground);
+}
+.is-drawer-title--web .is-drawer-title__description {
+  font-size: 13px;
+}
+
+/* ---------- Drawer Header ---------- */
+.is-drawer-header {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  min-height: 60px;
+  padding: 20px;
+  background: var(--is-surface-super-soft-contrast-background);
+  font-family: var(--is-font-ui);
+}
+.is-drawer-header--ipad,
+.is-drawer-header--web {
+  min-height: 80px;
+}
+.is-drawer-header__close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--is-foreground-high-contrast-primary-foreground);
+  cursor: pointer;
+}
+.is-drawer-header__close:where(:not([class*='--iphone'], [class*='--ipad'], [class*='--iphone'] *, [class*='--ipad'] *)):hover {
+  color: var(--is-foreground-medium-contrast-primary-foreground);
+}
+.is-drawer-header__close:focus-visible {
+  outline: 2px solid var(--is-status-foreground-positive-pw);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Search row: the field, then the filter Icon Button */
+.is-drawer-header__search {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+}
+.is-drawer-search {
+  box-sizing: border-box;
+  display: flex;
+  flex: 1 0 0;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--is-surface-soft-contrast-background);
+  border-radius: var(--is-round-l, 12px);
+  background: var(--is-surface-super-soft-contrast-background);
+  color: var(--is-foreground-medium-contrast-primary-foreground);
+  cursor: text;
+}
+.is-drawer-header--ipad .is-drawer-search {
+  height: 60px;
+  border-radius: var(--is-round-xl, 16px);
+}
+.is-drawer-search svg {
+  flex: none;
+}
+.is-drawer-search input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: none;
+  font: 500 14px var(--is-font-ui);
+  color: var(--is-foreground-high-contrast-primary-foreground);
+}
+.is-drawer-header--ipad .is-drawer-search input {
+  font-size: 15px;
+}
+.is-drawer-search input::placeholder {
+  color: var(--is-foreground-medium-contrast-primary-foreground);
+  opacity: 1;
+}
+.is-drawer-search input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+.is-drawer-search:focus-within {
+  border-color: var(--is-surface-medium-contrast-background);
+}
+
+/* Filter button with the blue count badge (Figma "Notification") on its top-right corner */
+.is-drawer-header__filter {
+  position: relative;
+  display: flex;
+  flex: none;
+}
+.is-drawer-header__badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  min-width: 20px;
+  padding: 0 2px;
+  border-radius: 1000px;
+  background: var(--is-status-foreground-positive-pw);
+  color: var(--is-foreground-high-contrast-secondary-foreground-2);
+  font-family: 'Relative Mono Pro 10 Pitch', 'Relative Mono 10 Pitch', ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 12px;
+  line-height: 18px;
+  pointer-events: none;
+}
+.is-drawer-header--iphone .is-drawer-header__badge {
+  right: -10px;
+  height: 16px;
+  min-width: 16px;
+  padding: 0 1px;
+  font-size: 9px;
+}

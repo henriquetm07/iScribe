@@ -55,6 +55,7 @@ export { IconButton, type IconButtonProps } from './components/IconButton/IconBu
 export { SelectionList, type SelectionListProps, type SelectionListOption } from './components/SelectionList/SelectionList';
 export { SelectionListItem, type SelectionListItemProps, type SelectionListDevice } from './components/SelectionList/SelectionListItem';
 export { Dropdown, DropdownField, type DropdownProps, type DropdownFieldProps, type DropdownDevice } from './components/Dropdown/Dropdown';
+export { DrawerHeader, DrawerHeaderTitle, type DrawerHeaderProps, type DrawerHeaderTitleProps, type DrawerDevice } from './components/Drawer/DrawerHeader';
 export { Tabs, TabItem, type TabsProps, type TabItemProps, type TabsOption, type TabsDevice } from './components/Tabs/Tabs';
 export { WebNavBar, type WebNavBarProps, type WebNavBarItem, type WebNavBarAvatar, type WebNavBarMenuMode } from './components/WebNavBar/WebNavBar';
 export { BottomTab, type BottomTabProps, type BottomTabContent } from './components/BottomTab/BottomTab';
