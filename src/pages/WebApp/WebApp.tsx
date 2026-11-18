@@ -3,8 +3,8 @@ import { Icon } from '../../icons/Icon';
 import type { IconName } from '../../icons/icons';
 import { IconButton } from '../../components/IconButton/IconButton';
 import { formatRTNDate, RTNHeader, type RTNPatient } from '../../components/RTNHeader/RTNHeader';
-import { rtnTabs, type RtnTopic } from '../../components/RTNItems/RTNItems';
-import { RtnSample } from '../../components/RTNItems/RtnSample';
+import { RtnDiagnosis, RtnItem, RtnItemContent, RtnOrder, RtnText, rtnTabs } from '../../components/RTNItems/RTNItems';
+import { DrawerSample, drawerSampleKinds, type DrawerSampleKind } from '../../components/Drawer/DrawerSample';
 import {
   CheckCounter,
   DateAndProvider,
@@ -26,6 +26,8 @@ import './WebApp.css';
  * Web Nav Bar on top; the Schedule Side Bar on the left (420px, or 180px collapsed); the Note Section on the right:
  * RTN Header (Web), then the note board with the RTN note (Chart Prep · Previous Note · Current Note) and the
  * microphone settings button in the bottom-left corner. Every part is the Storybook component, behaviour included.
+ * The + on Macros, Diagnoses or Orders opens that Drawer from the right, over everything; what is picked there
+ * shows up in the note (× removes it, here or in the drawer).
  */
 
 export const webAppNavItems: WebNavBarItem[] = [
@@ -43,8 +45,12 @@ const practices = ['Midlands Orthopaedics', 'Midlands Orthopaedics Surgery Cente
   (label) => ({ value: label.toLowerCase().replace(/[^a-z0-9]+/g, '-'), label }),
 );
 
-/** Topics shown on today's note, as in the Figma page */
-const TODAY_TOPICS: RtnTopic[] = ['macros', 'diagnoses', 'orders'];
+/** Topics shown on today's note, as in the Figma page. Their + opens the matching Drawer. */
+const TODAY_TOPICS: DrawerSampleKind[] = ['macros', 'diagnoses', 'orders'];
+
+/** What was picked in each Drawer (ids, newest first) */
+type Picks = Record<DrawerSampleKind, string[]>;
+const NO_PICKS: Picks = { macros: [], diagnoses: [], orders: [] };
 
 const toPatient = (a: ScheduleSideBarAppointment): RTNPatient => {
   const [firstName, ...rest] = a.name.split(' ');
@@ -90,8 +96,42 @@ const newNoteCard = (n: NewNote): ScheduleSideBarAppointment => {
 /** The note for one visit: tabs, then today's note, the previous note or chart prep. One Tabs, so the selector slides. */
 const VisitNote = ({ sections, onActivity }: { sections: PreviousNoteSection[]; onActivity?: () => void }) => {
   const [tab, setTab] = useState('current-note');
-  const [filled, setFilled] = useState<RtnTopic[]>([]);
   const [added, setAdded] = useState<string[]>([]);
+  // + on Macros, Diagnoses or Orders opens that Drawer from the right, over the whole app
+  const [picks, setPicks] = useState<Picks>(NO_PICKS);
+  const [drawer, setDrawer] = useState<DrawerSampleKind>('macros');
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [activeProblems, setActiveProblems] = useState<string[]>([]);
+  const setPicked = (kind: DrawerSampleKind, ids: string[]) => {
+    setPicks((p) => ({ ...p, [kind]: ids }));
+    onActivity?.();
+  };
+  const openDrawer = (kind: DrawerSampleKind) => {
+    setDrawer(kind);
+    setDrawerOpen(true);
+  };
+  /** The note entry for a picked item */
+  const entry = (kind: DrawerSampleKind, id: string) => {
+    const it = drawerSampleKinds[kind].items.find((x) => x.id === id);
+    if (!it) return null;
+    return (
+      <RtnItemContent key={id} device="web" onRemove={() => setPicked(kind, picks[kind].filter((x) => x !== id))}>
+        {kind === 'macros' ? (
+          <RtnText device="web">{it.name}</RtnText>
+        ) : kind === 'diagnoses' ? (
+          <RtnDiagnosis
+            device="web"
+            name={it.name}
+            code={it.label}
+            active={activeProblems.includes(id)}
+            onActiveChange={(on) => setActiveProblems((a) => (on ? [...a, id] : a.filter((x) => x !== id)))}
+          />
+        ) : (
+          <RtnOrder device="web" name={it.name} />
+        )}
+      </RtnItemContent>
+    );
+  };
   const allIds = sections.flatMap((s) => s.entries.map((e) => e.id));
   const toggle = (id: string) => {
     setAdded((a) => (a.includes(id) ? a.filter((x) => x !== id) : [...a, id]));
@@ -153,16 +193,9 @@ const VisitNote = ({ sections, onActivity }: { sections: PreviousNoteSection[]; 
           {pulled.length > 0 && <PreviousNoteSummary device="web" sections={pulled} />}
           <div className="is-rtn-frame__list">
             {TODAY_TOPICS.map((t) => (
-              <RtnSample
-                key={`${t}-${filled.includes(t)}`}
-                device="web"
-                topic={t}
-                state={filled.includes(t) ? 'filled' : 'empty'}
-                onAdd={() => {
-                  setFilled((f) => (f.includes(t) ? f : [...f, t]));
-                  onActivity?.();
-                }}
-              />
+              <RtnItem key={t} device="web" topic={t} onAdd={() => openDrawer(t)}>
+                {picks[t].map((id) => entry(t, id))}
+              </RtnItem>
             ))}
           </div>
           <div className="is-rtn-frame__bottom">
@@ -175,6 +208,15 @@ const VisitNote = ({ sections, onActivity }: { sections: PreviousNoteSection[]; 
           <p className="is-pn-empty__body">Nothing to prepare for this visit yet.</p>
         </div>
       )}
+      <DrawerSample
+        key={drawer}
+        kind={drawer}
+        device="web"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        added={picks[drawer]}
+        onAddedChange={(ids) => setPicked(drawer, ids)}
+      />
     </div>
   );
 };

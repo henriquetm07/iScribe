@@ -78,6 +78,10 @@ export interface DrawerSampleProps extends Omit<DrawerProps, 'children' | 'searc
   defaultQuery?: string;
   /** Items already added (ids) */
   defaultAdded?: string[];
+  /** Added items (ids), controlled — e.g. kept by the page that opens the drawer. Newest first. */
+  added?: string[];
+  /** Called with the new list of added ids whenever an item is added or removed */
+  onAddedChange?: (ids: string[]) => void;
   /** Replace the sample items */
   items?: SampleDrawerItem[];
 }
@@ -91,6 +95,8 @@ export const DrawerSample = ({
   device = 'iphone',
   defaultQuery = '',
   defaultAdded,
+  added: addedProp,
+  onAddedChange,
   items,
   title,
   icon,
@@ -102,7 +108,17 @@ export const DrawerSample = ({
   const k = drawerSampleKinds[kind];
   const list = items ?? k.items;
   const [query, setQuery] = useState(defaultQuery);
-  const [added, setAdded] = useState<string[]>(defaultAdded ?? k.added);
+  const [ownAdded, setOwnAdded] = useState<string[]>(defaultAdded ?? k.added);
+  const added = addedProp ?? ownAdded;
+  const setAdded = (next: string[]) => {
+    if (addedProp === undefined) setOwnAdded(next);
+    onAddedChange?.(next);
+  };
+  // Each time it opens, the search starts empty again
+  useEffect(() => {
+    if (props.open) setQuery(defaultQuery);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.open]);
   // Adding plays both wipes at once, same length: the item wipes out of its place (bottom to top) while its
   // Added version wipes in on top (top to bottom); the list closes and opens around them.
   // Removing plays the reverse: the Added version wipes out while the item wipes back in at its place.
@@ -112,7 +128,7 @@ export const DrawerSample = ({
   const toggle = (id: string) => {
     const index = added.indexOf(id);
     const dir = index >= 0 ? 'remove' : 'add';
-    setAdded((a) => (dir === 'remove' ? a.filter((x) => x !== id) : [id, ...a]));
+    setAdded(dir === 'remove' ? added.filter((x) => x !== id) : [id, ...added]);
     const reduced = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
     if (reduced) return;
     clearTimeout(timer.current);

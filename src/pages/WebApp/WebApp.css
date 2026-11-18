@@ -69,6 +69,8 @@
 
 /* On the docs page the app sits in a 760px box instead of filling the window */
 .is-webapp-docs-frame {
+  /* Drawers (position: fixed) cover this frame, not the whole docs page */
+  transform: translateZ(0);
   height: 760px;
   overflow: hidden;
   border-radius: 12px;
