@@ -7,6 +7,8 @@ import { DrawerChecklistItem, DrawerList } from './DrawerList';
  * Working sample of Figma "Drawer - Add from Previous Note (Checklist)" (915:12884): the sections of the previous
  * note, each with a + to pull it forward into the current note. Added rows turn green with a check, and the
  * header's green badge counts them. No search or filter.
+ * A section with entries under it (Diagnoses, Orders, Billing Services) works as "all of them": adding it adds every
+ * entry, removing it removes them; once every entry is added the section is too, and removing one entry un-adds it.
  */
 
 export interface PreviousNoteSection {
@@ -52,6 +54,19 @@ export interface PreviousNoteDrawerSampleProps
   sections?: PreviousNoteSection[];
 }
 
+/** The entries under each section: the icon-less rows that follow it */
+const entriesBySection = (sections: PreviousNoteSection[]) => {
+  const map = new Map<string, string[]>();
+  let current: string | null = null;
+  for (const s of sections) {
+    if (s.icon) {
+      current = s.id;
+      map.set(s.id, []);
+    } else if (current) map.get(current)!.push(s.id);
+  }
+  return map;
+};
+
 /** A working "Add from Previous Note" drawer: + adds a section (green, check), a tap on an added one removes it */
 export const PreviousNoteDrawerSample = ({
   defaultAdded = ['hpi', 'ros'],
@@ -66,8 +81,19 @@ export const PreviousNoteDrawerSample = ({
 }: PreviousNoteDrawerSampleProps) => {
   const [own, setOwn] = useState(defaultAdded);
   const added = addedProp ?? own;
+  const entries = entriesBySection(sections);
+  const parentOf = (id: string) => [...entries].find(([, kids]) => kids.includes(id))?.[0];
   const toggle = (id: string) => {
-    const next = added.includes(id) ? added.filter((x) => x !== id) : [...added, id];
+    const on = !added.includes(id);
+    const kids = entries.get(id) ?? [];
+    let next = on ? [...added, ...[id, ...kids].filter((x) => !added.includes(x))] : added.filter((x) => x !== id && !kids.includes(x));
+    // An entry: its section follows whether all of its entries are added
+    const parent = parentOf(id);
+    if (parent) {
+      const all = (entries.get(parent) ?? []).every((x) => next.includes(x));
+      if (all && !next.includes(parent)) next = [...next, parent];
+      if (!all) next = next.filter((x) => x !== parent);
+    }
     if (addedProp === undefined) setOwn(next);
     onAddedChange?.(next);
   };

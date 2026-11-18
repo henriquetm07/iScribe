@@ -25,6 +25,8 @@ export const drawerSpecLines = ({ device = 'iphone', content }: { device?: Drawe
       `              + secondary Icon Button ${ipad ? '40px' : device === 'web' ? '30px' : '20px (corners 6)'}`,
       '  Added       Status / Background / Positive (green), dark text, check instead of the +; the badge counts them',
       '              A tap on an added row removes it.',
+      '  Sections    adding a section with entries under it (Diagnoses, Orders, Billing) adds all of them; removing it',
+      '              removes them. When every entry is added the section is too; removing one entry un-adds the section.',
     ];
   return [
     `Drawer · ${name[device]}`,
