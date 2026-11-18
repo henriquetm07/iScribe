@@ -8,9 +8,8 @@ import { DrawerDiagnosesListItem, DrawerList, DrawerListTitle, DrawerMacroListIt
  * "Drawer - Diagnoses" (947:1517) and "Drawer - Orders" (3134:36940).
  */
 
-/** Wipe timings (match Drawer.css) */
-const WIPE_OUT_MS = 220;
-const WIPE_IN_MS = 300;
+/** Length of the add animation (matches --is-drawer-wipe-ms in Drawer.css) */
+const WIPE_MS = 240;
 
 export type DrawerSampleKind = 'macros' | 'diagnoses' | 'orders';
 
@@ -85,7 +84,7 @@ export interface DrawerSampleProps extends Omit<DrawerProps, 'children' | 'searc
 
 /**
  * A working Drawer for Macros, Diagnoses or Orders: search filters the list ("Search Results"), + adds an item (it
- * wipes out of its place and wipes in on top of "Added …"), × removes it, and a search with no match shows "No results". No filter button.
+ * wipes out of its place while it wipes in on top of "Added …"), × removes it, and a search with no match shows "No results". No filter button.
  */
 export const DrawerSample = ({
   kind = 'macros',
@@ -104,57 +103,53 @@ export const DrawerSample = ({
   const list = items ?? k.items;
   const [query, setQuery] = useState(defaultQuery);
   const [added, setAdded] = useState<string[]>(defaultAdded ?? k.added);
-  // Adding plays a wipe: the item wipes out of its place, then wipes in on top as Added
-  const [leaving, setLeaving] = useState<string | null>(null);
-  const [entering, setEntering] = useState<string | null>(null);
-  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
-  useEffect(() => () => timers.current.forEach(clearTimeout), []);
-  const later = (fn: () => void, ms: number) => timers.current.push(setTimeout(fn, ms));
+  // Adding plays both wipes at once, same length: the item wipes out of its place (bottom to top) while its
+  // Added version wipes in on top (top to bottom); the list closes and opens around them.
+  const [moving, setMoving] = useState<string | null>(null);
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useEffect(() => () => clearTimeout(timer.current), []);
   const toggle = (id: string) => {
     if (added.includes(id)) {
       setAdded((a) => a.filter((x) => x !== id));
       return;
     }
-    if (leaving) return;
+    setAdded((a) => [id, ...a]);
     const reduced = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    if (reduced) {
-      setAdded((a) => [id, ...a]);
-      return;
-    }
-    setLeaving(id);
-    later(() => {
-      setLeaving(null);
-      setAdded((a) => [id, ...a]);
-      setEntering(id);
-      later(() => setEntering((e) => (e === id ? null : e)), WIPE_IN_MS);
-    }, WIPE_OUT_MS);
+    if (reduced) return;
+    clearTimeout(timer.current);
+    setMoving(id);
+    timer.current = setTimeout(() => setMoving(null), WIPE_MS);
   };
-  const motionOf = (id: string) => (leaving === id ? 'wipe-out' : entering === id ? 'wipe-in' : undefined);
   const q = query.trim().toLowerCase();
 
-  const item = (it: SampleDrawerItem) =>
-    kind === 'macros' ? (
+  /** One item. `ghost`: the copy left in the old place while it wipes out (shown as not added). */
+  const item = (it: SampleDrawerItem, ghost = false) => {
+    const isAdded = !ghost && added.includes(it.id);
+    const motion = moving === it.id ? (ghost ? 'wipe-out' : 'wipe-in') : undefined;
+    const key = ghost ? `${it.id}-out` : it.id;
+    return kind === 'macros' ? (
       <DrawerMacroListItem
-        key={it.id}
+        key={key}
         device={device}
         name={it.name}
         section={it.label}
         source={it.source}
-        added={added.includes(it.id)}
+        added={isAdded}
         onToggle={() => toggle(it.id)}
-        motion={motionOf(it.id)}
+        motion={motion}
       />
     ) : (
       <DrawerDiagnosesListItem
-        key={it.id}
+        key={key}
         device={device}
         name={it.name}
         label={it.label}
-        added={added.includes(it.id)}
+        added={isAdded}
         onToggle={() => toggle(it.id)}
-        motion={motionOf(it.id)}
+        motion={motion}
       />
     );
+  };
 
   let content: ReactNode;
   if (q) {
@@ -162,7 +157,8 @@ export const DrawerSample = ({
     content = found.length ? (
       <DrawerList>
         <DrawerListTitle device={device}>Search Results</DrawerListTitle>
-        {found.map(item)}
+        {/* While moving, the Added version opens on top of the old one, which closes */}
+        {found.flatMap((it) => (it.id === moving ? [item(it), item(it, true)] : [item(it)]))}
       </DrawerList>
     ) : (
       <DrawerNoResults device={device} query={query.trim()} />
@@ -174,11 +170,11 @@ export const DrawerSample = ({
         {addedItems.length > 0 && (
           <>
             <DrawerListTitle device={device}>Added {k.noun}</DrawerListTitle>
-            {addedItems.map(item)}
+            {addedItems.map((it) => item(it))}
           </>
         )}
         <DrawerListTitle device={device}>All {k.noun}</DrawerListTitle>
-        {list.filter((it) => !added.includes(it.id)).map(item)}
+        {list.filter((it) => !added.includes(it.id) || it.id === moving).map((it) => item(it, it.id === moving))}
       </DrawerList>
     );
   }

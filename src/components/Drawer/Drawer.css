@@ -192,35 +192,50 @@
 }
 
 /*
- * Adding an item: it wipes out of its place from bottom to top, then wipes in from top to bottom as Added,
- * on top of the list
+ * Adding an item: both wipes play at once and last the same. The old place closes from bottom to top (wipe-out)
+ * while the Added version opens on top from top to bottom (wipe-in); the list moves with them.
  */
-.is-drawer-item--wipe-out {
+.is-drawer-item-slot {
+  --is-drawer-wipe-ms: 240ms;
+  display: grid;
+  grid-template-rows: 1fr;
+}
+.is-drawer-item-slot > .is-drawer-item {
+  min-height: 0;
+}
+.is-drawer-item-slot--wipe-out {
+  overflow: hidden;
   pointer-events: none;
-  animation: is-drawer-wipe-out 220ms cubic-bezier(0.4, 0, 1, 1) forwards;
+  animation: is-drawer-slot-out var(--is-drawer-wipe-ms) cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
-.is-drawer-item--wipe-in {
-  animation: is-drawer-wipe-in 300ms cubic-bezier(0, 0, 0.2, 1) both;
+.is-drawer-item-slot--wipe-in {
+  overflow: hidden;
+  animation: is-drawer-slot-in var(--is-drawer-wipe-ms) cubic-bezier(0.4, 0, 0.2, 1) both;
 }
-@keyframes is-drawer-wipe-out {
+/* The list's 10px gap closes and opens with the slot */
+@keyframes is-drawer-slot-out {
   from {
-    clip-path: inset(0 0 0 0 round var(--is-round-xl, 16px));
+    grid-template-rows: 1fr;
+    margin-bottom: 0;
   }
   to {
-    clip-path: inset(0 0 100% 0 round var(--is-round-xl, 16px));
+    grid-template-rows: 0fr;
+    margin-bottom: -10px;
   }
 }
-@keyframes is-drawer-wipe-in {
+@keyframes is-drawer-slot-in {
   from {
-    clip-path: inset(0 0 100% 0 round var(--is-round-xl, 16px));
+    grid-template-rows: 0fr;
+    margin-top: -10px;
   }
   to {
-    clip-path: inset(0 0 0 0 round var(--is-round-xl, 16px));
+    grid-template-rows: 1fr;
+    margin-top: 0;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .is-drawer-item--wipe-out,
-  .is-drawer-item--wipe-in {
+  .is-drawer-item-slot--wipe-out,
+  .is-drawer-item-slot--wipe-in {
     animation: none;
   }
 }

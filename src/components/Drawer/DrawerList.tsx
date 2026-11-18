@@ -21,11 +21,19 @@ export const DrawerListTitle = ({ device = 'iphone', children }: { device?: Draw
   <p className={`is-drawer-list__title is-drawer-list__title--${device}`}>{children}</p>
 );
 
-/** The wipe played when an item gets added: out of its place (bottom to top), then in as Added (top to bottom) */
+/**
+ * The wipes played together when an item gets added: the old place closes (wipe-out, bottom to top) while the Added
+ * version opens on top (wipe-in, top to bottom), both in the same time
+ */
 export type DrawerItemMotion = 'wipe-out' | 'wipe-in';
 
-const itemClass = (device: DrawerDevice, added: boolean, motion?: DrawerItemMotion) =>
-  ['is-drawer-item', `is-drawer-item--${device}`, added && 'is-drawer-item--added', motion && `is-drawer-item--${motion}`].filter(Boolean).join(' ');
+const itemClass = (device: DrawerDevice, added: boolean) =>
+  ['is-drawer-item', `is-drawer-item--${device}`, added && 'is-drawer-item--added'].filter(Boolean).join(' ');
+
+/** The item's slot in the list: it opens or closes for the wipes */
+const Slot = ({ motion, children }: { motion?: DrawerItemMotion; children: ReactNode }) => (
+  <div className={['is-drawer-item-slot', motion && `is-drawer-item-slot--${motion}`].filter(Boolean).join(' ')}>{children}</div>
+);
 
 export interface DrawerMacroListItemProps {
   device?: DrawerDevice;
@@ -47,9 +55,10 @@ export interface DrawerMacroListItemProps {
 export const DrawerMacroListItem = ({ device = 'iphone', name, section, source, added = false, onToggle, motion }: DrawerMacroListItemProps) => {
   const big = device === 'ipad';
   return (
+    <Slot motion={motion}>
     <button
       type="button"
-      className={itemClass(device, added, motion)}
+      className={itemClass(device, added)}
       aria-pressed={added}
       aria-label={`${added ? 'Remove' : 'Add'} ${name}`}
       onClick={onToggle}
@@ -71,6 +80,7 @@ export const DrawerMacroListItem = ({ device = 'iphone', name, section, source, 
         <Icon name={added ? 'close' : 'add'} size={big ? 20 : 16} />
       </span>
     </button>
+    </Slot>
   );
 };
 
@@ -94,9 +104,10 @@ export const DrawerDiagnosesListItem = ({ device = 'iphone', name, label, added 
   const ref = useRef<HTMLSpanElement>(null);
   const around = useThemeAround(ref);
   return (
+    <Slot motion={motion}>
     <button
       type="button"
-      className={itemClass(device, added, motion)}
+      className={itemClass(device, added)}
       aria-pressed={added}
       aria-label={`${added ? 'Remove' : 'Add'} ${name} (${label})`}
       onClick={onToggle}
@@ -114,6 +125,7 @@ export const DrawerDiagnosesListItem = ({ device = 'iphone', name, label, added 
         <Icon name={added ? 'close' : 'add'} size={big ? 20 : 16} />
       </span>
     </button>
+    </Slot>
   );
 };
 
