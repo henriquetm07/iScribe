@@ -6,8 +6,26 @@ import type { DrawerDevice } from './DrawerHeader';
 
 const name: Record<DrawerDevice, string> = { iphone: 'iPhone', ipad: 'iPad', web: 'Web' };
 
-export const drawerSpecLines = ({ device = 'iphone' }: { device?: DrawerDevice }) => {
+export const drawerSpecLines = ({ device = 'iphone', content }: { device?: DrawerDevice; content?: string }) => {
   const ipad = device === 'ipad';
+  if (content === 'previous')
+    return [
+      `Drawer · Add from Previous Note (Checklist) · ${name[device]}`,
+      '',
+      '  Modal BG    the page dimmed; a tap on it, × or Escape closes the drawer',
+      device === 'iphone'
+        ? '  Drawer      the Drawer: sheet from the bottom, up to 660px tall'
+        : '  Drawer      panel from the right, full height, up to 500px wide',
+      `  Header      Drawer Header: icon, "Add from Previous Note" (Season Mix ${ipad ? 24 : 20}px), green count badge`,
+      `              (${device === 'iphone' ? '16px, Relative Mono 9px' : '20px, Relative Mono 12px'}), description, ×; no search or filter`,
+      '  List        20px padding, rows 10px apart',
+      `  Row         Copy from Previous Note Item: ${ipad ? '50px tall, corners 10' : device === 'web' ? 'height from the 30px +, corners 8' : '32px tall, corners 8'}`,
+      `              icon ${ipad ? 20 : 16}px (empty for entries under a section) · code label (${ipad ? 'Big 30px' : 'Medium 22px'};`,
+      `              billing codes accent) · name Figtree Medium ${ipad ? 17 : 15}px, one line with …`,
+      `              + secondary Icon Button ${ipad ? '40px' : device === 'web' ? '30px' : '20px (corners 6)'}`,
+      '  Added       Status / Background / Positive (green), dark text, check instead of the +; the badge counts them',
+      '              A tap on an added row removes it.',
+    ];
   return [
     `Drawer · ${name[device]}`,
     '',
@@ -35,4 +53,4 @@ export const drawerSpecLines = ({ device = 'iphone' }: { device?: DrawerDevice }
   ];
 };
 
-export const drawerSpecComment = (p: { device?: DrawerDevice }) => asComment(drawerSpecLines(p));
+export const drawerSpecComment = (p: { device?: DrawerDevice; content?: string }) => asComment(drawerSpecLines(p));

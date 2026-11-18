@@ -7,7 +7,25 @@ import { Button } from '../Button/Button';
 import { Drawer, type DrawerProps } from './Drawer';
 import { drawerSpecComment } from './Drawer.docs';
 import type { DrawerDevice } from './DrawerHeader';
-import { DrawerSample, drawerSampleKinds, drawerSampleOptions, type DrawerSampleKind } from './DrawerSample';
+import { DrawerSample, drawerSampleKinds, drawerSampleOptions, type DrawerSampleKind, type DrawerSampleProps } from './DrawerSample';
+import { PREVIOUS_NOTE_DESCRIPTION, PREVIOUS_NOTE_TITLE, PreviousNoteDrawerSample } from './PreviousNoteDrawerSample';
+
+/** What the drawer shows: Macros, Diagnoses, Orders, or the "Add from Previous Note" checklist */
+type DrawerContent = DrawerSampleKind | 'previous';
+const contentOptions = [...drawerSampleOptions, { value: 'previous', label: 'Previous Note' }];
+
+/** The page button that opens each kind of drawer */
+const opener = (kind: DrawerContent) =>
+  kind === 'previous' ? { title: PREVIOUS_NOTE_TITLE, icon: 'previous-note' as const } : drawerSampleKinds[kind];
+
+/** The working drawer for the picked content */
+const ContentDrawer = ({ content, ...props }: DrawerSampleProps & { content: DrawerContent }) => {
+  if (content !== 'previous') return <DrawerSample kind={content} {...props} />;
+  // The checklist has no search or filter
+  const { defaultQuery: _q, kind: _k, searchPlaceholder: _p, filter: _f, filterCount: _c, onFilter: _o, search: _s, defaultAdded: _a, added: _d, onAddedChange: _x, items: _i, count: _n, description, ...rest } = props;
+  // An empty description from Controls keeps the checklist's own line
+  return <PreviousNoteDrawerSample {...rest} description={description || undefined} />;
+};
 
 const caption = { fontFamily: 'var(--is-font-ui)', fontSize: 12, color: 'var(--is-foreground-low-contrast-primary-foreground)' } as const;
 const deviceName: Record<DrawerDevice, string> = { iphone: 'iPhone', ipad: 'iPad', web: 'Web' };
@@ -20,9 +38,9 @@ const SCREEN: Record<DrawerDevice, { w: number; h: number; scale: number; radius
 };
 
 /** A device screen: the page with an "Add …" button, and the drawer opening inside it */
-const Screen = ({ device, kind, children, onOpen }: { device: DrawerDevice; kind: DrawerSampleKind; children: ReactNode; onOpen?: () => void }) => {
+const Screen = ({ device, kind, children, onOpen }: { device: DrawerDevice; kind: DrawerContent; children: ReactNode; onOpen?: () => void }) => {
   const s = SCREEN[device];
-  const k = drawerSampleKinds[kind];
+  const k = opener(kind);
   return (
     <div style={{ width: s.w * s.scale, height: s.h * s.scale, flex: 'none' }}>
       <div
@@ -51,7 +69,7 @@ const Screen = ({ device, kind, children, onOpen }: { device: DrawerDevice; kind
 };
 
 /** Story args: the Drawer's props, plus which content it shows (picked with the dropdown on the canvas) */
-type StoryArgs = DrawerProps & { content: DrawerSampleKind };
+type StoryArgs = DrawerProps & { content: DrawerContent };
 
 const meta = {
   title: 'Components/Drawer/Drawer',
@@ -67,7 +85,7 @@ const meta = {
     onFilter: fn(),
   },
   argTypes: {
-    content: { control: 'inline-radio', options: ['macros', 'diagnoses', 'orders'], description: 'Macros, Diagnoses or Orders' },
+    content: { control: 'inline-radio', options: ['macros', 'diagnoses', 'orders', 'previous'], description: 'Macros, Diagnoses, Orders or Previous Note (Add from Previous Note checklist)' },
     device: { control: 'inline-radio', options: ['iphone', 'ipad', 'web'] },
     icon: { control: 'select', options: ['macros', 'diagnosis', 'order'], description: 'Icon before the title (default: the content’s)' },
     title: { control: 'text', description: 'Title (default: “Add Macros”, “Add Diagnoses” or “Add Orders”)' },
@@ -85,14 +103,34 @@ const meta = {
   },
   parameters: {
     layout: 'centered',
-    // Macros / Diagnoses / Orders dropdown on the canvas, next to the device tabs
-    canvasSelect: { arg: 'content', label: 'Content', options: drawerSampleOptions },
+    // Macros / Diagnoses / Orders / Previous Note dropdown on the canvas, next to the device tabs
+    canvasSelect: { arg: 'content', label: 'Content', options: contentOptions },
     docs: {
       source: {
         transform: (_code: string, ctx: { args: StoryArgs }) => {
           const a = ctx.args;
-          const k = drawerSampleKinds[a.content ?? 'macros'];
           const d = a.device ?? 'iphone';
+          if (a.content === 'previous')
+            return `${drawerSpecComment(a)}
+<Drawer
+  device="${d}"
+  open={${a.open ?? false}}
+  onClose={() => setOpen(false)}
+  icon="${a.icon ?? 'macros'}"
+  title="${a.title ?? PREVIOUS_NOTE_TITLE}"
+  description="${a.description || PREVIOUS_NOTE_DESCRIPTION}"
+  count={added.length}
+  search={false}
+  filter={false}
+>
+  <DrawerList>
+    <DrawerChecklistItem device="${d}" icon="history" name="History of Present Illness" added onToggle={…} />
+    <DrawerChecklistItem device="${d}" icon="exam" name="Physical Examination" onToggle={…} />
+    <DrawerChecklistItem device="${d}" label="I10" name="Hypertension, essential" onToggle={…} />
+    <DrawerChecklistItem device="${d}" label="99870" labelTone="accent" name="Periodic comprehensive preventive medicine" onToggle={…} />
+  </DrawerList>
+</Drawer>`;
+          const k = drawerSampleKinds[a.content ?? 'macros'];
           const filter = a.filter ?? k.filter;
           const item =
             a.content === 'macros' || !a.content
@@ -128,9 +166,9 @@ ${filter ? (a.filterCount ? `  filterCount={${a.filterCount}}\n` : '') : '  filt
     const device = props.device ?? 'iphone';
     return (
       <Screen device={device} kind={content} onOpen={() => updateArgs({ open: true })}>
-        <DrawerSample
+        <ContentDrawer
           key={`${device}-${content}`}
-          kind={content}
+          content={content}
           {...props}
           contained
           onClose={() => {
@@ -152,17 +190,17 @@ export const IPad: Story = { name: 'iPad', args: { device: 'ipad' } };
 
 export const Web: Story = { args: { device: 'web' } };
 
-/** Search with matches: "Search Results" */
+/** Search with matches: "Search Results" (Previous Note has no search, so it shows the checklist) */
 export const SearchResults: Story = {
   name: 'Search results',
   render: function Render(args) {
     const [, updateArgs] = useArgs();
     const { content = 'macros', ...props } = args as StoryArgs;
     const device = props.device ?? 'iphone';
-    const query = { macros: 'exam', diagnoses: 'right', orders: 'MRI' }[content];
+    const query = { macros: 'exam', diagnoses: 'right', orders: 'MRI', previous: undefined }[content];
     return (
       <Screen device={device} kind={content} onOpen={() => updateArgs({ open: true })}>
-        <DrawerSample key={`${device}-${content}`} kind={content} {...props} contained defaultQuery={query} onClose={() => updateArgs({ open: false })} />
+        <ContentDrawer key={`${device}-${content}`} content={content} {...props} contained defaultQuery={query} onClose={() => updateArgs({ open: false })} />
       </Screen>
     );
   },
@@ -177,12 +215,12 @@ export const NoResults: Story = {
     const device = props.device ?? 'iphone';
     return (
       <Screen device={device} kind={content} onOpen={() => updateArgs({ open: true })}>
-        <DrawerSample
+        <ContentDrawer
           key={`${device}-${content}`}
-          kind={content}
+          content={content}
           {...props}
           contained
-          defaultQuery={{ macros: 'Macro Typing', diagnoses: 'Diagnoses Typing', orders: 'Orders Typing' }[content]}
+          defaultQuery={{ macros: 'Macro Typing', diagnoses: 'Diagnoses Typing', orders: 'Orders Typing', previous: undefined }[content]}
           onClose={() => updateArgs({ open: false })}
         />
       </Screen>
@@ -190,7 +228,7 @@ export const NoResults: Story = {
   },
 };
 
-/** Every device — mirrors the Figma "Drawer" sheets. Pick Macros, Diagnoses or Orders on the canvas. */
+/** Every device — mirrors the Figma "Drawer" sheets. Pick Macros, Diagnoses, Orders or Previous Note on the canvas. */
 export const AllDevices: Story = {
   name: 'All devices',
   parameters: { controls: { disable: true } },
@@ -202,7 +240,7 @@ export const AllDevices: Story = {
           <div key={device} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <span style={{ ...caption, fontWeight: 600, color: 'var(--is-foreground-high-contrast-primary-foreground)' }}>{deviceName[device]}</span>
             <Screen device={device} kind={content}>
-              <DrawerSample key={content} kind={content} device={device} open contained />
+              <ContentDrawer key={content} content={content} device={device} open contained />
             </Screen>
           </div>
         ))}

@@ -48,6 +48,38 @@
 .is-drawer-title--ipad .is-drawer-title__name {
   font-size: 24px;
 }
+/* Title and its count badge (Figma "Name plus notification") */
+.is-drawer-title__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+/* Figma "Notification": green pill · iPhone 16px, Relative Mono 9px · iPad and Web 20px, 12px */
+.is-drawer-title__count {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 1px;
+  border-radius: var(--is-full-round, 1000px);
+  background: var(--is-status-background-positive);
+  color: var(--is-foreground-high-contrast-primary-foreground-2);
+  font-family: 'Relative Mono Pro 10 Pitch', 'Relative Mono 10 Pitch', ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 9px;
+  line-height: 18px;
+  overflow: hidden;
+}
+.is-drawer-title--ipad .is-drawer-title__count,
+.is-drawer-title--web .is-drawer-title__count {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 2px;
+  font-size: 12px;
+}
 .is-drawer-title__description {
   margin: 0;
   font-size: 15px;

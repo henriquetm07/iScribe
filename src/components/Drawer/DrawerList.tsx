@@ -1,6 +1,9 @@
 import { useRef, type ReactNode } from 'react';
 import { Icon } from '../../icons/Icon';
-import { RtnLabel } from '../RTNItems/RTNItems';
+import type { IconName } from '../../icons/icons';
+import { RtnLabel, type RtnLabelTone } from '../RTNItems/RTNItems';
+import '../Button/Button.css';
+import '../IconButton/IconButton.css';
 import { useThemeAround } from '../ScheduleList/ScheduleList';
 import type { DrawerDevice } from './DrawerHeader';
 import '../RTNItems/RTNItems.css';
@@ -126,6 +129,69 @@ export const DrawerDiagnosesListItem = ({ device = 'iphone', name, label, added 
       </span>
     </button>
     </Slot>
+  );
+};
+
+export interface DrawerChecklistItemProps {
+  device?: DrawerDevice;
+  /** The section or entry, e.g. "History of Present Illness" */
+  name: string;
+  /** Section icon. Leave empty for an entry under a section: the empty icon space indents it. */
+  icon?: IconName;
+  /** Code before the name, e.g. "I10" or "99870" */
+  label?: string;
+  /** Neutral (low contrast) or accent (periwinkle) label, e.g. accent for billing codes */
+  labelTone?: Extract<RtnLabelTone, 'neutral' | 'accent'>;
+  /** Added (Figma "Value"): green, with a check. Otherwise a + Icon Button. */
+  added?: boolean;
+  /** Called with the tap: adds it, or removes it when added */
+  onToggle?: () => void;
+}
+
+/**
+ * Figma "Copy from Previous Note Item" (831:10473): a row of the "Add from Previous Note" checklist — icon, optional
+ * code label and name, then the + (secondary Icon Button: iPhone 20px · Web 30px · iPad 40px) or, once added, the
+ * green Value state with a check. The whole row is the button.
+ */
+export const DrawerChecklistItem = ({ device = 'iphone', name, icon, label, labelTone = 'neutral', added = false, onToggle }: DrawerChecklistItemProps) => {
+  const big = device === 'ipad';
+  return (
+    <button
+      type="button"
+      className={['is-drawer-check', `is-drawer-check--${device}`, added && 'is-drawer-check--added'].filter(Boolean).join(' ')}
+      aria-pressed={added}
+      aria-label={`${added ? 'Remove' : 'Add'} ${label ? `${label} ` : ''}${name}`}
+      onClick={onToggle}
+    >
+      <span className="is-drawer-check__main">
+        <span className="is-drawer-check__icon" aria-hidden="true">
+          {icon && <Icon name={icon} size="100%" />}
+        </span>
+        <span className="is-drawer-check__title">
+          {label && (
+            <RtnLabel device={big ? 'ipad' : 'iphone'} size={big ? 'big' : 'medium'} tone={labelTone}>
+              {label}
+            </RtnLabel>
+          )}
+          <span className="is-drawer-check__name">{name}</span>
+        </span>
+      </span>
+      {added ? (
+        <span className="is-drawer-check__check" aria-hidden="true">
+          <Icon name="check" size="100%" />
+        </span>
+      ) : (
+        // The + is the secondary Icon Button (Button.css), drawn inside the row's button
+        <span
+          className={`is-button is-button--secondary is-button--${device === 'ipad' ? 'regular' : device === 'web' ? 'small' : 'mini'} is-icon-button is-drawer-check__add`}
+          aria-hidden="true"
+        >
+          <span className="is-button__icon">
+            <Icon name="add" />
+          </span>
+        </span>
+      )}
+    </button>
   );
 };
 

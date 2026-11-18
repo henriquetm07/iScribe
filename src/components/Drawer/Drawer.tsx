@@ -17,6 +17,7 @@ type HeaderProps = Pick<
   | 'icon'
   | 'title'
   | 'description'
+  | 'count'
   | 'search'
   | 'searchPlaceholder'
   | 'searchValue'

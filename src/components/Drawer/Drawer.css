@@ -263,3 +263,105 @@
 .is-drawer-empty--ipad .is-drawer-empty__text {
   font-size: 15px;
 }
+
+/*
+ * Copy from Previous Note Item — Figma 831:10473 (the "Add from Previous Note" checklist).
+ * iPhone 32px rows, corners 8 · Web rows sized by the 30px + · iPad 50px rows, corners 10. 15px (iPad 17px) names.
+ * Added (Figma "Value"): Status / Background / Positive (green), dark text, a check instead of the +.
+ */
+.is-drawer-check {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 32px;
+  margin: 0;
+  padding: 5px 5px 5px 10px;
+  border: 0;
+  border-radius: var(--is-round-s, 8px);
+  background: transparent;
+  font: inherit;
+  font-family: var(--is-font-ui);
+  text-align: left;
+  color: var(--is-foreground-high-contrast-primary-foreground);
+  cursor: pointer;
+  transition: background-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.is-drawer-check--web {
+  min-height: 0;
+}
+.is-drawer-check--ipad {
+  height: 50px;
+  padding: 5px 10px;
+  border-radius: var(--is-round-m, 10px);
+}
+.is-drawer-check--added {
+  padding: 5px 10px;
+  background: var(--is-status-background-positive);
+  color: var(--is-foreground-high-contrast-primary-foreground-2);
+}
+.is-drawer-check--ipad.is-drawer-check--added {
+  padding: 5px 23px 5px 12px;
+}
+.is-drawer-check:focus-visible {
+  outline: 2px solid var(--is-status-foreground-positive-pw);
+  outline-offset: 2px;
+}
+.is-drawer-check__main {
+  display: flex;
+  flex: 1 0 0;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.is-drawer-check__icon,
+.is-drawer-check__check {
+  display: flex;
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+.is-drawer-check--ipad .is-drawer-check__icon {
+  width: 20px;
+  height: 20px;
+}
+.is-drawer-check__title {
+  display: flex;
+  flex: 1 0 0;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.is-drawer-check--added:not(.is-drawer-check--ipad) .is-drawer-check__title {
+  gap: 5px;
+}
+.is-drawer-check__title .is-rtn-label {
+  flex: none;
+  align-self: center;
+  min-width: 44px;
+}
+/* On the green row the neutral label keeps its dark text */
+.is-drawer-check--added .is-rtn-label--neutral {
+  color: var(--is-foreground-high-contrast-primary-foreground-2);
+}
+.is-drawer-check__name {
+  flex: 1 0 0;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 18px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.is-drawer-check--ipad .is-drawer-check__name {
+  font-size: 17px;
+}
+.is-drawer-check__add {
+  flex: none;
+}
+/* iPhone: the 20px + has 6px corners in Figma */
+.is-drawer-check--iphone .is-drawer-check__add {
+  --btn-radius: 6px;
+}

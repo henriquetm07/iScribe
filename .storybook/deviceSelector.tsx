@@ -99,7 +99,7 @@ export const withDeviceSelector: Decorator = (Story, context) => {
           <Dropdown
             device="web"
             rounded
-            width={140}
+            width={150}
             options={select.options}
             value={String(args[select.arg])}
             onChange={(value) => updateArgs({ [select.arg]: value })}

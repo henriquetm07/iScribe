@@ -19,14 +19,17 @@ export interface DrawerHeaderTitleProps extends Omit<HTMLAttributes<HTMLDivEleme
   title?: string;
   /** Line under the title. Leave empty for none. */
   description?: string;
+  /** Number in the green badge next to the title (Figma "Notification", e.g. sections added). 0 or undefined hides it. */
+  count?: number;
 }
 
-/** Figma "Drawer Header Title": icon, title (Season Mix) and description */
+/** Figma "Drawer Header Title": icon, title (Season Mix), optional count badge and description */
 export const DrawerHeaderTitle = ({
   device = 'iphone',
   icon = 'macros',
   title = 'Add Macros',
   description = 'Search and select macro items to add to the current encounter.',
+  count,
   className = '',
   ...props
 }: DrawerHeaderTitleProps) => (
@@ -35,7 +38,14 @@ export const DrawerHeaderTitle = ({
       <Icon name={icon} size={device === 'ipad' ? 20 : 16} />
     </span>
     <div className="is-drawer-title__text">
-      <h2 className="is-drawer-title__name">{title}</h2>
+      <div className="is-drawer-title__row">
+        <h2 className="is-drawer-title__name">{title}</h2>
+        {!!count && (
+          <span className="is-drawer-title__count" aria-label={`${count} added`}>
+            {count}
+          </span>
+        )}
+      </div>
       {description && <p className="is-drawer-title__description">{description}</p>}
     </div>
   </div>
@@ -46,6 +56,8 @@ export interface DrawerHeaderProps extends Omit<HTMLAttributes<HTMLDivElement>, 
   icon?: IconName;
   title?: string;
   description?: string;
+  /** Number in the green badge next to the title. 0 or undefined hides it. */
+  count?: number;
   /** Show the × close button (top-right) */
   closeButton?: boolean;
   onClose?: () => void;
@@ -70,6 +82,7 @@ export const DrawerHeader = ({
   icon,
   title,
   description,
+  count,
   closeButton = true,
   onClose,
   search = true,
@@ -99,7 +112,7 @@ export const DrawerHeader = ({
       style={{ width, ...style }}
       {...props}
     >
-      <DrawerHeaderTitle device={device} icon={icon} title={title} description={description} />
+      <DrawerHeaderTitle device={device} icon={icon} title={title} description={description} count={count} />
       {closeButton && (
         <button type="button" className="is-drawer-header__close" aria-label="Close" title="Close" onClick={onClose}>
           <Icon name="close" size={16} />
