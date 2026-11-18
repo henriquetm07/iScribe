@@ -54,6 +54,17 @@
 }
 
 /* iPhone: a sheet from the bottom, top corners 30px, 634–660px tall */
+/* iPhone and iPad scroll by touch with no scroll bar on the side (Web keeps its scroll bar) */
+.is-drawer--iphone .is-drawer__body,
+.is-drawer--ipad .is-drawer__body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.is-drawer--iphone .is-drawer__body::-webkit-scrollbar,
+.is-drawer--ipad .is-drawer__body::-webkit-scrollbar {
+  display: none;
+}
+
 .is-drawer--iphone {
   align-items: flex-end;
 }
