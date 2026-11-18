@@ -59,11 +59,14 @@
   padding: 0;
   border: 0;
   background: none;
-  color: var(--is-foreground-high-contrast-primary-foreground);
+  /* Figma icon/close: Low Contrast Primary Foreground */
+  color: var(--is-foreground-low-contrast-primary-foreground);
   cursor: pointer;
 }
 .is-mic-settings-panel__close svg {
   flex: none;
+  /* our close glyph sits 0.35/12 below centre; Figma's is centred (3.24px from every edge) */
+  translate: 0 -0.57px;
 }
 .is-mic-settings-panel__close:hover {
   opacity: 0.6;
@@ -94,9 +97,20 @@
 .is-mic-settings-panel .is-dropdown-field {
   --dd-height: 40px;
 }
+.is-mic-settings-panel .is-dropdown-field__icon {
+  /* Figma chevron: Medium Contrast Primary Foreground */
+  color: var(--is-foreground-medium-contrast-primary-foreground);
+}
 .is-mic-settings-panel .is-dropdown__menu {
   top: auto;
   bottom: 100%;
+}
+/* Figma "Mic Settings" menu rows are 37px; every microphone shows, no scrolling */
+.is-mic-settings-panel .is-dropdown__menu .is-selection-list-item--web {
+  --sli-height: 37px;
+}
+.is-mic-settings-panel .is-dropdown__menu .is-selection-list__items {
+  max-height: none !important;
 }
 
 /* Error: red border on the closed field; in the open menu the selected microphone has no selection background */
