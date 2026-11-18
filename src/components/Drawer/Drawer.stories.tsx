@@ -60,8 +60,8 @@ const meta = {
     description: '',
     search: true,
     searchPlaceholder: 'Search Macros...',
-    filter: true,
-    filterCount: 12,
+    filter: false,
+    filterCount: 0,
     closeButton: true,
     onClose: fn(),
     onFilter: fn(),
@@ -94,8 +94,7 @@ const meta = {
   searchPlaceholder="${a.searchPlaceholder ?? 'Search Macros...'}"
   searchValue={query}
   onSearchChange={setQuery}
-  filterCount={${a.filterCount ?? 0}}
->
+${a.filter ? `  filterCount={${a.filterCount ?? 0}}\n` : '  filter={false}\n'}>
   <DrawerList>
     <DrawerListTitle device="${a.device ?? 'iphone'}">Added Macros</DrawerListTitle>
     <DrawerMacroListItem device="${a.device ?? 'iphone'}" name="Insert normal shoulder exam" added onToggle={…} />
@@ -174,7 +173,7 @@ export const AllDevices: Story = {
         <div key={device} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <span style={{ ...caption, fontWeight: 600, color: 'var(--is-foreground-high-contrast-primary-foreground)' }}>{deviceName[device]}</span>
           <Screen device={device}>
-            <MacroDrawerSample device={device} open contained filterCount={12} />
+            <MacroDrawerSample device={device} open contained />
           </Screen>
         </div>
       ))}

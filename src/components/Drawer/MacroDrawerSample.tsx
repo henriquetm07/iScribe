@@ -33,7 +33,7 @@ export interface MacroDrawerSampleProps extends Omit<DrawerProps, 'children' | '
 
 /**
  * A working "Add Macros" Drawer: search filters the list, + adds a macro (it moves to "Added Macros"), × removes it.
- * Typing something with no match shows "No results".
+ * Typing something with no match shows "No results". Macros have no filter button next to the search field.
  */
 export const MacroDrawerSample = ({
   device = 'iphone',
@@ -43,6 +43,7 @@ export const MacroDrawerSample = ({
   title = 'Add Macros',
   icon = 'macros',
   searchPlaceholder = 'Search Macros...',
+  filter = false,
   ...props
 }: MacroDrawerSampleProps) => {
   const [query, setQuery] = useState(defaultQuery);
@@ -94,6 +95,7 @@ export const MacroDrawerSample = ({
       title={title}
       icon={icon}
       searchPlaceholder={searchPlaceholder}
+      filter={filter}
       searchValue={query}
       onSearchChange={setQuery}
       {...props}
