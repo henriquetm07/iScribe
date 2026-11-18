@@ -95,7 +95,8 @@ export const MicSettingsPanel = ({
       <h2 className="is-mic-settings-panel__title">Microphone Settings</h2>
       {onClose && (
         <button type="button" className="is-mic-settings-panel__close" aria-label="Close" onClick={onClose}>
-          <Icon name="close" size={16} />
+          {/* Figma icon/close: 16px box with a 9.5px ×; our close glyph fills 6/12 of its box, so it is drawn at 19.2px */}
+          <Icon name="close" size={19.2} />
         </button>
       )}
       <div className="is-mic-settings-panel__group">

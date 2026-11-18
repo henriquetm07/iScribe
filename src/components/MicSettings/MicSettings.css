@@ -52,11 +52,18 @@
   top: 18.5px;
   right: 19px;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
   padding: 0;
   border: 0;
   background: none;
   color: var(--is-foreground-high-contrast-primary-foreground);
   cursor: pointer;
+}
+.is-mic-settings-panel__close svg {
+  flex: none;
 }
 .is-mic-settings-panel__close:hover {
   opacity: 0.6;
