@@ -33,6 +33,9 @@ interface Ctx {
   argTypes: StrictArgTypes | Record<string, any>;
 }
 
+/** The dropdown is as tall as the device tabs next to it (Tabs Web bar: 38px), with the Web dropdown's text and icon */
+const CANVAS_SELECT_CSS = `.is-sb-canvas-select{display:flex}.is-sb-canvas-select .is-dropdown-field{--dd-height:38px;padding:0 14px}`;
+
 /** The devices to offer for this story, or null when it gets no selector */
 const deviceOptions = ({ parameters, argTypes }: Ctx): string[] | null => {
   if (parameters.deviceSelector === false) return null;
@@ -91,6 +94,8 @@ export const withDeviceSelector: Decorator = (Story, context) => {
         />
         )}
         {showSelect && select && (
+          <span className="is-sb-canvas-select">
+          <style>{CANVAS_SELECT_CSS}</style>
           <Dropdown
             device="web"
             rounded
@@ -101,6 +106,7 @@ export const withDeviceSelector: Decorator = (Story, context) => {
             visibleRows={select.options.length}
             aria-label={select.label ?? select.arg}
           />
+          </span>
         )}
       </div>
       {Story()}
