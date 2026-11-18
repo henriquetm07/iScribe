@@ -56,11 +56,11 @@ export const withDeviceSelector: Decorator = (Story, context) => {
     >
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Tabs
-          device="iphone"
+          device="web"
           options={options.map((value) => ({ value, label: labels[value] ?? value }))}
           value={String(args.device)}
           onChange={(device) => updateArgs({ device })}
-          width={options.length * 110}
+          width={options.length * 90}
           aria-label="Device"
         />
       </div>
