@@ -3,6 +3,7 @@ import type { Preview } from '@storybook/react-vite';
 import { DocsContainer } from '@storybook/addon-docs/blocks';
 import { addons } from 'storybook/preview-api';
 import { create } from 'storybook/theming';
+import { hideDeviceControl, withDeviceSelector } from './deviceSelector';
 import { asCursor, CURSOR_EVENT, CURSOR_STORAGE_KEY, installCursor, readSavedCursor } from './cursors';
 import '../src/styles/colors.css';
 import '../src/styles/variables.css';
@@ -109,12 +110,14 @@ const preview: Preview = {
     // Docs pages (headings, text, tables) in Figtree, light or dark with the toggle
     docs: {
       container: ThemedDocsContainer,
+      // "Show code" shows the story itself, without the canvas wrappers (e.g. the device selector)
+      source: { excludeDecorators: true },
     },
     options: {
       // Components stay in alphabetical order: add each new component in its place in the list below
       storySort: { order: [
         'Introduction', 'Foundations', ['Colors', 'Variables', 'Icons', 'Animated Icons', 'Animations'],
-        'Components', ['Appointment Status', 'Bottom Tab', ['Bottom Tab', 'Alert', 'Send Slider'], 'Button', 'Dropdown', 'Drawer', ['Drawer Header'], 'EHR Icon', 'Icon Button', 'Record', ['Record Widget', 'Mini Record Widget iPhone', 'Mini Record Widget Web', 'Focus Mode', 'Parts'], 'RTN Header (Web)', 'RTN Notes', ['RTN Item (Today)', 'RTN Main Frame (Today)', 'RTN Main Frame (Previous Note)'], 'Schedule List', ['Schedule List', 'Schedule List Item'], 'Schedule Side Bar', ['Schedule Side Bar', 'Panels'], 'Selection List', ['Selection List', 'Selection List Item'], 'Tabs', ['Tabs', 'Tab Item'], 'Toggle', 'Web Nav Bar'],
+        'Components', ['Appointment Status', 'Bottom Tab', ['Bottom Tab', 'Alert', 'Send Slider'], 'Button', 'Drawer', ['Drawer Header'], 'Dropdown', 'EHR Icon', 'Icon Button', 'Record', ['Record Widget', 'Mini Record Widget iPhone', 'Mini Record Widget Web', 'Focus Mode', 'Parts'], 'RTN Header (Web)', 'RTN Notes', ['RTN Item (Today)', 'RTN Main Frame (Today)', 'RTN Main Frame (Previous Note)'], 'Schedule List', ['Schedule List', 'Schedule List Item'], 'Schedule Side Bar', ['Schedule Side Bar', 'Panels'], 'Selection List', ['Selection List', 'Selection List Item'], 'Tabs', ['Tabs', 'Tab Item'], 'Toggle', 'Web Nav Bar'],
         'Pages', ['Web App'],
       ] },
     },
@@ -126,12 +129,16 @@ const preview: Preview = {
     },
   },
   decorators: [
+    // iPhone · iPad · Web selector (Tabs) on the canvas of every story with a device arg
+    withDeviceSelector,
     // Every story renders in the current mode
     (Story) => {
       applyMode(currentMode);
       return Story();
     },
   ],
+  // ...and no device radio in Controls for those stories
+  argTypesEnhancers: [hideDeviceControl],
   tags: ['autodocs'],
 };
 
