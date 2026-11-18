@@ -5,6 +5,7 @@ import { MicSettings } from '../../components/MicSettings/MicSettings';
 import { formatRTNDate, RTNHeader, type RTNPatient } from '../../components/RTNHeader/RTNHeader';
 import { RtnDiagnosis, RtnItem, RtnItemContent, RtnOrder, RtnText, rtnTabs } from '../../components/RTNItems/RTNItems';
 import { DrawerSample, drawerSampleKinds, type DrawerSampleKind } from '../../components/Drawer/DrawerSample';
+import { PreviousNoteDrawerSample, type PreviousNoteSection as ChecklistRow } from '../../components/Drawer/PreviousNoteDrawerSample';
 import {
   CheckCounter,
   DateAndProvider,
@@ -28,7 +29,8 @@ import './WebApp.css';
  * RTN Header (Web), then the note board with the RTN note (Chart Prep · Previous Note · Current Note) and the
  * Mic Settings in the bottom-left corner (the mic opens the Microphone Settings card above it). Every part is the Storybook component, behaviour included.
  * The + on Macros, Diagnoses or Orders opens that Drawer from the right, over everything; what is picked there
- * shows up in the note (× removes it, here or in the drawer).
+ * shows up in the note (× removes it, here or in the drawer). On the Previous Note tab, the big + opens Drawer › Previous Note
+ * (the previous note as a checklist), in sync with the note's own + buttons.
  * A new note shows the "Say it, don't type it" tooltip next to the demographics until it is closed or a recording starts.
  */
 
@@ -135,6 +137,27 @@ const VisitNote = ({ sections, onActivity }: { sections: PreviousNoteSection[]; 
     );
   };
   const allIds = sections.flatMap((s) => s.entries.map((e) => e.id));
+  // The big + (Check counter) opens Drawer › Previous Note: the previous note as a checklist, in sync with `added`.
+  // A one-entry section is one row (the entry); Diagnoses, Orders and Billing are a section row with their entries.
+  const [previousOpen, setPreviousOpen] = useState(false);
+  const grouped = (s: PreviousNoteSection) => s.entries.length > 1 || s.entries.some((e) => e.code);
+  const checklist: ChecklistRow[] = sections.flatMap((s) =>
+    grouped(s)
+      ? [
+          { id: `section-${s.id}`, name: s.title, icon: s.icon as IconName },
+          ...s.entries.map((e) => ({
+            id: e.id,
+            name: typeof e.text === 'string' ? e.text : s.title,
+            label: e.code,
+            labelTone: e.codeTone === 'accent' ? ('accent' as const) : ('neutral' as const),
+          })),
+        ]
+      : [{ id: s.entries[0]?.id ?? s.id, name: s.title, icon: s.icon as IconName }],
+  );
+  const checklistAdded = [
+    ...added,
+    ...sections.filter((s) => grouped(s) && s.entries.every((e) => added.includes(e.id))).map((s) => `section-${s.id}`),
+  ];
   const toggle = (id: string) => {
     setAdded((a) => (a.includes(id) ? a.filter((x) => x !== id) : [...a, id]));
     onActivity?.();
@@ -167,14 +190,7 @@ const VisitNote = ({ sections, onActivity }: { sections: PreviousNoteSection[]; 
               timeSpan={samplePreviousNote.timeSpan}
               provider={samplePreviousNote.provider}
             />
-            <CheckCounter
-              device="web"
-              count={added.length}
-              onClick={() => {
-                setAdded(added.length === allIds.length ? [] : allIds);
-                onActivity?.();
-              }}
-            />
+            <CheckCounter device="web" count={added.length} onClick={() => setPreviousOpen(true)} />
           </div>
         )}
       </div>
@@ -209,6 +225,19 @@ const VisitNote = ({ sections, onActivity }: { sections: PreviousNoteSection[]; 
           <p className="is-pn-empty__title">Chart Prep</p>
           <p className="is-pn-empty__body">Nothing to prepare for this visit yet.</p>
         </div>
+      )}
+      {!noPrevious && (
+        <PreviousNoteDrawerSample
+          device="web"
+          open={previousOpen}
+          onClose={() => setPreviousOpen(false)}
+          sections={checklist}
+          added={checklistAdded}
+          onAddedChange={(ids) => {
+            setAdded(allIds.filter((id) => ids.includes(id)));
+            onActivity?.();
+          }}
+        />
       )}
       <DrawerSample
         key={drawer}
