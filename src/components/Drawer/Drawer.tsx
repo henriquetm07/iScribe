@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { DrawerHeader, type DrawerDevice, type DrawerHeaderProps } from './DrawerHeader';
 import './Drawer.css';
 
@@ -57,29 +57,31 @@ export const Drawer = ({
   closeButton = true,
   ...header
 }: DrawerProps) => {
-  const [phase, setPhase] = useState<Phase>(open ? 'open' : 'closed');
+  // Always starts closed, so it slides in even when it mounts already open
+  const [phase, setPhase] = useState<Phase>('closed');
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // Slide in: mount off-screen, then move in on the next frame. Slide out: move off-screen, then unmount.
+  // Slide in: mount off-screen ("entering"), then move in. Slide out: move off-screen, then unmount.
   useEffect(() => {
     if (open) {
-      if (phase === 'open' || phase === 'entering') return;
-      setPhase('entering');
-      let inner = 0;
-      const outer = requestAnimationFrame(() => {
-        inner = requestAnimationFrame(() => setPhase('open'));
-      });
-      return () => {
-        cancelAnimationFrame(outer);
-        cancelAnimationFrame(inner);
-      };
+      setPhase((p) => (p === 'open' || p === 'entering' ? p : 'entering'));
+      return;
     }
-    if (phase === 'closed' || phase === 'leaving') return;
-    setPhase('leaving');
-    const t = setTimeout(() => setPhase('closed'), DRAWER_MS);
-    return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setPhase((p) => (p === 'closed' ? p : 'leaving'));
   }, [open]);
+
+  useLayoutEffect(() => {
+    if (phase === 'entering') {
+      // Make the browser lay out the off-screen position first, then move in on the next frame
+      panelRef.current?.getBoundingClientRect();
+      const frame = requestAnimationFrame(() => setPhase((p) => (p === 'entering' ? 'open' : p)));
+      return () => cancelAnimationFrame(frame);
+    }
+    if (phase === 'leaving') {
+      const t = setTimeout(() => setPhase((p) => (p === 'leaving' ? 'closed' : p)), DRAWER_MS);
+      return () => clearTimeout(t);
+    }
+  }, [phase]);
 
   // Escape closes; focus moves into the drawer when it opens
   const closeRef = useRef(onClose);
