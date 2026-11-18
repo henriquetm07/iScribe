@@ -1,0 +1,150 @@
+/*
+ * Tooltip - Web — Figma "Tooltip" (3404:17227). Colors are the --is- variables, so light and dark mode follow
+ * data-theme. Red Hat Text (Figtree where it isn't loaded).
+ */
+.is-tooltip {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-family: 'Red Hat Text', var(--is-font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: normal;
+  filter: drop-shadow(0 0 10px var(--is-shadow-basic-shadow));
+  --is-tooltip-bg: var(--is-background-elevated-background);
+  background: var(--is-tooltip-bg);
+}
+
+/* Periwinkle callout: 180px, padding 12, corners 20 */
+.is-tooltip--periwinkle {
+  --is-tooltip-bg: var(--is-status-background-positive-pw);
+  width: 180px;
+  padding: 12px;
+  border-radius: var(--is-round-xxl, 20px);
+  color: var(--is-foreground-high-contrast-primary-foreground-2);
+}
+.is-tooltip__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+}
+.is-tooltip__title {
+  font-weight: 600;
+  white-space: nowrap;
+}
+.is-tooltip__text {
+  width: 100%;
+}
+.is-tooltip__close {
+  display: flex;
+  flex: none;
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+.is-tooltip__close:hover {
+  opacity: 0.6;
+}
+.is-tooltip__close:focus-visible {
+  outline: 2px solid var(--is-status-foreground-positive-pw);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* White label: padding 8, corners 10, one line */
+.is-tooltip--white {
+  padding: 8px;
+  border-radius: var(--is-round-m, 10px);
+  color: var(--is-foreground-high-contrast-primary-foreground);
+  white-space: nowrap;
+}
+
+/* Tip: 18 × 9 triangle in the tooltip's colour */
+.is-tooltip[class*='--tip-']::after {
+  content: '';
+  position: absolute;
+  background: var(--is-tooltip-bg);
+}
+.is-tooltip--tip-bottom::after,
+.is-tooltip--tip-top::after {
+  left: 50%;
+  width: 18px;
+  height: 9px;
+  transform: translateX(-50%);
+}
+.is-tooltip--tip-bottom::after {
+  bottom: -9px;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+.is-tooltip--tip-top::after {
+  top: -9px;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+.is-tooltip--tip-left::after,
+.is-tooltip--tip-right::after {
+  top: 50%;
+  width: 9px;
+  height: 18px;
+  transform: translateY(-50%);
+}
+.is-tooltip--tip-right::after {
+  right: -9px;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+.is-tooltip--tip-left::after {
+  left: -9px;
+  clip-path: polygon(100% 0, 0 50%, 100% 100%);
+}
+
+/* ---------- On hover / focus (WithTooltip) ---------- */
+.is-tooltip-anchor {
+  position: relative;
+  display: inline-flex;
+}
+.is-tooltip--float {
+  position: absolute;
+  z-index: 1100;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 120ms ease, translate 120ms ease;
+}
+.is-tooltip--float.is-tooltip--shown {
+  opacity: 1;
+  translate: 0 0;
+}
+.is-tooltip--at-top {
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  translate: 0 4px;
+}
+.is-tooltip--at-bottom {
+  top: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  translate: 0 -4px;
+}
+.is-tooltip--at-left {
+  right: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  translate: 4px 0;
+}
+.is-tooltip--at-right {
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  translate: -4px 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-tooltip--float {
+    transition: none;
+  }
+}

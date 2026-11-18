@@ -123,3 +123,4 @@ export {
   type CheckCounterProps,
   type DateAndProviderProps,
 } from './components/RTNItems/PreviousNote';
+export { Tooltip, WithTooltip, type TooltipProps, type TooltipTone, type TooltipTip, type TooltipPlacement, type WithTooltipProps } from './components/Tooltip/Tooltip';
