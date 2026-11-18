@@ -57,6 +57,7 @@ export const withDeviceSelector: Decorator = (Story, context) => {
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Tabs
           device="web"
+          tint="white"
           options={options.map((value) => ({ value, label: labels[value] ?? value }))}
           value={String(args.device)}
           onChange={(device) => updateArgs({ device })}
