@@ -103,7 +103,8 @@ export const PreviousNoteDrawerSample = ({
       title={title}
       icon={icon}
       description={description}
-      count={added.length}
+      // The badge counts what is pulled forward: a section with entries is counted through its entries
+      count={added.filter((id) => !entries.get(id)?.length).length}
       search={false}
       filter={false}
       {...props}
