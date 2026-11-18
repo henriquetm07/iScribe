@@ -196,7 +196,7 @@
  * while the Added version opens on top from top to bottom (wipe-in); the list moves with them.
  */
 .is-drawer-item-slot {
-  --is-drawer-wipe-ms: 240ms;
+  --is-drawer-wipe-ms: 200ms;
   display: grid;
   grid-template-rows: 1fr;
 }

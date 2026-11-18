@@ -28,7 +28,7 @@ export const drawerSpecLines = ({ device = 'iphone' }: { device?: DrawerDevice }
     '                    order type · Added keeps the label, in its dark version',
     `    No results      50px icon · Figtree Medium ${ipad ? 15 : 13}px, 70px above and below`,
     '',
-    '  Adding an item: both wipes play at once, 240ms: its old place closes from bottom to top while the dark',
+    '  Adding an item: both wipes play at once, 200ms: its old place closes from bottom to top while the dark',
     '  Added version opens on top of "Added …" from top to bottom; the list moves with them.',
     '  Closes with ×, a tap on the dimmed page or Escape.',
   ];

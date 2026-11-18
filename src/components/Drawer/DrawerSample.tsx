@@ -9,7 +9,7 @@ import { DrawerDiagnosesListItem, DrawerList, DrawerListTitle, DrawerMacroListIt
  */
 
 /** Length of the add animation (matches --is-drawer-wipe-ms in Drawer.css) */
-const WIPE_MS = 240;
+const WIPE_MS = 200;
 
 export type DrawerSampleKind = 'macros' | 'diagnoses' | 'orders';
 
