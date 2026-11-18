@@ -84,7 +84,7 @@ export interface DrawerSampleProps extends Omit<DrawerProps, 'children' | 'searc
 
 /**
  * A working Drawer for Macros, Diagnoses or Orders: search filters the list ("Search Results"), + adds an item (it
- * wipes out of its place while it wipes in on top of "Added …"), × removes it, and a search with no match shows "No results". No filter button.
+ * wipes out of its place while it wipes in on top of "Added …"; removing plays the reverse), × removes it, and a search with no match shows "No results". No filter button.
  */
 export const DrawerSample = ({
   kind = 'macros',
@@ -105,27 +105,30 @@ export const DrawerSample = ({
   const [added, setAdded] = useState<string[]>(defaultAdded ?? k.added);
   // Adding plays both wipes at once, same length: the item wipes out of its place (bottom to top) while its
   // Added version wipes in on top (top to bottom); the list closes and opens around them.
-  const [moving, setMoving] = useState<string | null>(null);
+  // Removing plays the reverse: the Added version wipes out while the item wipes back in at its place.
+  const [moving, setMoving] = useState<{ id: string; dir: 'add' | 'remove'; index: number } | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   useEffect(() => () => clearTimeout(timer.current), []);
   const toggle = (id: string) => {
-    if (added.includes(id)) {
-      setAdded((a) => a.filter((x) => x !== id));
-      return;
-    }
-    setAdded((a) => [id, ...a]);
+    const index = added.indexOf(id);
+    const dir = index >= 0 ? 'remove' : 'add';
+    setAdded((a) => (dir === 'remove' ? a.filter((x) => x !== id) : [id, ...a]));
     const reduced = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
     if (reduced) return;
     clearTimeout(timer.current);
-    setMoving(id);
+    setMoving({ id, dir, index });
     timer.current = setTimeout(() => setMoving(null), WIPE_MS);
   };
   const q = query.trim().toLowerCase();
 
-  /** One item. `ghost`: the copy left in the old place while it wipes out (shown as not added). */
+  /**
+   * One item. `ghost`: the copy that closes while the item moves — the old, not-added version when adding, the
+   * Added version when removing.
+   */
   const item = (it: SampleDrawerItem, ghost = false) => {
-    const isAdded = !ghost && added.includes(it.id);
-    const motion = moving === it.id ? (ghost ? 'wipe-out' : 'wipe-in') : undefined;
+    const m = moving?.id === it.id ? moving : null;
+    const isAdded = ghost ? m?.dir === 'remove' : added.includes(it.id);
+    const motion = m ? (ghost ? 'wipe-out' : 'wipe-in') : undefined;
     const key = ghost ? `${it.id}-out` : it.id;
     return kind === 'macros' ? (
       <DrawerMacroListItem
@@ -157,24 +160,32 @@ export const DrawerSample = ({
     content = found.length ? (
       <DrawerList>
         <DrawerListTitle device={device}>Search Results</DrawerListTitle>
-        {/* While moving, the Added version opens on top of the old one, which closes */}
-        {found.flatMap((it) => (it.id === moving ? [item(it), item(it, true)] : [item(it)]))}
+        {/* While moving, the new version opens and the old one closes in the same spot (Added version on top) */}
+        {found.flatMap((it) =>
+          moving?.id !== it.id ? [item(it)] : moving.dir === 'add' ? [item(it), item(it, true)] : [item(it, true), item(it)],
+        )}
       </DrawerList>
     ) : (
       <DrawerNoResults device={device} query={query.trim()} />
     );
   } else {
-    const addedItems = added.map((id) => list.find((it) => it.id === id)).filter((it): it is SampleDrawerItem => !!it);
+    const find = (id: string) => list.find((it) => it.id === id);
+    const addedItems = added.map(find).filter((it): it is SampleDrawerItem => !!it);
+    // The Added list, with the Added version closing at its old place while it is removed
+    const addedRows = addedItems.map((it) => item(it));
+    const removing = moving?.dir === 'remove' ? find(moving.id) : undefined;
+    if (removing && moving) addedRows.splice(Math.min(moving.index, addedRows.length), 0, item(removing, true));
+    const adding = moving?.dir === 'add' ? moving.id : null;
     content = (
       <DrawerList>
-        {addedItems.length > 0 && (
+        {addedRows.length > 0 && (
           <>
             <DrawerListTitle device={device}>Added {k.noun}</DrawerListTitle>
-            {addedItems.map((it) => item(it))}
+            {addedRows}
           </>
         )}
         <DrawerListTitle device={device}>All {k.noun}</DrawerListTitle>
-        {list.filter((it) => !added.includes(it.id) || it.id === moving).map((it) => item(it, it.id === moving))}
+        {list.filter((it) => !added.includes(it.id) || it.id === adding).map((it) => item(it, it.id === adding))}
       </DrawerList>
     );
   }

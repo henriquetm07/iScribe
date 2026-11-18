@@ -30,6 +30,7 @@ export const drawerSpecLines = ({ device = 'iphone' }: { device?: DrawerDevice }
     '',
     '  Adding an item: both wipes play at once, 200ms: its old place closes from bottom to top while the dark',
     '  Added version opens on top of "Added …" from top to bottom; the list moves with them.',
+    '  Removing plays the reverse: the Added version closes while the item opens again at its place.',
     '  Closes with ×, a tap on the dimmed page or Escape.',
   ];
 };
