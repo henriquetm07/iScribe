@@ -93,6 +93,7 @@ export const DrawerSample = ({
   icon,
   searchPlaceholder,
   filter,
+  filterCount = 0,
   ...props
 }: DrawerSampleProps) => {
   const k = drawerSampleKinds[kind];
@@ -153,6 +154,7 @@ export const DrawerSample = ({
       searchValue={query}
       onSearchChange={setQuery}
       filter={filter ?? k.filter}
+      filterCount={filterCount}
       {...props}
     >
       {content}
