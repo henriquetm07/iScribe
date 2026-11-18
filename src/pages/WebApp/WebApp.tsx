@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Icon } from '../../icons/Icon';
 import type { IconName } from '../../icons/icons';
 import { IconButton } from '../../components/IconButton/IconButton';
@@ -16,6 +16,7 @@ import { samplePreviousNote } from '../../components/RTNItems/samplePreviousNote
 import { ScheduleSideBar, type ScheduleSideBarAppointment } from '../../components/ScheduleSideBar/ScheduleSideBar';
 import { samplePending, sampleDepartments, sampleProviders, sampleSideBarAppointments } from '../../components/ScheduleSideBar/sampleSchedule';
 import { Tabs } from '../../components/Tabs/Tabs';
+import { Tooltip } from '../../components/Tooltip/Tooltip';
 import { WebNavBar, type WebNavBarItem } from '../../components/WebNavBar/WebNavBar';
 import '../../components/RTNItems/RTNItems.css';
 import '../../components/RTNItems/PreviousNote.css';
@@ -28,6 +29,7 @@ import './WebApp.css';
  * microphone settings button in the bottom-left corner. Every part is the Storybook component, behaviour included.
  * The + on Macros, Diagnoses or Orders opens that Drawer from the right, over everything; what is picked there
  * shows up in the note (× removes it, here or in the drawer).
+ * A new note shows the "Say it, don't type it" tooltip next to the demographics until it is closed or a recording starts.
  */
 
 export const webAppNavItems: WebNavBarItem[] = [
@@ -221,6 +223,39 @@ const VisitNote = ({ sections, onActivity }: { sections: PreviousNoteSection[]; 
   );
 };
 
+/**
+ * "Say it, don't type it": on a new note, a Tooltip to the right of the patient's demographics (tip on its left,
+ * pointing at them). Placed from the demographics' position in the Note section, and kept there as they change.
+ */
+const DemographicsTip = ({ onClose }: { onClose: () => void }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState<{ left: number; top: number } | null>(null);
+  useLayoutEffect(() => {
+    const note = ref.current?.parentElement;
+    if (!note) return;
+    const measure = () => {
+      const patient = note.querySelector('.is-rtn-patient');
+      if (!patient) return;
+      const n = note.getBoundingClientRect();
+      const r = patient.getBoundingClientRect();
+      setPos({ left: r.right - n.left + 20, top: r.top - n.top + r.height / 2 });
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(note);
+    const patient = note.querySelector('.is-rtn-patient');
+    if (patient) ro.observe(patient);
+    return () => ro.disconnect();
+  }, []);
+  return (
+    <div ref={ref} className="is-webapp__demo-tip" style={pos ? { left: pos.left, top: pos.top } : { visibility: 'hidden' }}>
+      <Tooltip tip="left" title="Say it, don't type it" onClose={onClose}>
+        Just say the patient's demographics during your recording. We'll fill these fields in automatically.
+      </Tooltip>
+    </div>
+  );
+};
+
 export interface WebAppProps {
   /** Start with the Schedule Side Bar collapsed (180px) */
   defaultCollapsed?: boolean;
@@ -243,6 +278,9 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
   const sections = samplePreviousNote.sections as PreviousNoteSection[];
 
   const updateNew = (id: string, change: Partial<NewNote>) => setNewNotes((list) => list.map((n) => (n.id === id ? { ...n, ...change } : n)));
+  // New notes whose "Say it, don't type it" tip was closed or made obsolete by a recording
+  const [tipDismissed, setTipDismissed] = useState<string[]>([]);
+  const dismissTip = (id: string) => setTipDismissed((d) => (d.includes(id) ? d : [...d, id]));
   const start = (id: string) => setNewNotes((list) => list.map((n) => (n.id === id && !n.started ? { ...n, started: true } : n)));
 
   /** Leaving a new note that was never touched (no demographics, recording or items) erases it */
@@ -304,7 +342,11 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
               checkedIn=""
               patient={newNote.patient ?? null}
               onPatientChange={(patient) => updateNew(newNote.id, { patient, started: true })}
-              onRecordStateChange={(state) => state !== 'idle' && start(newNote.id)}
+              onRecordStateChange={(state) => {
+                if (state === 'idle') return;
+                start(newNote.id);
+                dismissTip(newNote.id);
+              }}
             />
           ) : (
             <RTNHeader
@@ -315,6 +357,7 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
               patient={toPatient(appointment)}
             />
           )}
+          {newNote && !tipDismissed.includes(newNote.id) && <DemographicsTip key={newNote.id} onClose={() => dismissTip(newNote.id)} />}
           <div className="is-webapp__board">
             <VisitNote
               key={appointment.id}
