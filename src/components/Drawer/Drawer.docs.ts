@@ -16,7 +16,7 @@ export const drawerSpecLines = ({ device = 'iphone' }: { device?: DrawerDevice }
       ? '  Drawer      sheet from the bottom, full width, 634–660px tall, top corners 30px'
       : '  Drawer      panel from the right, full height, up to 500px wide',
     '              elevated background, shadow 0 0 20px basic shadow · slides in/out in 320ms',
-    `  Header      Drawer Header (${name[device]}): title, ×, search (with × to clear) and filter`,
+    `  Header      Drawer Header (${name[device]}): title, ×, search (with × to clear); filter button for Orders only`,
     '  Main area   the content, under the header; scrolls when taller than the drawer',
     '',
     '  Content (Figma "List items"): 20px padding, 10px apart',
@@ -24,6 +24,8 @@ export const drawerSpecLines = ({ device = 'iphone' }: { device?: DrawerDevice }
     `    Macro item      corners 16px, 1px medium contrast line · name Figtree Medium ${ipad ? 16 : 14}px / 20px`,
     `                    section label (${ipad ? 'Big' : 'Small'}, low contrast) · source Relative Mono ${ipad ? 12 : 11}px low contrast`,
     `                    + ${ipad ? 20 : 16}px in a 60px wide area · Added: primary button background, white text, ×`,
+    `    Diagnoses item  (Diagnoses and Orders) same card · name, then its label (${ipad ? 'Medium 22px' : 'Small 18px'}): the ICD code or the`,
+    '                    order type · Added keeps the label, in its dark version',
     `    No results      50px icon · Figtree Medium ${ipad ? 15 : 13}px, 70px above and below`,
     '',
     '  Closes with ×, a tap on the dimmed page or Escape.',

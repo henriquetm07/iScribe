@@ -1,13 +1,15 @@
-import type { ReactNode } from 'react';
+import { useRef, type ReactNode } from 'react';
 import { Icon } from '../../icons/Icon';
 import { RtnLabel } from '../RTNItems/RTNItems';
+import { useThemeAround } from '../ScheduleList/ScheduleList';
 import type { DrawerDevice } from './DrawerHeader';
 import '../RTNItems/RTNItems.css';
 import './Drawer.css';
 
 /*
  * The content of the Drawer's main area in Figma "Drawer List Modal": the list (a title per group, e.g.
- * "Added Macros" / "All Macros" / "Search Results"), the Drawer Macro List Item and the "No results" message.
+ * "Added Macros" / "All Macros" / "Search Results"), the Drawer Macro List Item, the Drawer Diagnoses List Item
+ * (also used for Orders) and the "No results" message.
  * Web uses the compact (iPhone) sizes, like its Drawer Header.
  */
 
@@ -56,6 +58,47 @@ export const DrawerMacroListItem = ({ device = 'iphone', name, section, source, 
             {source && <span className="is-drawer-item__source">{source}</span>}
           </span>
         )}
+      </span>
+      <span className="is-drawer-item__action" aria-hidden="true">
+        <Icon name={added ? 'close' : 'add'} size={big ? 20 : 16} />
+      </span>
+    </button>
+  );
+};
+
+export interface DrawerDiagnosesListItemProps {
+  device?: DrawerDevice;
+  /** The diagnosis or order */
+  name: string;
+  /** Its label: the ICD code (e.g. "S83.241A") or the order type (e.g. "Lab", "Imaging") */
+  label: string;
+  /** Added: dark, with × to remove it (the label stays, in its dark version). Otherwise outlined, with +. */
+  added?: boolean;
+  /** Called with the tap: adds it, or removes it when added */
+  onToggle?: () => void;
+}
+
+/** Figma "Drawer Diagnoses List Item" (Diagnoses and Orders): name and label, Default (+) or Added (dark, ×) */
+export const DrawerDiagnosesListItem = ({ device = 'iphone', name, label, added = false, onToggle }: DrawerDiagnosesListItemProps) => {
+  const big = device === 'ipad';
+  const ref = useRef<HTMLSpanElement>(null);
+  const around = useThemeAround(ref);
+  return (
+    <button
+      type="button"
+      className={['is-drawer-item', `is-drawer-item--${device}`, added && 'is-drawer-item--added'].filter(Boolean).join(' ')}
+      aria-pressed={added}
+      aria-label={`${added ? 'Remove' : 'Add'} ${name} (${label})`}
+      onClick={onToggle}
+    >
+      <span className="is-drawer-item__text">
+        <span className="is-drawer-item__name">{name}</span>
+        {/* On the dark Added item the label uses the other mode's colours */}
+        <span ref={ref} className="is-drawer-item__label" data-theme={added ? (around === 'dark' ? 'light' : 'dark') : undefined}>
+          <RtnLabel device={big ? 'ipad' : 'iphone'} size={big ? 'medium' : 'small'}>
+            {label}
+          </RtnLabel>
+        </span>
       </span>
       <span className="is-drawer-item__action" aria-hidden="true">
         <Icon name={added ? 'close' : 'add'} size={big ? 20 : 16} />

@@ -7,7 +7,7 @@ import { Button } from '../Button/Button';
 import { Drawer, type DrawerProps } from './Drawer';
 import { drawerSpecComment } from './Drawer.docs';
 import type { DrawerDevice } from './DrawerHeader';
-import { MacroDrawerSample } from './MacroDrawerSample';
+import { DrawerSample, drawerSampleKinds, drawerSampleOptions, type DrawerSampleKind } from './DrawerSample';
 
 const caption = { fontFamily: 'var(--is-font-ui)', fontSize: 12, color: 'var(--is-foreground-low-contrast-primary-foreground)' } as const;
 const deviceName: Record<DrawerDevice, string> = { iphone: 'iPhone', ipad: 'iPad', web: 'Web' };
@@ -19,9 +19,10 @@ const SCREEN: Record<DrawerDevice, { w: number; h: number; scale: number; radius
   web: { w: 1280, h: 800, scale: 0.55, radius: 12 },
 };
 
-/** A device screen: the page with an "Add Macros" button, and the drawer opening inside it */
-const Screen = ({ device, children, onOpen }: { device: DrawerDevice; children: ReactNode; onOpen?: () => void }) => {
+/** A device screen: the page with an "Add …" button, and the drawer opening inside it */
+const Screen = ({ device, kind, children, onOpen }: { device: DrawerDevice; kind: DrawerSampleKind; children: ReactNode; onOpen?: () => void }) => {
   const s = SCREEN[device];
+  const k = drawerSampleKinds[kind];
   return (
     <div style={{ width: s.w * s.scale, height: s.h * s.scale, flex: 'none' }}>
       <div
@@ -40,8 +41,8 @@ const Screen = ({ device, children, onOpen }: { device: DrawerDevice; children: 
           justifyContent: 'center',
         }}
       >
-        <Button variant="secondary" size={device === 'ipad' ? 'xl' : 'regular'} iconLeft={<Icon name="macros" />} onClick={onOpen}>
-          Add Macros
+        <Button variant="secondary" size={device === 'ipad' ? 'xl' : 'regular'} iconLeft={<Icon name={k.icon} />} onClick={onOpen}>
+          {k.title}
         </Button>
         {children}
       </div>
@@ -49,25 +50,29 @@ const Screen = ({ device, children, onOpen }: { device: DrawerDevice; children: 
   );
 };
 
+/** Story args: the Drawer's props, plus which content it shows (picked with the dropdown on the canvas) */
+type StoryArgs = DrawerProps & { content: DrawerSampleKind };
+
 const meta = {
   title: 'Components/Drawer/Drawer',
   component: Drawer,
   args: {
+    content: 'macros',
     device: 'iphone',
     open: true,
-    icon: 'macros',
-    title: 'Add Macros',
     description: '',
     search: true,
-    searchPlaceholder: 'Search Macros...',
-    filter: false,
-    filterCount: 0,
     closeButton: true,
     onClose: fn(),
     onFilter: fn(),
   },
   argTypes: {
+    content: { control: 'inline-radio', options: ['macros', 'diagnoses', 'orders'], description: 'Macros, Diagnoses or Orders' },
     device: { control: 'inline-radio', options: ['iphone', 'ipad', 'web'] },
+    icon: { control: 'select', options: ['macros', 'diagnosis', 'order'], description: 'Icon before the title (default: the content’s)' },
+    title: { control: 'text', description: 'Title (default: “Add Macros”, “Add Diagnoses” or “Add Orders”)' },
+    searchPlaceholder: { control: 'text' },
+    filter: { control: 'boolean', description: 'Filter button next to the search field (default: only for Orders)' },
     filterCount: { control: { type: 'number', min: 0, max: 999 } },
     open: { description: 'Shown or hidden. It slides in and out.' },
     children: { table: { disable: true } },
@@ -80,51 +85,63 @@ const meta = {
   },
   parameters: {
     layout: 'centered',
+    // Macros / Diagnoses / Orders dropdown on the canvas, next to the device tabs
+    canvasSelect: { arg: 'content', label: 'Content', options: drawerSampleOptions },
     docs: {
       source: {
-        transform: (_code: string, ctx: { args: DrawerProps }) => {
+        transform: (_code: string, ctx: { args: StoryArgs }) => {
           const a = ctx.args;
+          const k = drawerSampleKinds[a.content ?? 'macros'];
+          const d = a.device ?? 'iphone';
+          const filter = a.filter ?? k.filter;
+          const item =
+            a.content === 'macros' || !a.content
+              ? (added: boolean) =>
+                  `<DrawerMacroListItem device="${d}" name="${k.items[added ? 0 : 1].name}"${added ? ' added' : ` section="${k.items[1].label}" source="Athena"`} onToggle={…} />`
+              : (added: boolean) => `<DrawerDiagnosesListItem device="${d}" name="${k.items[added ? 0 : 1].name}" label="${k.items[added ? 0 : 1].label}"${added ? ' added' : ''} onToggle={…} />`;
           return `${drawerSpecComment(a)}
 <Drawer
-  device="${a.device ?? 'iphone'}"
+  device="${d}"
   open={${a.open ?? false}}
   onClose={() => setOpen(false)}
-  icon="${a.icon ?? 'macros'}"
-  title="${a.title ?? 'Add Macros'}"
-  searchPlaceholder="${a.searchPlaceholder ?? 'Search Macros...'}"
+  icon="${a.icon ?? k.icon}"
+  title="${a.title ?? k.title}"
+  searchPlaceholder="${a.searchPlaceholder ?? k.placeholder}"
   searchValue={query}
   onSearchChange={setQuery}
-${a.filter ? `  filterCount={${a.filterCount ?? 0}}\n` : '  filter={false}\n'}>
+${filter ? (a.filterCount ? `  filterCount={${a.filterCount}}\n` : '') : '  filter={false}\n'}>
   <DrawerList>
-    <DrawerListTitle device="${a.device ?? 'iphone'}">Added Macros</DrawerListTitle>
-    <DrawerMacroListItem device="${a.device ?? 'iphone'}" name="Insert normal shoulder exam" added onToggle={…} />
-    <DrawerListTitle device="${a.device ?? 'iphone'}">All Macros</DrawerListTitle>
-    <DrawerMacroListItem device="${a.device ?? 'iphone'}" name="Physical examination: within normal limits" section="PE" source="Athena" onToggle={…} />
+    <DrawerListTitle device="${d}">Added ${k.noun}</DrawerListTitle>
+    ${item(true)}
+    <DrawerListTitle device="${d}">All ${k.noun}</DrawerListTitle>
+    ${item(false)}
   </DrawerList>
 </Drawer>`;
         },
       },
     },
   },
-  /* Inside a device screen. "Add Macros" opens it again after closing. */
+  /* Inside a device screen. The button behind it opens it again after closing. */
   render: function Render(args) {
     const [, updateArgs] = useArgs();
-    const device = args.device ?? 'iphone';
+    const { content = 'macros', ...props } = args as StoryArgs;
+    const device = props.device ?? 'iphone';
     return (
-      <Screen device={device} onOpen={() => updateArgs({ open: true })}>
-        <MacroDrawerSample
-          key={device}
-          {...args}
+      <Screen device={device} kind={content} onOpen={() => updateArgs({ open: true })}>
+        <DrawerSample
+          key={`${device}-${content}`}
+          kind={content}
+          {...props}
           contained
           onClose={() => {
-            args.onClose?.();
+            props.onClose?.();
             updateArgs({ open: false });
           }}
         />
       </Screen>
     );
   },
-} satisfies Meta<typeof Drawer>;
+} satisfies Meta<StoryArgs>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -140,10 +157,12 @@ export const SearchResults: Story = {
   name: 'Search results',
   render: function Render(args) {
     const [, updateArgs] = useArgs();
-    const device = args.device ?? 'iphone';
+    const { content = 'macros', ...props } = args as StoryArgs;
+    const device = props.device ?? 'iphone';
+    const query = { macros: 'exam', diagnoses: 'right', orders: 'MRI' }[content];
     return (
-      <Screen device={device} onOpen={() => updateArgs({ open: true })}>
-        <MacroDrawerSample key={device} {...args} contained defaultQuery="exam" onClose={() => updateArgs({ open: false })} />
+      <Screen device={device} kind={content} onOpen={() => updateArgs({ open: true })}>
+        <DrawerSample key={`${device}-${content}`} kind={content} {...props} contained defaultQuery={query} onClose={() => updateArgs({ open: false })} />
       </Screen>
     );
   },
@@ -154,29 +173,40 @@ export const NoResults: Story = {
   name: 'No results',
   render: function Render(args) {
     const [, updateArgs] = useArgs();
-    const device = args.device ?? 'iphone';
+    const { content = 'macros', ...props } = args as StoryArgs;
+    const device = props.device ?? 'iphone';
     return (
-      <Screen device={device} onOpen={() => updateArgs({ open: true })}>
-        <MacroDrawerSample key={device} {...args} contained defaultQuery="Macro Typing" onClose={() => updateArgs({ open: false })} />
+      <Screen device={device} kind={content} onOpen={() => updateArgs({ open: true })}>
+        <DrawerSample
+          key={`${device}-${content}`}
+          kind={content}
+          {...props}
+          contained
+          defaultQuery={{ macros: 'Macro Typing', diagnoses: 'Diagnoses Typing', orders: 'Orders Typing' }[content]}
+          onClose={() => updateArgs({ open: false })}
+        />
       </Screen>
     );
   },
 };
 
-/** Every device — mirrors the Figma "Drawer List Modal" sheet */
+/** Every device — mirrors the Figma "Drawer" sheets. Pick Macros, Diagnoses or Orders on the canvas. */
 export const AllDevices: Story = {
   name: 'All devices',
   parameters: { controls: { disable: true } },
-  render: () => (
-    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 32 }}>
-      {(['iphone', 'ipad', 'web'] as DrawerDevice[]).map((device) => (
-        <div key={device} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          <span style={{ ...caption, fontWeight: 600, color: 'var(--is-foreground-high-contrast-primary-foreground)' }}>{deviceName[device]}</span>
-          <Screen device={device}>
-            <MacroDrawerSample device={device} open contained />
-          </Screen>
-        </div>
-      ))}
-    </div>
-  ),
+  render: (args) => {
+    const content = (args as StoryArgs).content ?? 'macros';
+    return (
+      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 32 }}>
+        {(['iphone', 'ipad', 'web'] as DrawerDevice[]).map((device) => (
+          <div key={device} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <span style={{ ...caption, fontWeight: 600, color: 'var(--is-foreground-high-contrast-primary-foreground)' }}>{deviceName[device]}</span>
+            <Screen device={device} kind={content}>
+              <DrawerSample key={content} kind={content} device={device} open contained />
+            </Screen>
+          </div>
+        ))}
+      </div>
+    );
+  },
 };

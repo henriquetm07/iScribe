@@ -166,6 +166,12 @@
 .is-drawer-item--ipad .is-drawer-item__meta .is-rtn-label {
   min-width: 44px;
 }
+.is-drawer-item__label {
+  display: flex;
+}
+.is-drawer-item__label .is-rtn-label {
+  min-width: 44px;
+}
 .is-drawer-item__source {
   font-family: 'Relative Mono Pro 10 Pitch', 'Relative Mono 10 Pitch', ui-monospace, 'SF Mono', Menlo, monospace;
   font-size: 11px;

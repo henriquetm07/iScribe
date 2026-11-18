@@ -57,7 +57,8 @@ export { SelectionListItem, type SelectionListItemProps, type SelectionListDevic
 export { Dropdown, DropdownField, type DropdownProps, type DropdownFieldProps, type DropdownDevice } from './components/Dropdown/Dropdown';
 export { DrawerHeader, DrawerHeaderTitle, type DrawerHeaderProps, type DrawerHeaderTitleProps, type DrawerDevice } from './components/Drawer/DrawerHeader';
 export { Drawer, DRAWER_MS, type DrawerProps } from './components/Drawer/Drawer';
-export { DrawerList, DrawerListTitle, DrawerMacroListItem, DrawerNoResults, type DrawerMacroListItemProps } from './components/Drawer/DrawerList';
+export { DrawerList, DrawerListTitle, DrawerMacroListItem, DrawerDiagnosesListItem, DrawerNoResults, type DrawerMacroListItemProps, type DrawerDiagnosesListItemProps } from './components/Drawer/DrawerList';
+export { DrawerSample, drawerSampleKinds, drawerSampleOptions, sampleDiagnoses, sampleOrders, type DrawerSampleProps, type DrawerSampleKind, type SampleDrawerItem } from './components/Drawer/DrawerSample';
 export { MacroDrawerSample, sampleMacros, type MacroDrawerSampleProps, type SampleMacro } from './components/Drawer/MacroDrawerSample';
 export { Tabs, TabItem, type TabsProps, type TabItemProps, type TabsOption, type TabsDevice } from './components/Tabs/Tabs';
 export { WebNavBar, type WebNavBarProps, type WebNavBarItem, type WebNavBarAvatar, type WebNavBarMenuMode } from './components/WebNavBar/WebNavBar';

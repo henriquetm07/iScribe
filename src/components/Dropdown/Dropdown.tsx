@@ -17,6 +17,8 @@ export interface DropdownFieldProps extends Omit<ButtonHTMLAttributes<HTMLButton
   active?: boolean;
   /** Show the text as a placeholder (lower contrast) */
   placeholder?: boolean;
+  /** Fully rounded (pill) corners */
+  rounded?: boolean;
   ref?: Ref<HTMLButtonElement>;
 }
 
@@ -26,6 +28,7 @@ export const DropdownField = ({
   device = 'iphone',
   active = false,
   placeholder = false,
+  rounded = false,
   className,
   type = 'button',
   ...rest
@@ -37,6 +40,7 @@ export const DropdownField = ({
       `is-dropdown-field--${device}`,
       active && 'is-dropdown-field--active',
       placeholder && 'is-dropdown-field--placeholder',
+      rounded && 'is-dropdown-field--rounded',
       className,
     ]
       .filter(Boolean)
@@ -83,6 +87,8 @@ export interface DropdownProps {
   /** Icon on the selected row of the menu (Selection List selectedIcon, default "check") */
   selectedIcon?: IconName | 'none';
   disabled?: boolean;
+  /** Fully rounded (pill) field */
+  rounded?: boolean;
   /** Accessible name, e.g. "Microphone" */
   'aria-label'?: string;
 }
@@ -106,6 +112,7 @@ export const Dropdown = ({
   visibleRows = 5,
   selectedIcon,
   disabled = false,
+  rounded = false,
   'aria-label': ariaLabel,
 }: DropdownProps) => {
   const [innerValue, setInnerValue] = useState<string | null>(defaultValue);
@@ -171,6 +178,7 @@ export const Dropdown = ({
         active={isOpen}
         placeholder={!current}
         disabled={disabled}
+        rounded={rounded}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         aria-controls={isOpen ? menuId : undefined}
