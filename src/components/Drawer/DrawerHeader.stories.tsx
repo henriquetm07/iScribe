@@ -39,7 +39,7 @@ const meta = {
     docs: {
       source: {
         transform: (code: string, ctx: { args: DrawerHeaderProps }) =>
-          `${drawerHeaderSpecComment(ctx.args)}\n${code.replace(/\n\s*on(Close|Filter|SearchChange)=\{[^}]*\}\}?/g, '')}`,
+          `${drawerHeaderSpecComment(ctx.args)}\n${code.replace(/^(\s*\/\*[\s\S]*?\*\/\s*)+/, '').replace(/\n\s*on(Close|Filter|SearchChange)=\{[^}]*\}\}?/g, '')}`,
       },
     },
   },

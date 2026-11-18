@@ -27,7 +27,7 @@ const meta = {
   parameters: {
     docs: {
       source: {
-        transform: (code: string, ctx: { args: Args }) => `${rtnItemSpecComment(ctx.args)}\n${code}`,
+        transform: (code: string, ctx: { args: Args }) => `${rtnItemSpecComment(ctx.args)}\n${code.replace(/^(\s*\/\*[\s\S]*?\*\/\s*)+/, '')}`,
       },
     },
   },

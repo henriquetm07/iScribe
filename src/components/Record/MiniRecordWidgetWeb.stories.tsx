@@ -26,7 +26,7 @@ const meta = {
       },
       source: {
         transform: (code: string, ctx: { args: MiniRecordWidgetProps }) =>
-          `${miniRecordSpecComment(ctx.args)}\n${code.replace(/\n\s*onStateChange=\{[^}]*\}\}?/g, '')}`,
+          `${miniRecordSpecComment(ctx.args)}\n${code.replace(/^(\s*\/\*[\s\S]*?\*\/\s*)+/, '').replace(/\n\s*onStateChange=\{[^}]*\}\}?/g, '')}`,
       },
     },
   },

@@ -24,7 +24,7 @@ const meta = {
     docs: {
       source: {
         transform: (code: string, ctx: { args: RecordFocusModeProps }) =>
-          `${focusModeSpecComment(ctx.args)}\n${code.replace(/\n\s*onStateChange=\{[^}]*\}\}?/g, '')}`,
+          `${focusModeSpecComment(ctx.args)}\n${code.replace(/^(\s*\/\*[\s\S]*?\*\/\s*)+/, '').replace(/\n\s*onStateChange=\{[^}]*\}\}?/g, '')}`,
       },
     },
   },

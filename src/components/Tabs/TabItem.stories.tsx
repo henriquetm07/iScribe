@@ -27,7 +27,7 @@ const meta = {
     docs: {
       source: {
         transform: (code: string, ctx: { args: TabItemProps }) =>
-          `${tabItemSpecComment(ctx.args)}\n${code.replace(/\n\s*onClick=\{[^}]*\}\}?/g, '')}`,
+          `${tabItemSpecComment(ctx.args)}\n${code.replace(/^(\s*\/\*[\s\S]*?\*\/\s*)+/, '').replace(/\n\s*onClick=\{[^}]*\}\}?/g, '')}`,
       },
     },
   },

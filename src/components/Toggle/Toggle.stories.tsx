@@ -26,7 +26,7 @@ const meta = {
     docs: {
       source: {
         transform: (code: string, ctx: { args: ToggleProps }) =>
-          `${toggleSpecComment(ctx.args)}\n${code.replace(/\n\s*onChange=\{[^}]*\}\}?/g, '')}`,
+          `${toggleSpecComment(ctx.args)}\n${code.replace(/^(\s*\/\*[\s\S]*?\*\/\s*)+/, '').replace(/\n\s*onChange=\{[^}]*\}\}?/g, '')}`,
       },
     },
   },

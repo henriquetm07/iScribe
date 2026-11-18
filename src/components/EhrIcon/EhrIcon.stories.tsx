@@ -19,7 +19,7 @@ const meta = {
   parameters: {
     docs: {
       source: {
-        transform: (code: string, ctx: { args: EhrIconProps }) => `${ehrIconSpecComment(ctx.args.ehr, ctx.args.integrated)}\n${code}`,
+        transform: (code: string, ctx: { args: EhrIconProps }) => `${ehrIconSpecComment(ctx.args.ehr, ctx.args.integrated)}\n${code.replace(/^(\s*\/\*[\s\S]*?\*\/\s*)+/, '')}`,
       },
     },
   },

@@ -38,7 +38,7 @@ const meta = {
   parameters: {
     docs: {
       source: {
-        transform: (code: string, ctx: { args: ScheduleListItemProps }) => `${scheduleListItemSpecComment(ctx.args)}\n${code}`,
+        transform: (code: string, ctx: { args: ScheduleListItemProps }) => `${scheduleListItemSpecComment(ctx.args)}\n${code.replace(/^(\s*\/\*[\s\S]*?\*\/\s*)+/, '')}`,
       },
     },
   },

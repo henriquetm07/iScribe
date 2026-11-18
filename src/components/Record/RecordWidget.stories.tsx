@@ -34,7 +34,7 @@ const meta = {
     docs: {
       source: {
         transform: (code: string, ctx: { args: RecordWidgetProps }) =>
-          `${recordWidgetSpecComment(ctx.args)}\n${code.replace(/\n\s*onStateChange=\{[^}]*\}\}?/g, '')}`,
+          `${recordWidgetSpecComment(ctx.args)}\n${code.replace(/^(\s*\/\*[\s\S]*?\*\/\s*)+/, '').replace(/\n\s*onStateChange=\{[^}]*\}\}?/g, '')}`,
       },
     },
   },

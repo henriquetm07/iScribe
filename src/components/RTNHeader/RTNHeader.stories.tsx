@@ -58,7 +58,7 @@ const meta = {
     docs: {
       source: {
         transform: (code: string, ctx: { args: StoryArgs }) =>
-          `${rtnHeaderSpecComment({ ...ctx.args, patient: ctx.args.filledIn === false ? null : sarah })}\n${code
+          `${rtnHeaderSpecComment({ ...ctx.args, patient: ctx.args.filledIn === false ? null : sarah })}\n${code.replace(/^(\s*\/\*[\s\S]*?\*\/\s*)+/, '')
             .replace(/\n\s*on[A-Z]\w*=\{[^}]*\}\}?/g, '')
             .replace(/\n\s*filledIn(=\{[^}]*\})?/g, '')
             .replace(/\n\s*showCheckedIn(=\{[^}]*\})?/g, '')}`,
