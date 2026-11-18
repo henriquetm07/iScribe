@@ -1,4 +1,4 @@
-import type { ChangeEvent, HTMLAttributes } from 'react';
+import { useRef, useState, type HTMLAttributes } from 'react';
 import { Icon } from '../../icons/Icon';
 import type { IconName } from '../../icons/icons';
 import { IconButton } from '../IconButton/IconButton';
@@ -52,7 +52,7 @@ export interface DrawerHeaderProps extends Omit<HTMLAttributes<HTMLDivElement>, 
   /** Show the search field */
   search?: boolean;
   searchPlaceholder?: string;
-  /** Search text (controlled). Leave undefined to let the field keep its own text. */
+  /** Search text (controlled). Leave undefined to let the field keep its own text. Typing shows a × that clears it. */
   searchValue?: string;
   onSearchChange?: (value: string) => void;
   /** Show the filter Icon Button next to the search field */
@@ -85,6 +85,14 @@ export const DrawerHeader = ({
   ...props
 }: DrawerHeaderProps) => {
   const big = device === 'ipad';
+  const inputRef = useRef<HTMLInputElement>(null);
+  // Uncontrolled unless searchValue is given
+  const [ownText, setOwnText] = useState('');
+  const text = searchValue ?? ownText;
+  const changeText = (value: string) => {
+    if (searchValue === undefined) setOwnText(value);
+    onSearchChange?.(value);
+  };
   return (
     <div
       className={['is-drawer-header', `is-drawer-header--${device}`, className].filter(Boolean).join(' ')}
@@ -103,12 +111,26 @@ export const DrawerHeader = ({
             <label className="is-drawer-search">
               <Icon name="search" size={big ? 30 : 20} />
               <input
+                ref={inputRef}
                 type="search"
                 placeholder={searchPlaceholder}
                 aria-label={searchPlaceholder.replace(/\.+$|…$/, '')}
-                {...(searchValue !== undefined ? { value: searchValue } : {})}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => onSearchChange?.(e.target.value)}
+                value={text}
+                onChange={(e) => changeText(e.target.value)}
               />
+              {text && (
+                <button
+                  type="button"
+                  className="is-drawer-search__clear"
+                  aria-label="Clear search"
+                  onClick={() => {
+                    changeText('');
+                    inputRef.current?.focus();
+                  }}
+                >
+                  <Icon name="close" size={big ? 30 : 20} />
+                </button>
+              )}
             </label>
           )}
           {filter && (

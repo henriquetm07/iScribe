@@ -148,6 +148,18 @@
 .is-drawer-search input::-webkit-search-cancel-button {
   -webkit-appearance: none;
 }
+.is-drawer-search__clear {
+  display: flex;
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--is-foreground-medium-contrast-primary-foreground);
+  cursor: pointer;
+}
+.is-drawer-search__clear:where(:not([class*='--iphone'], [class*='--ipad'], [class*='--iphone'] *, [class*='--ipad'] *)):hover {
+  color: var(--is-foreground-high-contrast-primary-foreground);
+}
 .is-drawer-search:focus-within {
   border-color: var(--is-surface-medium-contrast-background);
 }

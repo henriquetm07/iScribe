@@ -1,0 +1,210 @@
+/*
+ * Drawer — Figma "Drawer List Modal" (731:5793). Colors are the --is- variables, so light and dark mode follow
+ * data-theme. Hover only on Web (never on iPhone / iPad).
+ */
+
+/* ---------- Modal ---------- */
+.is-drawer {
+  --is-drawer-ms: 320ms;
+  --is-drawer-ease: cubic-bezier(0.32, 0.72, 0, 1);
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  overflow: hidden;
+  font-family: var(--is-font-ui);
+}
+.is-drawer--contained {
+  position: absolute;
+  z-index: 10;
+}
+/* Modal BG: the dimmed page */
+.is-drawer__backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--is-background-modal-background);
+  opacity: 1;
+  transition: opacity var(--is-drawer-ms) ease;
+}
+.is-drawer--closed .is-drawer__backdrop {
+  opacity: 0;
+}
+
+/* Drawer: elevated background, soft shadow; header on top, main area below */
+.is-drawer__panel {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+  background: var(--is-background-elevated-background);
+  box-shadow: 0 0 20px var(--is-shadow-basic-shadow);
+  outline: none;
+  transition: transform var(--is-drawer-ms) var(--is-drawer-ease);
+}
+.is-drawer__header {
+  flex: none;
+}
+.is-drawer__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* iPhone: a sheet from the bottom, top corners 30px, 634–660px tall */
+.is-drawer--iphone {
+  align-items: flex-end;
+}
+.is-drawer--iphone .is-drawer__panel {
+  min-height: min(634px, calc(100% - 40px));
+  max-height: min(660px, calc(100% - 40px));
+  border-radius: 30px 30px 0 0;
+}
+.is-drawer--iphone.is-drawer--closed .is-drawer__panel {
+  transform: translateY(100%);
+}
+
+/* iPad and Web: a panel from the right, full height, up to 500px wide */
+.is-drawer--ipad,
+.is-drawer--web {
+  justify-content: flex-end;
+}
+.is-drawer--ipad .is-drawer__panel,
+.is-drawer--web .is-drawer__panel {
+  max-width: 500px;
+  height: 100%;
+}
+.is-drawer--ipad.is-drawer--closed .is-drawer__panel,
+.is-drawer--web.is-drawer--closed .is-drawer__panel {
+  transform: translateX(calc(100% + 24px)); /* + the shadow */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-drawer {
+    --is-drawer-ms: 1ms;
+  }
+}
+
+/* ---------- Main area content ---------- */
+.is-drawer-list {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  padding: 20px;
+}
+.is-drawer-list__title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--is-foreground-high-contrast-primary-foreground);
+}
+.is-drawer-list__title--ipad {
+  font-size: 17px;
+}
+
+/* Drawer Macro List Item */
+.is-drawer-item {
+  box-sizing: border-box;
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--is-surface-medium-contrast-background);
+  border-radius: var(--is-round-xl, 16px);
+  background: none;
+  font: inherit;
+  text-align: left;
+  color: var(--is-foreground-high-contrast-primary-foreground);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.is-drawer-item--added {
+  border-color: var(--is-button-primary-default-bg);
+  background: var(--is-button-primary-default-bg);
+  color: var(--is-foreground-high-contrast-secondary-foreground);
+}
+.is-drawer-item:where(:not([class*='--iphone'], [class*='--ipad'], [class*='--iphone'] *, [class*='--ipad'] *)):hover:not(.is-drawer-item--added) {
+  background: var(--is-surface-super-soft-contrast-background);
+}
+.is-drawer-item:focus-visible {
+  outline: 2px solid var(--is-status-foreground-positive-pw);
+  outline-offset: 2px;
+}
+.is-drawer-item__text {
+  display: flex;
+  flex: 1 0 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  min-width: 0;
+  padding: 10px;
+}
+.is-drawer-item__name {
+  width: 100%;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+.is-drawer-item--ipad .is-drawer-item__name {
+  font-size: 16px;
+}
+.is-drawer-item__meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.is-drawer-item__meta .is-rtn-label {
+  min-width: 30px;
+}
+.is-drawer-item--ipad .is-drawer-item__meta .is-rtn-label {
+  min-width: 44px;
+}
+.is-drawer-item__source {
+  font-family: 'Relative Mono Pro 10 Pitch', 'Relative Mono 10 Pitch', ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 11px;
+  line-height: 18px;
+  color: var(--is-foreground-low-contrast-primary-foreground);
+}
+.is-drawer-item--ipad .is-drawer-item__source {
+  font-size: 12px;
+}
+.is-drawer-item__action {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* No results */
+.is-drawer-empty {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 70px 20px;
+}
+.is-drawer-empty__text {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  letter-spacing: -0.165px;
+  text-align: center;
+  color: var(--is-foreground-high-contrast-primary-foreground);
+}
+.is-drawer-empty--ipad .is-drawer-empty__text {
+  font-size: 15px;
+}
