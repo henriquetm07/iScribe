@@ -443,6 +443,10 @@
 .is-rtn-frame__tabs {
   padding: 20px;
 }
+/* Chart Prep · Previous Note · Current Note: up to 440px wide, left aligned (iPad and Web) */
+.is-rtn-frame__tabs > .is-tabs {
+  max-width: 440px;
+}
 .is-rtn-frame__note {
   display: flex;
   flex-direction: column;

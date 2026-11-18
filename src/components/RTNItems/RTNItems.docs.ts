@@ -43,7 +43,7 @@ export const rtnFrameSpecLines = ({ device = 'web' }: { device?: RtnDevice }) =>
         `RTN Main Frame (Today) · ${device === 'ipad' ? 'iPad' : 'Web'}`,
         '',
         '  Panel       elevated background, 1px super-soft line, corners 30px, up to 900px wide',
-        `  Tabs        20px padding · Tabs (${device === 'ipad' ? 'iPad' : 'Web'}): Chart Prep · Previous Note · Current Note`,
+        `  Tabs        20px padding · Tabs (${device === 'ipad' ? 'iPad' : 'Web'}): Chart Prep · Previous Note · Current Note, up to 440px wide, left aligned`,
         '  Note        super-soft contrast background, 20px padding, 10px apart',
         '  List        RTN Items, 20px apart · "Autosaved ✓" Figtree 12px low contrast, right aligned',
       ];
