@@ -64,6 +64,7 @@
   border-radius: var(--is-round-m, 10px);
   color: var(--is-foreground-high-contrast-primary-foreground);
   white-space: nowrap;
+  width: max-content; /* as wide as its text, wherever it sits */
 }
 
 /* Tip: 18 × 9 triangle in the tooltip's colour */
