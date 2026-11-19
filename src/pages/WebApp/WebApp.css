@@ -29,6 +29,8 @@
   flex-direction: column;
   min-width: 0;
   min-height: 0;
+  /* The bottom bar waits just below this edge */
+  overflow: hidden;
 }
 .is-webapp__note > .is-rtn {
   flex-shrink: 0;
@@ -63,8 +65,40 @@
 /* Microphone settings: bottom-left corner of the Note Section */
 .is-webapp__mic {
   position: absolute;
+  z-index: 6;
   left: 20px;
   bottom: 20px;
+}
+
+/*
+ * Web Note Bottom Bar: below the note, across the note area. Hidden below the edge until the recording is
+ * stopped, then slides up (0.3s); the note gets room underneath so its end stays reachable.
+ */
+.is-webapp__bottom-bar.is-web-note-bar {
+  position: absolute;
+  z-index: 5;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: auto;
+  transform: translateY(100%);
+  visibility: hidden;
+  transition:
+    transform 300ms cubic-bezier(0.32, 0.72, 0, 1),
+    visibility 0s linear 300ms;
+}
+.is-webapp__bottom-bar--shown.is-web-note-bar {
+  transform: none;
+  visibility: visible;
+  transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.is-webapp__board--with-bar {
+  padding-bottom: 130px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-webapp__bottom-bar.is-web-note-bar {
+    transition: none;
+  }
 }
 
 /* On the docs page the app sits in a 760px box instead of filling the window */

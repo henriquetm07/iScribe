@@ -19,6 +19,7 @@ import { samplePending, sampleDepartments, sampleProviders, sampleSideBarAppoint
 import { Tabs } from '../../components/Tabs/Tabs';
 import { Tooltip } from '../../components/Tooltip/Tooltip';
 import { WebNavBar, type WebNavBarItem } from '../../components/WebNavBar/WebNavBar';
+import { WebNoteBottomBar } from '../../components/WebNoteBottomBar/WebNoteBottomBar';
 import '../../components/RTNItems/RTNItems.css';
 import '../../components/RTNItems/PreviousNote.css';
 import './WebApp.css';
@@ -340,6 +341,14 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
     setSelectedId(id);
   };
 
+  // Web Note Bottom Bar: slides up with Generate Note once the visit's recording is stopped (paused, or played
+  // back), and slides away again while recording. Kept per visit: another visit starts without it.
+  const visitId = newNote?.id ?? appointment.id;
+  const [stoppedVisit, setStoppedVisit] = useState<string | null>(null);
+  const showBottomBar = stoppedVisit === visitId;
+  const onRecordState = (id: string, state: string) =>
+    setStoppedVisit((cur) => (state === 'paused' || state === 'playing' ? id : cur === id ? null : cur));
+
   /** "New Note": an empty note at the current time, opened at once */
   const createNote = () => {
     const created = new Date();
@@ -390,6 +399,7 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
               patient={newNote.patient ?? null}
               onPatientChange={(patient) => updateNew(newNote.id, { patient, started: true })}
               onRecordStateChange={(state) => {
+                onRecordState(newNote.id, state);
                 if (state === 'idle') return;
                 start(newNote.id);
                 dismissTip(newNote.id);
@@ -402,16 +412,21 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
               date={visitDate}
               time={appointment.time}
               patient={toPatient(appointment)}
+              onRecordStateChange={(state) => onRecordState(appointment.id, state)}
             />
           )}
           {newNote && !tipDismissed.includes(newNote.id) && <DemographicsTip key={newNote.id} onClose={() => dismissTip(newNote.id)} />}
-          <div className="is-webapp__board">
+          <div className={`is-webapp__board${showBottomBar ? ' is-webapp__board--with-bar' : ''}`}>
             <VisitNote
               key={appointment.id}
               sections={newNote ? [] : sections}
               onActivity={newNote ? () => start(newNote.id) : undefined}
             />
           </div>
+          <WebNoteBottomBar
+            action="generate-note"
+            className={`is-webapp__bottom-bar${showBottomBar ? ' is-webapp__bottom-bar--shown' : ''}`}
+          />
           <div className="is-webapp__mic">
             <WebAppMicSettings />
           </div>
