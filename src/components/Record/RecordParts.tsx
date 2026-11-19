@@ -150,16 +150,19 @@ export interface RecordTextButtonProps {
   /** Fill the available width */
   block?: boolean;
   minWidth?: number;
+  /** Blocked: greyed out (Button's disabled colours), can't be pressed */
+  disabled?: boolean;
   onClick?: () => void;
   className?: string;
 }
 
 /** Text button (Start Recording, Resume, Delete) */
-export const RecordTextButton = ({ children, icon, variant = 'secondary', height, fontSize, iconSize, radius, paddingX, gap, block, minWidth, onClick, className = '' }: RecordTextButtonProps) => (
+export const RecordTextButton = ({ children, icon, variant = 'secondary', height, fontSize, iconSize, radius, paddingX, gap, block, minWidth, disabled, onClick, className = '' }: RecordTextButtonProps) => (
   <button
     type="button"
     className={`is-rec-btn is-rec-btn--${variant}${block ? ' is-rec-btn--block' : ''} ${className}`}
     style={{ height, fontSize, borderRadius: radius, padding: `0 ${paddingX}px`, gap, minWidth }}
+    disabled={disabled}
     onClick={onClick}
   >
     {icon && <Icon name={icon} size={iconSize ?? fontSize + 7} />}

@@ -70,6 +70,14 @@
   outline: 2px solid var(--is-button-accent);
   outline-offset: 2px;
 }
+/* Blocked (e.g. Resume once the note is sent): Button's disabled colours, no hover */
+.is-rec-btn:disabled,
+.is-rec-btn:disabled:hover {
+  --rec-btn-bg: var(--is-button-disabled-bg);
+  --rec-btn-fg: var(--is-foreground-medium-contrast-secondary-foreground);
+  border-color: transparent;
+  cursor: not-allowed;
+}
 
 /* ---------- Waves ---------- */
 .is-rec-waves {

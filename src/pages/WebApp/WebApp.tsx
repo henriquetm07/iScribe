@@ -37,7 +37,7 @@ import './WebApp.css';
  * shows up in the note (× removes it, here or in the drawer). Stopping the recording shows spinners on those three
  * for ~3s, fills each with 1 or 2 items, then slides up the Generate Note bar. Generate Note: a spinner for 2s, then the
  * Generated Note (Transcript · Note) in place of the note; integrated patients (EHR logo) get no copy buttons and
- * Send to EHR, the others (broken link) copy buttons and Mark as Complete. On the Previous Note tab, the big + opens Drawer › Previous Note
+ * Send to EHR, the others (broken link) copy buttons and Mark as Complete. Once sent / complete, recording is blocked. On the Previous Note tab, the big + opens Drawer › Previous Note
  * (the previous note as a checklist), in sync with the note's own + buttons.
  * A new note shows the "Say it, don't type it" tooltip next to the demographics until it is closed or a recording starts.
  */
@@ -474,6 +474,7 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
               checkedIn=""
               patient={newNote.patient ?? null}
               onPatientChange={(patient) => updateNew(newNote.id, { patient, started: true })}
+              recordLocked={!!doneAt[newNote.id]}
               onRecordStateChange={(state) => {
                 onRecordState(newNote.id, state);
                 if (state === 'idle') return;
@@ -488,6 +489,7 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
               date={visitDate}
               time={appointment.time}
               patient={toPatient(appointment)}
+              recordLocked={!!doneAt[appointment.id]}
               onRecordStateChange={(state) => onRecordState(appointment.id, state)}
             />
           )}

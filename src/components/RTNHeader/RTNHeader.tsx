@@ -405,6 +405,8 @@ export interface RTNHeaderRecordProps {
   /** The line above the playback bar, e.g. "Sarah Johnson • Visit • Oct 23, 2026" */
   title?: string;
   onStateChange?: (state: RecordState) => void;
+  /** No more recording (e.g. the note was sent to the EHR or marked as complete): Start Recording / Resume are blocked; playback still works */
+  locked?: boolean;
   className?: string;
 }
 
@@ -415,7 +417,7 @@ const WEB_BARS = 18;
  * Figma "RTN Header Web Record Feature": Start Recording (Default) → waves, red time and Stop (Recording) →
  * play/pause, the recording's title, a seekable bar and Resume (Playback).
  */
-export const RTNHeaderRecord = ({ state: initialState = 'idle', duration = 160, position = 32, title = '', onStateChange, className = '' }: RTNHeaderRecordProps) => {
+export const RTNHeaderRecord = ({ state: initialState = 'idle', duration = 160, position = 32, title = '', onStateChange, locked = false, className = '' }: RTNHeaderRecordProps) => {
   const rec = useRecorder({ initialState, initialDuration: duration, initialPosition: position, onStateChange });
   // The first Start grows the waves from dots (as in the Record Widget); Resume brings them back in full
   const [started, setStarted] = useState(false);
@@ -439,6 +441,7 @@ export const RTNHeaderRecord = ({ state: initialState = 'idle', duration = 160, 
           radius={1000}
           paddingX={20}
           gap={12}
+          disabled={locked}
           onClick={() => {
             const start = root.current?.querySelector<HTMLElement>('.is-rec-btn');
             setMorph(start ? { from: 'start', width: start.offsetWidth } : null);
@@ -512,6 +515,7 @@ export const RTNHeaderRecord = ({ state: initialState = 'idle', duration = 160, 
               radius={1000}
               paddingX={20}
               gap={12}
+              disabled={locked}
               onClick={() => {
                 setMorph(null);
                 setStarted(false);
@@ -601,6 +605,8 @@ export interface RTNHeaderProps extends Omit<RTNHeaderDetailsProps, 'className'>
   /** Playback position in seconds */
   position?: number;
   onRecordStateChange?: (state: RecordState) => void;
+  /** Recording blocked (note sent to the EHR / marked as complete): Resume and Start Recording can't be pressed */
+  recordLocked?: boolean;
   /** Called with the patient as it is edited in the header */
   onPatientChange?: (patient: RTNPatient) => void;
   className?: string;
@@ -620,6 +626,7 @@ export const RTNHeader = ({
   duration,
   position,
   onRecordStateChange,
+  recordLocked = false,
   onPatientChange,
   className = '',
   style,
@@ -647,7 +654,7 @@ export const RTNHeader = ({
             onPatientChange?.(p);
           }}
         />
-        <RTNHeaderRecord state={recordState} duration={duration} position={position} title={title} onStateChange={onRecordStateChange} />
+        <RTNHeaderRecord state={recordState} duration={duration} position={position} title={title} onStateChange={onRecordStateChange} locked={recordLocked} />
       </div>
     </header>
   );
