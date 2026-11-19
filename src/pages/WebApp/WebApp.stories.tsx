@@ -95,6 +95,9 @@ type Story = StoryObj<typeof meta>;
  * New Note (top left) opens an empty note at the current time: its card in the side bar shows placeholders and
  * "New Note" until the demographics are filled in, a recording starts or something is added to the note; then it
  * becomes "Note in Progress". A new note left untouched is erased when you open another note.
+ *
+ * Sarah Johnson starts Checked In. Appointments already Sent to EHR or Copied to EHR open on their finished note: the
+ * generated note, the recording ready to play back but locked, and "Sent to EHR at …" / "Marked as Complete at …".
  */
 export const Expanded: Story = {};
 

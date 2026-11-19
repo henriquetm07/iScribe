@@ -340,6 +340,27 @@ const WebAppMicSettings = () => {
   return <MicSettings placement="top" open={open} onOpenChange={setOpen} level={level} />;
 };
 
+/** Statuses the Web App starts with that differ from the Schedule List sample: Sarah Johnson has just checked in */
+const STATUS_OVERRIDES: Record<string, AppointmentStatusValue> = { '6': 'checked-in' };
+const withStatus = (a: ScheduleSideBarAppointment): ScheduleSideBarAppointment =>
+  STATUS_OVERRIDES[a.id] ? { ...a, status: STATUS_OVERRIDES[a.id] } : a;
+const startAppointments = sampleSideBarAppointments.map(withStatus);
+const startPending = samplePending.map(withStatus);
+
+const isDone = (status?: AppointmentStatusValue) => status === 'sent-to-ehr' || status === 'copied-to-ehr';
+
+/**
+ * Made-up history for the appointments that start out Sent to EHR / Copied to EHR: when the note went out (the visit
+ * date, 14–37 min after the appointment) and how long the recording was (4–12 min). Fixed per appointment.
+ */
+const pastNote = (a: ScheduleSideBarAppointment, visitDate: string) => {
+  const seed = [...a.id].reduce((n, c) => n * 31 + c.charCodeAt(0), 7);
+  const at = new Date(`${visitDate} ${a.time}`);
+  if (Number.isNaN(at.getTime())) at.setTime(Date.now());
+  at.setMinutes(at.getMinutes() + 14 + (seed % 24));
+  return { doneAt: at, duration: 240 + ((seed * 7) % 480) + (seed % 60) };
+};
+
 export interface WebAppProps {
   /** Start with the Schedule Side Bar collapsed (180px) */
   defaultCollapsed?: boolean;
@@ -354,15 +375,24 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
   const [selectedId, setSelectedId] = useState(defaultSelectedId);
   const [newNotes, setNewNotes] = useState<NewNote[]>([]);
   // Send to EHR / Mark as Complete: when each visit's note went out, and the status its appointment pill shows then
-  const [doneAt, setDoneAt] = useState<Record<string, Date>>({});
+  // Appointments that start out Sent to EHR / Copied to EHR come with a finished note: generated, sent, recording
+  // locked, with a made-up time it went out
+  const past = useMemo<Record<string, { doneAt: Date; duration: number }>>(
+    () =>
+      Object.fromEntries(
+        [...startAppointments, ...startPending].filter((a) => isDone(a.status)).map((a) => [a.id, pastNote(a, visitDate)]),
+      ),
+    [visitDate],
+  );
+  const [doneAt, setDoneAt] = useState<Record<string, Date>>(() => Object.fromEntries(Object.entries(past).map(([id, p]) => [id, p.doneAt])));
   const [doneStatus, setDoneStatus] = useState<Record<string, AppointmentStatusValue>>({});
   const appointments = useMemo(
-    () => [...sampleSideBarAppointments, ...newNotes.map(newNoteCard)].map((a) => (doneStatus[a.id] ? { ...a, status: doneStatus[a.id] } : a)),
+    () => [...startAppointments, ...newNotes.map(newNoteCard)].map((a) => (doneStatus[a.id] ? { ...a, status: doneStatus[a.id] } : a)),
     [newNotes, doneStatus],
   );
   const newNote = newNotes.find((n) => n.id === selectedId);
   const appointment = useMemo(
-    () => [...appointments, ...samplePending].find((a) => a.id === selectedId) ?? sampleSideBarAppointments[0],
+    () => [...appointments, ...startPending].find((a) => a.id === selectedId) ?? startAppointments[0],
     [appointments, selectedId],
   );
   const sections = samplePreviousNote.sections as PreviousNoteSection[];
@@ -393,7 +423,7 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
   // Generate Note: the note gives way to a spinner for 2s, then the Generated Note (Transcript · Note) appears and
   // the bar moves on to Mark as Complete. Per visit.
   const [generating, setGenerating] = useState<string[]>([]);
-  const [generated, setGenerated] = useState<string[]>([]);
+  const [generated, setGenerated] = useState<string[]>(() => Object.keys(past));
   const isGenerating = generating.includes(visitId);
   const isGenerated = generated.includes(visitId);
   const generateNote = (id: string) => {
@@ -457,7 +487,7 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
           platform="web"
           defaultCollapsed={defaultCollapsed}
           appointments={appointments}
-          pending={samplePending}
+          pending={startPending}
           selectedId={selectedId}
           onSelect={select}
           onNewNote={createNote}
@@ -490,6 +520,10 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
               time={appointment.time}
               patient={toPatient(appointment)}
               recordLocked={!!doneAt[appointment.id]}
+              // A finished visit opens on its recording, ready to play back
+              recordState={past[appointment.id] ? 'paused' : undefined}
+              duration={past[appointment.id]?.duration}
+              position={past[appointment.id] ? 0 : undefined}
               onRecordStateChange={(state) => onRecordState(appointment.id, state)}
             />
           )}
