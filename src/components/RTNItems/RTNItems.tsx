@@ -1,5 +1,6 @@
 import { Children, useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
 import { Icon } from '../../icons/Icon';
+import { AnimatedIcon } from '../../icons/AnimatedIcon';
 import type { IconName } from '../../icons/icons';
 import { Button } from '../Button/Button';
 import { Tabs, type TabsOption } from '../Tabs/Tabs';
@@ -41,10 +42,12 @@ export interface RtnItemHeaderProps {
   count?: number | string;
   /** Called when + is pressed */
   onAdd?: () => void;
+  /** Filling in (e.g. from a recording): the spinner (Animated Icons) takes the place of the + */
+  loading?: boolean;
 }
 
-/** RTN Item Header (Today), 738:6485: topic icon, title, counter and the + button. */
-export const RtnItemHeader = ({ device = 'web', topic, title, count = 0, onAdd }: RtnItemHeaderProps) => {
+/** RTN Item Header (Today), 738:6485: topic icon, title, counter and the + button (or the spinner while loading). */
+export const RtnItemHeader = ({ device = 'web', topic, title, count = 0, onAdd, loading = false }: RtnItemHeaderProps) => {
   const t = topicOf(topic);
   const iconSize = small(device) ? 16 : 20;
   return (
@@ -54,9 +57,15 @@ export const RtnItemHeader = ({ device = 'web', topic, title, count = 0, onAdd }
         <span className="is-rtn-header__title">{title ?? t.label}</span>
         <RtnCounter device={device} count={count} />
       </div>
-      <button type="button" className="is-rtn-icon-action is-rtn-header__add" aria-label={`Add to ${title ?? t.label}`} onClick={onAdd}>
-        <Icon name="add" size={small(device) ? 16 : 18} />
-      </button>
+      {loading ? (
+        <span className="is-rtn-header__loading" role="status">
+          <AnimatedIcon name="spinner" size={small(device) ? 16 : 18} title={`Loading ${title ?? t.label}`} />
+        </span>
+      ) : (
+        <button type="button" className="is-rtn-icon-action is-rtn-header__add" aria-label={`Add to ${title ?? t.label}`} onClick={onAdd}>
+          <Icon name="add" size={small(device) ? 16 : 18} />
+        </button>
+      )}
     </div>
   );
 };
@@ -429,17 +438,19 @@ export interface RtnItemProps {
   /** Number in the header; defaults to the number of entries */
   count?: number | string;
   onAdd?: () => void;
+  /** Filling in: the spinner replaces the + */
+  loading?: boolean;
   /** The entries (RtnItemContent boxes). Leave empty for the Figma "empty" state. */
   children?: ReactNode;
   className?: string;
 }
 
 /** RTN Items (Today), 738:5831: one topic card of the note. */
-export const RtnItem = ({ device = 'web', topic, title, count, onAdd, children, className }: RtnItemProps) => {
+export const RtnItem = ({ device = 'web', topic, title, count, onAdd, loading, children, className }: RtnItemProps) => {
   const entries = Children.toArray(children);
   return (
     <section className={cx('is-rtn-item', `is-rtn-item--${device}`, entries.length === 0 && 'is-rtn-item--empty', className)}>
-      <RtnItemHeader device={device} topic={topic} title={title} count={count ?? entries.length} onAdd={onAdd} />
+      <RtnItemHeader device={device} topic={topic} title={title} count={count ?? entries.length} onAdd={onAdd} loading={loading} />
       {children}
     </section>
   );

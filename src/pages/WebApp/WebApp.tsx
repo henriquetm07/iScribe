@@ -30,7 +30,8 @@ import './WebApp.css';
  * RTN Header (Web), then the note board with the RTN note (Chart Prep · Previous Note · Current Note) and the
  * Mic Settings in the bottom-left corner (the mic opens the Microphone Settings card above it). Every part is the Storybook component, behaviour included.
  * The + on Macros, Diagnoses or Orders opens that Drawer from the right, over everything; what is picked there
- * shows up in the note (× removes it, here or in the drawer). On the Previous Note tab, the big + opens Drawer › Previous Note
+ * shows up in the note (× removes it, here or in the drawer). Stopping the recording shows spinners on those three
+ * for ~3s, fills each with 1 or 2 items, then slides up the Generate Note bar. On the Previous Note tab, the big + opens Drawer › Previous Note
  * (the previous note as a checklist), in sync with the note's own + buttons.
  * A new note shows the "Say it, don't type it" tooltip next to the demographics until it is closed or a recording starts.
  */
@@ -99,11 +100,40 @@ const newNoteCard = (n: NewNote): ScheduleSideBarAppointment => {
 };
 
 /** The note for one visit: tabs, then today's note, the previous note or chart prep. One Tabs, so the selector slides. */
-const VisitNote = ({ sections, onActivity }: { sections: PreviousNoteSection[]; onActivity?: () => void }) => {
+/** 1 or 2 sample items of a kind that aren't in the note yet, picked at random */
+const randomPicks = (kind: DrawerSampleKind, have: string[]) => {
+  const free = drawerSampleKinds[kind].items.map((x) => x.id).filter((id) => !have.includes(id));
+  const n = Math.min(free.length, 1 + Math.floor(Math.random() * 2));
+  return [...free].sort(() => Math.random() - 0.5).slice(0, n);
+};
+
+const VisitNote = ({
+  sections,
+  onActivity,
+  loading = false,
+  filled = false,
+}: {
+  sections: PreviousNoteSection[];
+  onActivity?: () => void;
+  /** The recording is being processed: spinners instead of the + on Macros, Diagnoses and Orders */
+  loading?: boolean;
+  /** The recording has been processed: Macros, Diagnoses and Orders get 1 or 2 items each (once) */
+  filled?: boolean;
+}) => {
   const [tab, setTab] = useState('current-note');
   const [added, setAdded] = useState<string[]>([]);
   // + on Macros, Diagnoses or Orders opens that Drawer from the right, over the whole app
   const [picks, setPicks] = useState<Picks>(NO_PICKS);
+  const didFill = useRef(false);
+  useEffect(() => {
+    if (!filled || didFill.current) return;
+    didFill.current = true;
+    setPicks((p) => ({
+      macros: [...p.macros, ...randomPicks('macros', p.macros)],
+      diagnoses: [...p.diagnoses, ...randomPicks('diagnoses', p.diagnoses)],
+      orders: [...p.orders, ...randomPicks('orders', p.orders)],
+    }));
+  }, [filled]);
   const [drawer, setDrawer] = useState<DrawerSampleKind>('macros');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [activeProblems, setActiveProblems] = useState<string[]>([]);
@@ -212,7 +242,7 @@ const VisitNote = ({ sections, onActivity }: { sections: PreviousNoteSection[]; 
           {pulled.length > 0 && <PreviousNoteSummary device="web" sections={pulled} />}
           <div className="is-rtn-frame__list">
             {TODAY_TOPICS.map((t) => (
-              <RtnItem key={t} device="web" topic={t} onAdd={() => openDrawer(t)}>
+              <RtnItem key={t} device="web" topic={t} loading={loading} onAdd={() => openDrawer(t)}>
                 {picks[t].map((id) => entry(t, id))}
               </RtnItem>
             ))}
@@ -341,13 +371,24 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
     setSelectedId(id);
   };
 
-  // Web Note Bottom Bar: slides up with Generate Note once the visit's recording is stopped (paused, or played
-  // back), and slides away again while recording. Kept per visit: another visit starts without it.
+  // Stopping a visit's recording (paused, or played back) processes it the first time: ~3s of spinners on
+  // Macros, Diagnoses and Orders, which then get 1 or 2 items each. Only then does the Web Note Bottom Bar slide up
+  // with Generate Note; it slides away while recording again. Kept per visit.
   const visitId = newNote?.id ?? appointment.id;
   const [stoppedVisit, setStoppedVisit] = useState<string | null>(null);
-  const showBottomBar = stoppedVisit === visitId;
-  const onRecordState = (id: string, state: string) =>
-    setStoppedVisit((cur) => (state === 'paused' || state === 'playing' ? id : cur === id ? null : cur));
+  const [processing, setProcessing] = useState<string[]>([]);
+  const [processed, setProcessed] = useState<string[]>([]);
+  const showBottomBar = stoppedVisit === visitId && processed.includes(visitId);
+  const onRecordState = (id: string, state: string) => {
+    const stopped = state === 'paused' || state === 'playing';
+    setStoppedVisit((cur) => (stopped ? id : cur === id ? null : cur));
+    if (!stopped || processing.includes(id) || processed.includes(id)) return;
+    setProcessing((l) => [...l, id]);
+    window.setTimeout(() => {
+      setProcessing((l) => l.filter((x) => x !== id));
+      setProcessed((l) => [...l, id]);
+    }, 3000);
+  };
 
   /** "New Note": an empty note at the current time, opened at once */
   const createNote = () => {
@@ -418,9 +459,11 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
           {newNote && !tipDismissed.includes(newNote.id) && <DemographicsTip key={newNote.id} onClose={() => dismissTip(newNote.id)} />}
           <div className={`is-webapp__board${showBottomBar ? ' is-webapp__board--with-bar' : ''}`}>
             <VisitNote
-              key={appointment.id}
+              key={visitId}
               sections={newNote ? [] : sections}
               onActivity={newNote ? () => start(newNote.id) : undefined}
+              loading={processing.includes(visitId)}
+              filled={processed.includes(visitId)}
             />
           </div>
           <WebNoteBottomBar
