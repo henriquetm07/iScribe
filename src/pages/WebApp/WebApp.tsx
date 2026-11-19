@@ -24,7 +24,6 @@ import type { AppointmentStatusValue } from '../../components/AppointmentStatus/
 import { AnimatedIcon } from '../../icons/AnimatedIcon';
 import { GeneratedNoteFrame } from '../../components/RTNItems/GeneratedNote';
 import { sampleGeneratedNote, sampleTranscript } from '../../components/RTNItems/sampleGeneratedNote';
-import { Toast } from '../../components/Toast/Toast';
 import '../../components/RTNItems/RTNItems.css';
 import '../../components/RTNItems/PreviousNote.css';
 import './WebApp.css';
@@ -362,53 +361,6 @@ const pastNote = (a: ScheduleSideBarAppointment, visitDate: string) => {
   return { doneAt: at, duration: 240 + ((seed * 7) % 480) + (seed % 60) };
 };
 
-type DoneToast = { key: number; action: 'send-to-ehr' | 'mark-as-complete' };
-
-/**
- * The Compact Web Toast after Send to EHR / Mark as Complete: slides in from the top right, then its icon (the
- * animated send / copy, positive green) plays; after 3 seconds it slides out and calls onDone.
- */
-const DoneToastView = ({ toast, onDone }: { toast: DoneToast; onDone: () => void }) => {
-  const [shown, setShown] = useState(false);
-  const [play, setPlay] = useState(false);
-  const sent = toast.action === 'send-to-ehr';
-  useEffect(() => {
-    // Next frame, so the slide-in transition runs from off-screen
-    const frame = requestAnimationFrame(() => requestAnimationFrame(() => setShown(true)));
-    const out = window.setTimeout(() => setShown(false), 3000);
-    const done = window.setTimeout(onDone, 3500);
-    // Reduced motion (no slide): play the icon right away
-    const fallback = window.setTimeout(() => setPlay(true), 450);
-    return () => {
-      cancelAnimationFrame(frame);
-      [out, done, fallback].forEach((t) => window.clearTimeout(t));
-    };
-  }, []);
-  const icon = sent ? 'sent-to-ehr' : 'copied-to-ehr';
-  return (
-    <div
-      className={`is-webapp__toast${shown ? ' is-webapp__toast--in' : ''}`}
-      onTransitionEnd={(e) => e.propertyName === 'transform' && shown && setPlay(true)}
-    >
-      <Toast
-        device="web"
-        layout="compact"
-        tone="positive"
-        message={sent ? 'Sent to EHR' : 'Marked as Complete'}
-        iconElement={
-          <AnimatedIcon
-            key={play ? 'play' : 'still'}
-            name={icon}
-            size={24}
-            autoplay={play}
-            fallback={<Icon name={sent ? 'send' : 'copy'} size={24} />}
-          />
-        }
-      />
-    </div>
-  );
-};
-
 export interface WebAppProps {
   /** Start with the Schedule Side Bar collapsed (180px) */
   defaultCollapsed?: boolean;
@@ -487,10 +439,8 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
   // link, and new notes): the note is copied over, then Mark as Complete.
   const integrated = !newNote && !!appointment.integrated && !!appointment.ehr;
   /** Send to EHR (integrated) or Mark as Complete (copied over): the pill shows Sent to EHR / Copied to EHR */
-  const [toast, setToast] = useState<DoneToast | null>(null);
   const finish = (id: string, action: 'send-to-ehr' | 'mark-as-complete') => {
     if (doneAt[id]) return;
-    setToast({ key: Date.now(), action });
     setDoneAt((m) => ({ ...m, [id]: new Date() }));
     setDoneStatus((m) => ({ ...m, [id]: action === 'send-to-ehr' ? 'sent-to-ehr' : 'copied-to-ehr' }));
   };
@@ -616,7 +566,6 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
           </div>
         </section>
       </div>
-      {toast && <DoneToastView key={toast.key} toast={toast} onDone={() => setToast((t) => (t?.key === toast.key ? null : t))} />}
     </div>
   );
 };
