@@ -17,9 +17,9 @@ export const webNoteBottomBarDone: Partial<Record<WebNoteBottomBarAction, string
   'mark-as-complete': 'Marked as Complete',
 };
 
-/** "2:51 PM, November 2026" */
+/** "2:51 PM, November 19, 2026" */
 export const formatDoneAt = (d: Date) =>
-  `${d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}, ${d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`;
+  `${d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}, ${d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
 
 /** The order the actions come in, from a recorded visit to a note in the EHR */
 export const webNoteBottomBarSteps: WebNoteBottomBarAction[] = ['generate-note', 'mark-as-complete', 'send-to-ehr'];
@@ -34,7 +34,7 @@ export interface WebNoteBottomBarProps {
   disabled?: boolean;
   /**
    * When the action was done (Send to EHR or Mark as Complete): the button becomes a ghost, blocked button that says
-   * "Sent to EHR at 2:51 PM, November 2026" or "Marked as Complete at …".
+   * "Sent to EHR at 2:51 PM, November 19, 2026" or "Marked as Complete at …".
    */
   doneAt?: Date;
   className?: string;

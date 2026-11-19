@@ -10,5 +10,5 @@ export const webNoteBottomBarSpecComment = (action: WebNoteBottomBarAction = 'ge
     `  Button      Button primary, XL (60px), rounded (pill): "${webNoteBottomBarLabels[action]}"`,
     '              Figtree SemiBold 15px, 20px side padding',
     '  Steps       Generate Note → Mark as Complete → Send to EHR',
-    '  Done        Button ghost, XL, rounded, disabled: "Sent to EHR at 2:51 PM, November 2026" / "Marked as Complete at …"',
+    '  Done        Button ghost, XL, rounded, disabled: "Sent to EHR at 2:51 PM, November 19, 2026" / "Marked as Complete at …"',
   ]);
