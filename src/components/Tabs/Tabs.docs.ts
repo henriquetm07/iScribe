@@ -14,7 +14,8 @@ const barPadding: Record<TabsDevice, number> = { iphone: 5, ipad: 10, web: 4 };
 
 const itemLines = (d: TabsDevice) => [
   `  Height      ${item[d].height}px, var(--is-full-round) corners, 8px between label and badge`,
-  `  Text        Figtree Medium ${item[d].text}px (SemiBold when selected), var(--is-foreground-high-contrast-primary-foreground)`,
+  `  Text        ${item[d].text}px · Default: Figtree Medium, var(--is-foreground-low-contrast-primary-foreground)`,
+  '              Selected: Figtree SemiBold, var(--is-foreground-high-contrast-primary-foreground)',
   '  Default     no background',
   '  Selected    glass, tint="periwinkle" (default): var(--is-color-tperiwinkle-20)',
   '              + 1px var(--is-surface-soft-contrast-background) edge',
@@ -39,6 +40,7 @@ export const tabsSpecLines = (p: Partial<TabsProps>) => {
     `  Padding     ${barPadding[d]}px, 5px between tabs; the tabs share the width equally`,
     '  Corners     var(--is-full-round)',
     '  Background  var(--is-surface-super-soft-contrast-background)',
+    '  Stroke      1px var(--is-surface-super-soft-contrast-background), inside',
     '',
     'TABS → <TabItem /> (see Components / Tabs / Tab Item)',
     ...itemLines(d),

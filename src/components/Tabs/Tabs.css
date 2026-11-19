@@ -21,7 +21,8 @@
   border: 1px solid transparent;
   border-radius: var(--is-full-round);
   background: transparent;
-  color: var(--is-foreground-high-contrast-primary-foreground);
+  /* Not selected: Figtree Medium, Low Contrast Primary Foreground */
+  color: var(--is-foreground-low-contrast-primary-foreground);
   font-family: var(--is-font-ui);
   font-size: 13px;
   font-weight: 500;
@@ -56,8 +57,10 @@
   -webkit-backdrop-filter: blur(12px) saturate(170%);
   backdrop-filter: blur(12px) saturate(170%);
 }
+/* Selected: Figtree SemiBold, High Contrast Primary Foreground */
 .is-tab-item--selected {
   border-color: transparent;
+  color: var(--is-foreground-high-contrast-primary-foreground);
   font-weight: 600;
 }
 [data-theme='dark'] .is-tab-item--selected,
@@ -126,6 +129,8 @@
   padding: 5px;
   border-radius: var(--is-full-round);
   background: var(--is-surface-super-soft-contrast-background);
+  /* 1px stroke (Super Soft Contrast Background), drawn inside like Figma so the sizes don't change */
+  box-shadow: inset 0 0 0 1px var(--is-surface-super-soft-contrast-background);
   touch-action: pan-y;
   -webkit-user-select: none;
   user-select: none;
@@ -193,6 +198,7 @@
   cursor: inherit;
 }
 .is-tab-item--lens {
+  color: var(--is-foreground-high-contrast-primary-foreground);
   font-weight: 600;
 }
 .is-tabs__rim {
