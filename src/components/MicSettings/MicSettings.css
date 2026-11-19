@@ -65,8 +65,6 @@
 }
 .is-mic-settings-panel__close svg {
   flex: none;
-  /* our close glyph sits 0.35/12 below centre; Figma's is centred (3.24px from every edge) */
-  translate: 0 -0.57px;
 }
 .is-mic-settings-panel__close:hover {
   opacity: 0.6;
