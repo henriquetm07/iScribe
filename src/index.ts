@@ -126,3 +126,5 @@ export {
 } from './components/RTNItems/PreviousNote';
 export { Tooltip, WithTooltip, type TooltipProps, type TooltipTone, type TooltipTip, type TooltipPlacement, type WithTooltipProps } from './components/Tooltip/Tooltip';
 export { MicSettings, MicSettingsPanel, MicInputLevel, sampleMicrophones, MIC_LEVEL_BARS, type MicSettingsProps, type MicSettingsPanelProps, type MicInputLevelProps } from './components/MicSettings/MicSettings';
+export { GeneratedNoteItem, GeneratedNoteFrame, generatedNoteTabs, type GeneratedNoteItemProps, type GeneratedNoteFrameProps, type GeneratedNoteSection, type GeneratedNoteTab, type TranscriptLine } from './components/RTNItems/GeneratedNote';
+export { sampleGeneratedNote, sampleTranscript } from './components/RTNItems/sampleGeneratedNote';
