@@ -10,6 +10,7 @@ const meta = {
   args: { action: 'generate-note', onAction: fn(), disabled: false },
   argTypes: {
     action: { control: 'inline-radio', options: webNoteBottomBarSteps, labels: webNoteBottomBarLabels },
+    doneAt: { control: 'date', description: 'Send to EHR / Mark as Complete done at this time: ghost, blocked button' },
     label: { control: 'text' },
     className: { table: { disable: true } },
   },
@@ -32,12 +33,19 @@ export const GenerateNote: Story = { name: 'Generate Note' };
 export const MarkAsComplete: Story = { name: 'Mark as Complete', args: { action: 'mark-as-complete' } };
 export const SendToEhr: Story = { name: 'Send to EHR', args: { action: 'send-to-ehr' } };
 
-/** Click through the steps: Generate Note → Mark as Complete → Send to EHR (then it starts again) */
+/** Done: after Send to EHR, a ghost blocked button with the time */
+export const SentToEhr: Story = { name: 'Sent to EHR', args: { action: 'send-to-ehr', doneAt: new Date(2026, 10, 19, 14, 51) } };
+
+/** Done: after Mark as Complete */
+export const MarkedAsComplete: Story = { name: 'Marked as Complete', args: { action: 'mark-as-complete', doneAt: new Date(2026, 10, 19, 14, 51) } };
+
+/** Click through the steps: Generate Note → Mark as Complete → Send to EHR → Sent to EHR at … */
 export const Steps: Story = {
   parameters: { controls: { disable: true } },
   render: function Render() {
     const [step, setStep] = useState<WebNoteBottomBarAction>('generate-note');
-    const next = () => setStep(webNoteBottomBarSteps[(webNoteBottomBarSteps.indexOf(step) + 1) % webNoteBottomBarSteps.length]);
-    return <WebNoteBottomBar action={step} onAction={next} />;
+    const [doneAt, setDoneAt] = useState<Date>();
+    const next = () => (step === 'send-to-ehr' ? setDoneAt(new Date()) : setStep(webNoteBottomBarSteps[webNoteBottomBarSteps.indexOf(step) + 1]));
+    return <WebNoteBottomBar action={step} onAction={next} doneAt={doneAt} />;
   },
 };

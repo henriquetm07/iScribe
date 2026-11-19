@@ -20,6 +20,7 @@ import { Tabs } from '../../components/Tabs/Tabs';
 import { Tooltip } from '../../components/Tooltip/Tooltip';
 import { WebNavBar, type WebNavBarItem } from '../../components/WebNavBar/WebNavBar';
 import { WebNoteBottomBar } from '../../components/WebNoteBottomBar/WebNoteBottomBar';
+import type { AppointmentStatusValue } from '../../components/AppointmentStatus/AppointmentStatus';
 import { AnimatedIcon } from '../../icons/AnimatedIcon';
 import { GeneratedNoteFrame } from '../../components/RTNItems/GeneratedNote';
 import { sampleGeneratedNote, sampleTranscript } from '../../components/RTNItems/sampleGeneratedNote';
@@ -352,7 +353,13 @@ export interface WebAppProps {
 export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visitDate = 'Oct 23, 2026' }: WebAppProps) => {
   const [selectedId, setSelectedId] = useState(defaultSelectedId);
   const [newNotes, setNewNotes] = useState<NewNote[]>([]);
-  const appointments = useMemo(() => [...sampleSideBarAppointments, ...newNotes.map(newNoteCard)], [newNotes]);
+  // Send to EHR / Mark as Complete: when each visit's note went out, and the status its appointment pill shows then
+  const [doneAt, setDoneAt] = useState<Record<string, Date>>({});
+  const [doneStatus, setDoneStatus] = useState<Record<string, AppointmentStatusValue>>({});
+  const appointments = useMemo(
+    () => [...sampleSideBarAppointments, ...newNotes.map(newNoteCard)].map((a) => (doneStatus[a.id] ? { ...a, status: doneStatus[a.id] } : a)),
+    [newNotes, doneStatus],
+  );
   const newNote = newNotes.find((n) => n.id === selectedId);
   const appointment = useMemo(
     () => [...appointments, ...samplePending].find((a) => a.id === selectedId) ?? sampleSideBarAppointments[0],
@@ -401,6 +408,12 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
   // Integrated patients (EHR logo) get their note sent: no copy buttons, then Send to EHR. Not integrated (broken
   // link, and new notes): the note is copied over, then Mark as Complete.
   const integrated = !newNote && !!appointment.integrated && !!appointment.ehr;
+  /** Send to EHR (integrated) or Mark as Complete (copied over): the pill shows Sent to EHR / Copied to EHR */
+  const finish = (id: string, action: 'send-to-ehr' | 'mark-as-complete') => {
+    if (doneAt[id]) return;
+    setDoneAt((m) => ({ ...m, [id]: new Date() }));
+    setDoneStatus((m) => ({ ...m, [id]: action === 'send-to-ehr' ? 'sent-to-ehr' : 'copied-to-ehr' }));
+  };
   const onRecordState = (id: string, state: string) => {
     const stopped = state === 'paused' || state === 'playing';
     setStoppedVisit((cur) => (stopped ? id : cur === id ? null : cur));
@@ -508,7 +521,8 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
           <WebNoteBottomBar
             action={isGenerated ? (integrated ? 'send-to-ehr' : 'mark-as-complete') : 'generate-note'}
             disabled={isGenerating}
-            onAction={(action) => action === 'generate-note' && generateNote(visitId)}
+            doneAt={isGenerated ? doneAt[visitId] : undefined}
+            onAction={(action) => (action === 'generate-note' ? generateNote(visitId) : finish(visitId, action))}
             className={`is-webapp__bottom-bar${showBottomBar ? ' is-webapp__bottom-bar--shown' : ''}`}
           />
           <div className="is-webapp__mic">
