@@ -1,0 +1,69 @@
+/*
+ * Toast — Figma "Toast" (778:7051). Colours are the Figma variables, so light and dark follow data-theme.
+ */
+.is-toast {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 20px;
+  overflow: hidden;
+  border-radius: var(--is-round-xxl, 20px);
+  background: var(--is-background-elevated-background);
+  /* Shadow 15 */
+  box-shadow: 0 0 20px 0 var(--is-shadow-basic-shadow);
+  color: var(--is-foreground-high-contrast-primary-foreground);
+}
+.is-toast__icon {
+  flex: none;
+}
+.is-toast--alert .is-toast__icon {
+  color: var(--is-status-foreground-alert);
+}
+.is-toast--positive .is-toast__icon {
+  color: var(--is-status-foreground-positive);
+}
+.is-toast__message {
+  margin: 0;
+  font-family: 'Red Hat Text', var(--is-font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: normal;
+  overflow-wrap: anywhere;
+}
+.is-toast--ipad .is-toast__message,
+.is-toast--web .is-toast__message {
+  font-size: 15px;
+}
+.is-toast__action {
+  flex: none;
+}
+
+/* Full width: 355px; the message takes the room left */
+.is-toast--full {
+  width: 355px;
+  max-width: 100%;
+}
+.is-toast--full .is-toast__message {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.is-toast--full:is(.is-toast--ipad, .is-toast--web) {
+  height: 80px;
+}
+
+/* Compact: a pill hugging the icon and message */
+.is-toast--compact {
+  display: inline-flex;
+  border-radius: var(--is-full-round, 1000px);
+}
+.is-toast--compact .is-toast__message {
+  white-space: nowrap;
+}
+.is-toast--compact:is(.is-toast--ipad, .is-toast--web) {
+  height: 80px;
+  padding: 15px 24px;
+}
+.is-toast--compact.is-toast--web {
+  border-radius: var(--is-round-xxl, 20px);
+}
