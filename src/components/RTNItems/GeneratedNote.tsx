@@ -42,6 +42,8 @@ export interface GeneratedNoteItemProps {
   copyText?: string;
   /** Called after the text is copied */
   onCopy?: () => void;
+  /** Show the Copy button (default). Off for patients integrated with an EHR: the note is sent, not copied. */
+  copyable?: boolean;
   className?: string;
 }
 
@@ -50,13 +52,14 @@ export interface GeneratedNoteItemProps {
  * 16px) and the Copy Icon Button (secondary, 40px); a hairline; then the text (Figtree Regular 13px, 1.3 line height).
  * Copy shows a check for a moment.
  */
-export const GeneratedNoteItem = ({ title, children, copyText, onCopy, className }: GeneratedNoteItemProps) => {
+export const GeneratedNoteItem = ({ title, children, copyText, onCopy, copyable = true, className }: GeneratedNoteItemProps) => {
   const { copied, copy } = useCopy();
   const text = copyText ?? (typeof children === 'string' ? `${title}\n${children}` : title);
   return (
     <section className={['is-gen-item', className].filter(Boolean).join(' ')}>
       <header className="is-gen-item__header">
         <h3 className="is-gen-item__title">{title}</h3>
+        {copyable && (
         <IconButton
           variant="secondary"
           size="regular"
@@ -67,6 +70,7 @@ export const GeneratedNoteItem = ({ title, children, copyText, onCopy, className
             onCopy?.();
           }}
         />
+        )}
       </header>
       <hr className="is-gen-item__divider" />
       <div className="is-gen-item__text">{children}</div>
@@ -99,6 +103,11 @@ export interface GeneratedNoteFrameProps {
   transcript: TranscriptLine[];
   /** Initial text in the transcript search */
   defaultSearch?: string;
+  /**
+   * Show the copy buttons (Copy Transcript / Copy All and each section's Copy). Default on: for patients that aren't
+   * integrated with an EHR, whose note is copied over. Off for integrated patients, whose note is sent to the EHR.
+   */
+  copyable?: boolean;
   className?: string;
 }
 
@@ -123,6 +132,7 @@ export const GeneratedNoteFrame = ({
   sections,
   transcript,
   defaultSearch = '',
+  copyable = true,
   className,
 }: GeneratedNoteFrameProps) => {
   const [own, setOwn] = useState<GeneratedNoteTab>(defaultTab);
@@ -150,9 +160,11 @@ export const GeneratedNoteFrame = ({
           }}
           aria-label="Generated note"
         />
-        <Button variant="secondary" size="regular" iconLeft={<Icon name={copied ? 'check' : 'copy'} />} onClick={copyAll}>
-          {copied ? 'Copied' : label}
-        </Button>
+        {copyable && (
+          <Button variant="secondary" size="regular" iconLeft={<Icon name={copied ? 'check' : 'copy'} />} onClick={copyAll}>
+            {copied ? 'Copied' : label}
+          </Button>
+        )}
       </div>
       <div className="is-rtn-frame__note">
         {tab === 'transcript' ? (
@@ -184,7 +196,7 @@ export const GeneratedNoteFrame = ({
         ) : (
           <div className="is-rtn-frame__list">
             {sections.map((s) => (
-              <GeneratedNoteItem key={s.id} title={s.title}>
+              <GeneratedNoteItem key={s.id} title={s.title} copyable={copyable}>
                 {s.text}
               </GeneratedNoteItem>
             ))}

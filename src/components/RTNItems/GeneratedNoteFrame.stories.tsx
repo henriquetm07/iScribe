@@ -3,18 +3,22 @@ import { GeneratedNoteFrame, type GeneratedNoteTab } from './GeneratedNote';
 import { generatedNoteFrameSpecComment } from './GeneratedNote.docs';
 import { sampleGeneratedNote, sampleTranscript } from './sampleGeneratedNote';
 
-type Args = { tab: GeneratedNoteTab };
+type Args = { tab: GeneratedNoteTab; copyable: boolean };
 
-const Frame = ({ tab }: Args) => (
-  <GeneratedNoteFrame key={tab} defaultTab={tab} sections={sampleGeneratedNote} transcript={sampleTranscript} />
+const Frame = ({ tab, copyable }: Args) => (
+  <GeneratedNoteFrame key={tab} defaultTab={tab} copyable={copyable} sections={sampleGeneratedNote} transcript={sampleTranscript} />
 );
 
 const meta = {
   title: 'Components/RTN Notes/RTN Main Frame (Generated Note)',
   component: Frame,
-  args: { tab: 'note' },
+  args: { tab: 'note', copyable: true },
   argTypes: {
     tab: { control: 'inline-radio', options: ['transcript', 'note'], labels: { transcript: 'Transcript', note: 'Note' } },
+    copyable: {
+      control: 'boolean',
+      description: 'Copy buttons: on for patients not integrated with an EHR (the note is copied); off for integrated patients (it is sent to the EHR)',
+    },
   },
   decorators: [(Story) => <div style={{ width: 600, maxWidth: '100%' }}>{Story()}</div>],
   parameters: {
@@ -25,7 +29,7 @@ const meta = {
       },
       source: {
         transform: (_code: string, ctx: { args: Args }) =>
-          `${generatedNoteFrameSpecComment(ctx.args.tab)}\n<GeneratedNoteFrame\n  defaultTab="${ctx.args.tab}"\n  sections={sections}\n  transcript={transcript}\n/>`,
+          `${generatedNoteFrameSpecComment(ctx.args.tab)}\n<GeneratedNoteFrame\n  defaultTab="${ctx.args.tab}"${ctx.args.copyable ? '' : '\n  copyable={false}'}\n  sections={sections}\n  transcript={transcript}\n/>`,
       },
     },
   },
@@ -39,6 +43,9 @@ export const Note: Story = {};
 
 /** Transcript: type in the search to highlight the matches */
 export const Transcript: Story = { args: { tab: 'transcript' } };
+
+/** Integrated patient (EHR logo): no copy buttons, the note goes to the EHR with Send to EHR */
+export const Integrated: Story = { name: 'Integrated patient', args: { copyable: false } };
 
 /** Searching the transcript */
 export const Search: Story = {

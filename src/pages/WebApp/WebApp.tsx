@@ -35,7 +35,8 @@ import './WebApp.css';
  * The + on Macros, Diagnoses or Orders opens that Drawer from the right, over everything; what is picked there
  * shows up in the note (× removes it, here or in the drawer). Stopping the recording shows spinners on those three
  * for ~3s, fills each with 1 or 2 items, then slides up the Generate Note bar. Generate Note: a spinner for 2s, then the
- * Generated Note (Transcript · Note) in place of the note, and the bar offers Mark as Complete. On the Previous Note tab, the big + opens Drawer › Previous Note
+ * Generated Note (Transcript · Note) in place of the note; integrated patients (EHR logo) get no copy buttons and
+ * Send to EHR, the others (broken link) copy buttons and Mark as Complete. On the Previous Note tab, the big + opens Drawer › Previous Note
  * (the previous note as a checklist), in sync with the note's own + buttons.
  * A new note shows the "Say it, don't type it" tooltip next to the demographics until it is closed or a recording starts.
  */
@@ -397,6 +398,9 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
     }, 2000);
   };
   const showBottomBar = (stoppedVisit === visitId && processed.includes(visitId)) || isGenerating || isGenerated;
+  // Integrated patients (EHR logo) get their note sent: no copy buttons, then Send to EHR. Not integrated (broken
+  // link, and new notes): the note is copied over, then Mark as Complete.
+  const integrated = !newNote && !!appointment.integrated && !!appointment.ehr;
   const onRecordState = (id: string, state: string) => {
     const stopped = state === 'paused' || state === 'playing';
     setStoppedVisit((cur) => (stopped ? id : cur === id ? null : cur));
@@ -491,10 +495,18 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
                 <AnimatedIcon name="spinner" size={32} title="Generating the note" />
               </div>
             )}
-            {isGenerated && <GeneratedNoteFrame key={visitId} sections={sampleGeneratedNote} transcript={sampleTranscript} className="is-webapp__frame" />}
+            {isGenerated && (
+              <GeneratedNoteFrame
+                key={visitId}
+                copyable={!integrated}
+                sections={sampleGeneratedNote}
+                transcript={sampleTranscript}
+                className="is-webapp__frame"
+              />
+            )}
           </div>
           <WebNoteBottomBar
-            action={isGenerated ? 'mark-as-complete' : 'generate-note'}
+            action={isGenerated ? (integrated ? 'send-to-ehr' : 'mark-as-complete') : 'generate-note'}
             disabled={isGenerating}
             onAction={(action) => action === 'generate-note' && generateNote(visitId)}
             className={`is-webapp__bottom-bar${showBottomBar ? ' is-webapp__bottom-bar--shown' : ''}`}

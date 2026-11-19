@@ -20,6 +20,7 @@ export const generatedNoteFrameSpecComment = (tab: string) =>
     '  Panel       RTN Main Frame: elevated background, 30px corners, 1px super soft contrast border, up to 900px',
     '  Top         20px padding · Tabs (Web, 240px): Transcript · Note · Button secondary Regular with copy icon:',
     '              "Copy Transcript" on Transcript, "Copy All" on Note ("Copied" with a check for a moment)',
+    '  Copy        copyable (default): patients not integrated with an EHR. Integrated patients: no copy buttons',
     '  Body        var(--is-surface-super-soft-contrast-background), 20px padding',
     tab === 'transcript'
       ? '  Search      40px, elevated background, 12px corners, 20px magnifier, Red Hat Text Medium 13px;\n' +
