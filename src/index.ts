@@ -128,3 +128,4 @@ export { Tooltip, WithTooltip, type TooltipProps, type TooltipTone, type Tooltip
 export { MicSettings, MicSettingsPanel, MicInputLevel, sampleMicrophones, MIC_LEVEL_BARS, type MicSettingsProps, type MicSettingsPanelProps, type MicInputLevelProps } from './components/MicSettings/MicSettings';
 export { GeneratedNoteItem, GeneratedNoteFrame, generatedNoteTabs, type GeneratedNoteItemProps, type GeneratedNoteFrameProps, type GeneratedNoteSection, type GeneratedNoteTab, type TranscriptLine } from './components/RTNItems/GeneratedNote';
 export { sampleGeneratedNote, sampleTranscript } from './components/RTNItems/sampleGeneratedNote';
+export { WebNoteBottomBar, webNoteBottomBarLabels, webNoteBottomBarSteps, type WebNoteBottomBarProps, type WebNoteBottomBarAction } from './components/WebNoteBottomBar/WebNoteBottomBar';
