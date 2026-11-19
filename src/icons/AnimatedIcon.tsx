@@ -9,7 +9,7 @@ export interface AnimatedIconProps {
   size?: number | string;
   /** Start playing as soon as it mounts (default true). Set false to show the first frame. */
   autoplay?: boolean;
-  /** Repeat forever instead of stopping on the last frame */
+  /** Repeat forever instead of stopping on the last frame. Leave out to use the icon's own setting (the spinner loops) */
   loop?: boolean;
   /** Play it again every this many seconds (counted from the start of each play), resting on the last frame in between */
   repeatEvery?: number;
@@ -40,7 +40,7 @@ export const AnimatedIcon = ({
   name,
   size = '1em',
   autoplay = true,
-  loop = false,
+  loop: loopProp,
   repeatEvery,
   speed,
   state,
@@ -60,9 +60,11 @@ export const AnimatedIcon = ({
   const stateRef = useRef(state);
   stateRef.current = state;
 
+  const loop = loopProp ?? !!(animatedIcons[name] as { loop?: boolean }).loop;
+
   useEffect(() => {
     const icon = animatedIcons[name];
-    const markers = Object.entries(icon.markers ?? {}).sort((a, b) => a[1] - b[1]);
+    const markers = Object.entries(((icon as { markers?: Record<string, number> }).markers ?? {})).sort((a, b) => a[1] - b[1]);
     const fired = new Set<string>();
     let cancelled = false;
     let destroy = () => {};
@@ -127,7 +129,8 @@ export const AnimatedIcon = ({
           return;
         }
         if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
-          anim.goToAndStop(anim.totalFrames - 1, true);
+          const still = (icon as { still?: number }).still;
+          anim.goToAndStop(still ?? anim.totalFrames - 1, true);
           if (autoplay) finish();
           return;
         }

@@ -9,6 +9,7 @@ import chevronLeftRight from './animated/chevron-left-right.json';
 import sentToEhr from './animated/sent-to-ehr.json';
 import copiedToEhr from './animated/copied-to-ehr.json';
 import noteInProgress from './animated/note-in-progress.json';
+import spinner from './animated/spinner.json';
 
 export interface AnimatedIconData {
   /** The Lottie JSON */
@@ -31,6 +32,10 @@ export interface AnimatedIconData {
    * currentColor and the accent as --is-animated-icon-accent (periwinkle by default), so both follow the theme.
    */
   accent?: { base: string; color: string };
+  /** Loops by default (like a loading spinner); AnimatedIcon's `loop` prop overrides it */
+  loop?: boolean;
+  /** Frame shown when the device asks for reduced motion (default: the last frame) */
+  still?: number;
 }
 
 export const animatedIcons = {
@@ -85,6 +90,14 @@ export const animatedIcons = {
       'The iScribe waves in a circle light up in the accent colour one by one, inner to outer, then settle back. Drawn on a 240 × 240 grid. Plays in Appointment Status while the status is Note in Progress, every 5 seconds.',
     markers: { inner: 5, middle: 12, outer: 20 },
     accent: { base: '#1d1c1e', color: '#3966ff' },
+  },
+  spinner: {
+    data: spinner,
+    description:
+      'A loading spinner: an arc of the circle stretches and shrinks as it turns, one full turn every 1.2s. Loops on its own. With reduced motion it rests on a still arc.',
+    startsFrom: 'spinner',
+    loop: true,
+    still: 36,
   },
 } satisfies Record<string, AnimatedIconData>;
 

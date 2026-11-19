@@ -38,7 +38,8 @@ const Tile = ({ name, size, loop, onDark }: { name: AnimatedIconName; size: numb
           key={`${run}-${size}-${loop}`}
           name={name}
           size={size}
-          loop={loop}
+          // The Loop button forces looping; otherwise each icon plays its own way (the spinner always loops)
+          loop={loop || undefined}
           onMarker={setLastMarker}
           fallback={icon.startsFrom ? <Icon name={icon.startsFrom as IconName} size={size} /> : undefined}
         />
