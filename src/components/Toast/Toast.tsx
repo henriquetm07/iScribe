@@ -26,12 +26,17 @@ export const toastDefaults: Record<ToastLayout, { icon: IconName; tone: ToastTon
   compact: { icon: 'check-flat', tone: 'positive', message: 'Sent to EHR' },
 };
 
+/** The icon's size: Full width 16 / 20px, Compact 20 / 24px (iPhone / iPad and Web) */
+export const iconSize = (layout: ToastLayout, small: boolean) => (layout === 'full' ? (small ? 16 : 20) : small ? 20 : 24);
+
 export interface ToastProps {
   device?: ToastDevice;
   /** Full width (with an action) or Compact (a pill) */
   layout?: ToastLayout;
   /** Icon before the message (default: trash for Full width, check flat for Compact) */
   icon?: IconName;
+  /** Any other icon in its place, e.g. an AnimatedIcon; it takes the tone's colour */
+  iconElement?: ReactNode;
   /** Icon colour (default: alert for Full width, positive for Compact) */
   tone?: ToastTone;
   /** The message (default: "Recording Deleted" / "Sent to EHR") */
@@ -47,7 +52,7 @@ export interface ToastProps {
  * the message (Red Hat Text SemiBold 13 / 15px) and a ghost Button (40 / 50px). Compact: a pill (20px corners on
  * Web) hugging the icon (20 / 24px) and the message; 80px tall on iPad and Web.
  */
-export const Toast = ({ device = 'iphone', layout = 'full', icon, tone, message, actionLabel, onAction, className = '' }: ToastProps) => {
+export const Toast = ({ device = 'iphone', layout = 'full', icon, iconElement, tone, message, actionLabel, onAction, className = '' }: ToastProps) => {
   const d = toastDefaults[layout];
   const small = device === 'iphone';
   const label = layout === 'full' ? (actionLabel ?? d.actionLabel) : undefined;
@@ -57,7 +62,11 @@ export const Toast = ({ device = 'iphone', layout = 'full', icon, tone, message,
       role="status"
       aria-live="polite"
     >
-      <Icon name={icon ?? d.icon} size={layout === 'full' ? (small ? 16 : 20) : small ? 20 : 24} className="is-toast__icon" />
+      {iconElement ? (
+        <span className="is-toast__icon is-toast__icon--custom">{iconElement}</span>
+      ) : (
+        <Icon name={icon ?? d.icon} size={iconSize(layout, small)} className="is-toast__icon" />
+      )}
       <p className="is-toast__message">{message ?? d.message}</p>
       {label && (
         <Button variant="ghost" size={small ? 'regular' : 'big'} onClick={onAction} className="is-toast__action">

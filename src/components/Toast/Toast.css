@@ -17,6 +17,9 @@
 .is-toast__icon {
   flex: none;
 }
+.is-toast__icon--custom {
+  display: flex;
+}
 .is-toast--alert .is-toast__icon {
   color: var(--is-status-foreground-alert);
 }
