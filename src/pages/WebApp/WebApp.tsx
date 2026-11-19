@@ -20,6 +20,9 @@ import { Tabs } from '../../components/Tabs/Tabs';
 import { Tooltip } from '../../components/Tooltip/Tooltip';
 import { WebNavBar, type WebNavBarItem } from '../../components/WebNavBar/WebNavBar';
 import { WebNoteBottomBar } from '../../components/WebNoteBottomBar/WebNoteBottomBar';
+import { AnimatedIcon } from '../../icons/AnimatedIcon';
+import { GeneratedNoteFrame } from '../../components/RTNItems/GeneratedNote';
+import { sampleGeneratedNote, sampleTranscript } from '../../components/RTNItems/sampleGeneratedNote';
 import '../../components/RTNItems/RTNItems.css';
 import '../../components/RTNItems/PreviousNote.css';
 import './WebApp.css';
@@ -31,7 +34,8 @@ import './WebApp.css';
  * Mic Settings in the bottom-left corner (the mic opens the Microphone Settings card above it). Every part is the Storybook component, behaviour included.
  * The + on Macros, Diagnoses or Orders opens that Drawer from the right, over everything; what is picked there
  * shows up in the note (× removes it, here or in the drawer). Stopping the recording shows spinners on those three
- * for ~3s, fills each with 1 or 2 items, then slides up the Generate Note bar. On the Previous Note tab, the big + opens Drawer › Previous Note
+ * for ~3s, fills each with 1 or 2 items, then slides up the Generate Note bar. Generate Note: a spinner for 2s, then the
+ * Generated Note (Transcript · Note) in place of the note, and the bar offers Mark as Complete. On the Previous Note tab, the big + opens Drawer › Previous Note
  * (the previous note as a checklist), in sync with the note's own + buttons.
  * A new note shows the "Say it, don't type it" tooltip next to the demographics until it is closed or a recording starts.
  */
@@ -378,7 +382,21 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
   const [stoppedVisit, setStoppedVisit] = useState<string | null>(null);
   const [processing, setProcessing] = useState<string[]>([]);
   const [processed, setProcessed] = useState<string[]>([]);
-  const showBottomBar = stoppedVisit === visitId && processed.includes(visitId);
+  // Generate Note: the note gives way to a spinner for 2s, then the Generated Note (Transcript · Note) appears and
+  // the bar moves on to Mark as Complete. Per visit.
+  const [generating, setGenerating] = useState<string[]>([]);
+  const [generated, setGenerated] = useState<string[]>([]);
+  const isGenerating = generating.includes(visitId);
+  const isGenerated = generated.includes(visitId);
+  const generateNote = (id: string) => {
+    if (generating.includes(id) || generated.includes(id)) return;
+    setGenerating((l) => [...l, id]);
+    window.setTimeout(() => {
+      setGenerating((l) => l.filter((x) => x !== id));
+      setGenerated((l) => [...l, id]);
+    }, 2000);
+  };
+  const showBottomBar = (stoppedVisit === visitId && processed.includes(visitId)) || isGenerating || isGenerated;
   const onRecordState = (id: string, state: string) => {
     const stopped = state === 'paused' || state === 'playing';
     setStoppedVisit((cur) => (stopped ? id : cur === id ? null : cur));
@@ -458,16 +476,27 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
           )}
           {newNote && !tipDismissed.includes(newNote.id) && <DemographicsTip key={newNote.id} onClose={() => dismissTip(newNote.id)} />}
           <div className={`is-webapp__board${showBottomBar ? ' is-webapp__board--with-bar' : ''}`}>
-            <VisitNote
-              key={visitId}
-              sections={newNote ? [] : sections}
-              onActivity={newNote ? () => start(newNote.id) : undefined}
-              loading={processing.includes(visitId)}
-              filled={processed.includes(visitId)}
-            />
+            {/* Kept mounted (hidden) while the note is generated, so nothing picked is lost */}
+            <div className="is-webapp__visit-note" hidden={isGenerating || isGenerated}>
+              <VisitNote
+                key={visitId}
+                sections={newNote ? [] : sections}
+                onActivity={newNote ? () => start(newNote.id) : undefined}
+                loading={processing.includes(visitId)}
+                filled={processed.includes(visitId)}
+              />
+            </div>
+            {isGenerating && (
+              <div className="is-webapp__generating" role="status">
+                <AnimatedIcon name="spinner" size={32} title="Generating the note" />
+              </div>
+            )}
+            {isGenerated && <GeneratedNoteFrame key={visitId} sections={sampleGeneratedNote} transcript={sampleTranscript} className="is-webapp__frame" />}
           </div>
           <WebNoteBottomBar
-            action="generate-note"
+            action={isGenerated ? 'mark-as-complete' : 'generate-note'}
+            disabled={isGenerating}
+            onAction={(action) => action === 'generate-note' && generateNote(visitId)}
             className={`is-webapp__bottom-bar${showBottomBar ? ' is-webapp__bottom-bar--shown' : ''}`}
           />
           <div className="is-webapp__mic">

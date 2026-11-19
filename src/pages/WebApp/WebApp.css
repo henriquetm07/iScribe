@@ -50,6 +50,27 @@
 .is-webapp__frame {
   flex-shrink: 0;
 }
+/* The visit note's wrapper: lays out like the note itself (full width, up to the frame's 900px) */
+.is-webapp__visit-note {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  align-items: center;
+  width: 100%;
+}
+.is-webapp__visit-note[hidden] {
+  display: none;
+}
+/* Generating the note: the spinner, centred where the note was */
+.is-webapp__generating {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 200px;
+  color: var(--is-foreground-high-contrast-primary-foreground);
+}
 /* Same 1px edge on Current and Previous Note, so switching tabs never resizes the tab bar mid-slide */
 .is-webapp__frame.is-pn-frame {
   border: 1px solid var(--is-surface-super-soft-contrast-background);
