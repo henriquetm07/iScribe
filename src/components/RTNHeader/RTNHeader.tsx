@@ -551,52 +551,54 @@ const TimeField = ({ value, label, onChange }: { value: string; label: string; o
     wasEditing.current = editing;
   }, [editing]);
 
+  // The digits and caret as of the last key, so keys pressed in quick succession build on each other
+  const live = useRef({ digits, caret });
+  live.current = { digits, caret };
+  const put = (next: string[], at: number) => {
+    live.current = { digits: next, caret: at };
+    state.current = { ...state.current, digits: next };
+    setDigits(next);
+    setCaret(at);
+  };
+
   const onKeyDown = (e: KeyboardEvent<HTMLSpanElement>) => {
     const k = e.key;
+    const { digits: cur, caret: at } = live.current;
+    const next = [...cur];
     if (/^\d$/.test(k)) {
       e.preventDefault();
-      if (caret > 3) return;
-      const next = [...digits];
+      if (at > 3) return;
       // A first hour digit of 2–9 is an hour on its own: "0" then that digit
-      if (caret === 0 && Number(k) > 1) {
+      if (at === 0 && Number(k) > 1) {
         next[0] = '0';
         next[1] = k;
-        setDigits(next);
-        setCaret(2);
+        put(next, 2);
         return;
       }
-      if (!fitsTime(next, caret, k)) return;
-      next[caret] = k;
-      setDigits(next);
-      setCaret(caret + 1);
+      if (!fitsTime(next, at, k)) return;
+      next[at] = k;
+      put(next, at + 1);
     } else if (k === 'Backspace') {
       e.preventDefault();
-      if (caret === 0) return;
-      const next = [...digits];
-      next[caret - 1] = '';
-      setDigits(next);
-      setCaret(caret - 1);
+      if (at === 0) return;
+      next[at - 1] = '';
+      put(next, at - 1);
     } else if (k === 'Delete') {
       e.preventDefault();
-      if (caret > 3) return;
-      const next = [...digits];
-      next[caret] = '';
-      setDigits(next);
-    } else if (k === 'ArrowLeft') {
+      if (at > 3) return;
+      next[at] = '';
+      put(next, at);
+    } else if (k === 'ArrowLeft' || k === 'Home') {
       e.preventDefault();
-      setCaret(Math.max(0, caret - 1));
-    } else if (k === 'ArrowRight') {
+      put(cur, k === 'Home' ? 0 : Math.max(0, at - 1));
+    } else if (k === 'ArrowRight' || k === 'End') {
       e.preventDefault();
-      setCaret(Math.min(4, caret + 1));
-    } else if (k === 'Home') {
-      e.preventDefault();
-      setCaret(0);
-    } else if (k === 'End') {
-      e.preventDefault();
-      setCaret(4);
+      put(cur, k === 'End' ? 4 : Math.min(4, at + 1));
     } else if (k === 'a' || k === 'A' || k === 'p' || k === 'P') {
       e.preventDefault();
-      setPeriod(/p/i.test(k) ? 'PM' : 'AM');
+      const p = /p/i.test(k) ? 'PM' : 'AM';
+      state.current = { ...state.current, period: p };
+      setPeriod(p);
     } else if (k === 'Enter') {
       e.preventDefault();
       finish(true);
@@ -623,7 +625,7 @@ const TimeField = ({ value, label, onChange }: { value: string; label: string; o
       onMouseDown={(e) => {
         e.preventDefault();
         box.current?.focus();
-        setCaret(i);
+        put(live.current.digits, i);
       }}
     >
       {digits[i] || TIME_MASK[i]}
@@ -660,6 +662,7 @@ const TimeField = ({ value, label, onChange }: { value: string; label: string; o
         options={timeOptions}
         value={period}
         onChange={(v) => {
+          state.current = { ...state.current, period: v as 'AM' | 'PM' };
           setPeriod(v as 'AM' | 'PM');
           box.current?.focus();
         }}
