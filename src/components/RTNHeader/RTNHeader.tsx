@@ -3,6 +3,7 @@ import { AnimatedIcon } from '../../icons/AnimatedIcon';
 import { Icon } from '../../icons/Icon';
 import { IconButton } from '../IconButton/IconButton';
 import { MicSettings, type MicSettingsProps } from '../MicSettings/MicSettings';
+import { ScheduleCalendarPanel } from '../ScheduleSideBar/SchedulePanels';
 import { SelectionList } from '../SelectionList/SelectionList';
 import { formatTime, RecordRoundButton, RecordTextButton, useRecorder, Waves, type RecordState } from '../Record/RecordParts';
 import './RTNHeader.css';
@@ -105,9 +106,8 @@ export const RTNHeaderDetails = ({
         )}
         {showDate && (
           <span className="is-rtn-details__when">
-            <TextField
+            <DateField
               value={date}
-              placeholder="Date"
               label="Appointment date"
               onChange={(v) => {
                 setEditedDate(v);
@@ -393,6 +393,65 @@ const SelectField = ({ value, placeholder, label, options, onChange }: { value: 
             device="web"
             width={160}
             aria-label={label}
+          />
+        </span>
+      )}
+    </span>
+  );
+};
+
+/**
+ * The appointment date: a button that opens the date picker (Components / Schedule Side Bar › Calendar, without its
+ * header) below it. Picking a day sets the date ("Nov 24, 2026") and closes it; a click outside or Escape closes it.
+ */
+const DateField = ({ value, label, onChange }: { value: string; label: string; onChange: (value: string) => void }) => {
+  const [open, setOpen] = useState(false);
+  const root = useRef<HTMLSpanElement>(null);
+  const button = useRef<HTMLButtonElement>(null);
+  const parsed = new Date(value);
+  const day = Number.isNaN(parsed.getTime()) ? new Date() : parsed;
+
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: globalThis.PointerEvent) => {
+      if (!root.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: globalThis.KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      setOpen(false);
+      button.current?.focus();
+    };
+    document.addEventListener('pointerdown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('pointerdown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
+  return (
+    <span ref={root} className={`is-rtn-field is-rtn-field--select${open ? ' is-rtn-field--open' : ''}`}>
+      <button
+        ref={button}
+        type="button"
+        aria-label={`${label}: ${value}`}
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        onClick={() => setOpen((o) => !o)}
+      >
+        {value}
+      </button>
+      <span className="is-rtn-field__line" aria-hidden="true" />
+      {open && (
+        <span className="is-rtn-field__menu is-rtn-field__menu--calendar">
+          <ScheduleCalendarPanel
+            header={false}
+            value={day}
+            onChange={(d) => {
+              onChange(formatRTNDate(d));
+              setOpen(false);
+              button.current?.focus();
+            }}
           />
         </span>
       )}

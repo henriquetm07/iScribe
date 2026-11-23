@@ -105,7 +105,7 @@ export const EmptyProfile: Story = { name: 'Empty profile', args: { filledIn: fa
 export const Details: Story = {
   parameters: { controls: { disable: true }, layout: 'padded' },
   render: () => (
-    <div style={{ display: 'grid', gap: 24, paddingBottom: 260 }}>
+    <div style={{ display: 'grid', gap: 24, paddingBottom: 400 }}>
       <div>
         <p style={caption}>Default</p>
         <RTNHeaderDetails />

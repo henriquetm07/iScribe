@@ -95,6 +95,12 @@
 .is-rtn-details__when .is-rtn-field__line {
   bottom: -3px;
 }
+/* The date picker opens 10px below the date, lined up with it */
+.is-rtn-field__menu--calendar {
+  top: calc(100% + 10px);
+  left: 0;
+  font-weight: 400;
+}
 .is-rtn-dot {
   flex: none;
   width: 3px;

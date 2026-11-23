@@ -31,12 +31,15 @@ export interface SchedulePanelProps {
   children?: ReactNode;
   /** Width in px (Figma: 375, calendar 335) */
   width?: number;
+  /** Show the grey header (icon, title, subtitle, ×). Off for a bare panel, e.g. the date picker on its own. */
+  header?: boolean;
   className?: string;
 }
 
 /** A floating panel: 20px corners, soft shadow, grey header with an icon, a Season Mix title and a subtitle */
-export const SchedulePanel = ({ icon, title, subtitle, onBack, onClose, headerExtra, footer, children, width = 375, className = '' }: SchedulePanelProps) => (
-  <section className={`is-sched-panel ${className}`} style={{ width }} aria-label={title}>
+export const SchedulePanel = ({ icon, title, subtitle, onBack, onClose, headerExtra, footer, children, width = 375, header = true, className = '' }: SchedulePanelProps) => (
+  <section className={`is-sched-panel${header ? '' : ' is-sched-panel--bare'} ${className}`} style={{ width }} aria-label={title}>
+    {header && (
     <header className="is-sched-panel__header">
       <div className="is-sched-panel__title-row">
         {onBack ? (
@@ -64,6 +67,7 @@ export const SchedulePanel = ({ icon, title, subtitle, onBack, onClose, headerEx
         </button>
       )}
     </header>
+    )}
     <div className="is-sched-panel__body">{children}</div>
     {footer && <footer className="is-sched-panel__footer">{footer}</footer>}
   </section>
@@ -373,11 +377,13 @@ export interface ScheduleCalendarPanelProps {
   /** Today (outlined). Default: now */
   today?: Date;
   onClose?: () => void;
+  /** Show the panel's header ("Calendar", subtitle, ×). Off for just the date picker. */
+  header?: boolean;
   className?: string;
 }
 
 /** Figma "Calendar": a month of 36px days, the chosen day black, today outlined, and a "Today" button */
-export const ScheduleCalendarPanel = ({ value, onChange, today = new Date(), onClose, className }: ScheduleCalendarPanelProps) => {
+export const ScheduleCalendarPanel = ({ value, onChange, today = new Date(), onClose, header = true, className }: ScheduleCalendarPanelProps) => {
   const [month, setMonth] = useState(() => new Date(value.getFullYear(), value.getMonth(), 1));
   useEffect(() => setMonth(new Date(value.getFullYear(), value.getMonth(), 1)), [value]);
   const days = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
@@ -385,7 +391,7 @@ export const ScheduleCalendarPanel = ({ value, onChange, today = new Date(), onC
   const label = month.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
   const go = (step: number) => setMonth(new Date(month.getFullYear(), month.getMonth() + step, 1));
   return (
-    <SchedulePanel icon="calendar" title="Calendar" subtitle="Pick a date to view appointments" onClose={onClose} width={335} className={`is-sched-panel--calendar ${className ?? ''}`}>
+    <SchedulePanel icon="calendar" title="Calendar" subtitle="Pick a date to view appointments" onClose={onClose} width={335} header={header} className={`is-sched-panel--calendar ${className ?? ''}`}>
       <div className="is-sched-cal__nav">
         <IconButton variant="ghost" size="small" label="Previous month" icon={<Icon name="chevron-left" />} onClick={() => go(-1)} />
         <span className="is-sched-cal__month">{label}</span>
