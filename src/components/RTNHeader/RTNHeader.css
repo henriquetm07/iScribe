@@ -95,10 +95,12 @@
 .is-rtn-details__when .is-rtn-field__line {
   bottom: -3px;
 }
-/* The date picker opens 10px below the date, lined up with it: fixed to the window (left / top set from the
-   date's position), so the details row's clipped info doesn't cut it off */
+/* The date picker opens 10px below the date, lined up with it. It sits in the details row (left / top measured
+   from the date), so the row's clipped info doesn't cut it off. */
+.is-rtn-details {
+  position: relative;
+}
 .is-rtn-field__menu.is-rtn-field__menu--calendar {
-  position: fixed;
   z-index: 30;
   font-weight: 400;
 }

@@ -1,4 +1,5 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react';
+import { createPortal } from 'react-dom';
 import { AnimatedIcon } from '../../icons/AnimatedIcon';
 import { Icon } from '../../icons/Icon';
 import { IconButton } from '../IconButton/IconButton';
@@ -406,10 +407,12 @@ const SelectField = ({ value, placeholder, label, options, onChange }: { value: 
  */
 const DateField = ({ value, label, onChange }: { value: string; label: string; onChange: (value: string) => void }) => {
   const [open, setOpen] = useState(false);
-  // Where the picker goes: 10px below the date, lined up with it. It is fixed to the window there, because the
-  // details row's info is clipped (overflow hidden, to keep long text on one line) and would cut it off.
-  const [at, setAt] = useState<{ left: number; top: number } | null>(null);
+  // Where the picker goes: 10px below the date, lined up with it. It is placed in the details row (not inside the
+  // date), because the row's info is clipped (overflow hidden, to keep long text on one line) and would cut it off;
+  // its offset is measured from the row, so it stays under the date wherever the header is drawn.
+  const [at, setAt] = useState<{ host: HTMLElement; left: number; top: number } | null>(null);
   const root = useRef<HTMLSpanElement>(null);
+  const menu = useRef<HTMLSpanElement>(null);
   const button = useRef<HTMLButtonElement>(null);
   const parsed = new Date(value);
   const day = Number.isNaN(parsed.getTime()) ? new Date() : parsed;
@@ -417,7 +420,8 @@ const DateField = ({ value, label, onChange }: { value: string; label: string; o
   useEffect(() => {
     if (!open) return;
     const onDown = (e: globalThis.PointerEvent) => {
-      if (!root.current?.contains(e.target as Node)) setOpen(false);
+      const t = e.target as Node;
+      if (!root.current?.contains(t) && !menu.current?.contains(t)) setOpen(false);
     };
     const onKey = (e: globalThis.KeyboardEvent) => {
       if (e.key !== 'Escape') return;
@@ -441,27 +445,34 @@ const DateField = ({ value, label, onChange }: { value: string; label: string; o
         aria-haspopup="dialog"
         aria-expanded={open}
         onClick={() => {
+          const host = button.current?.closest<HTMLElement>('.is-rtn-details');
           const b = button.current?.getBoundingClientRect();
-          if (b) setAt({ left: b.left, top: b.bottom + 10 });
+          if (host && b) {
+            const row = host.getBoundingClientRect();
+            setAt({ host, left: b.left - row.left, top: b.bottom - row.top + 10 });
+          }
           setOpen((o) => !o);
         }}
       >
         {value}
       </button>
       <span className="is-rtn-field__line" aria-hidden="true" />
-      {open && (
-        <span className="is-rtn-field__menu is-rtn-field__menu--calendar" style={at ?? undefined}>
-          <ScheduleCalendarPanel
-            header={false}
-            value={day}
-            onChange={(d) => {
-              onChange(formatRTNDate(d));
-              setOpen(false);
-              button.current?.focus();
-            }}
-          />
-        </span>
-      )}
+      {open &&
+        at &&
+        createPortal(
+          <span ref={menu} className="is-rtn-field__menu is-rtn-field__menu--calendar" style={{ left: at.left, top: at.top }}>
+            <ScheduleCalendarPanel
+              header={false}
+              value={day}
+              onChange={(d) => {
+                onChange(formatRTNDate(d));
+                setOpen(false);
+                button.current?.focus();
+              }}
+            />
+          </span>,
+          at.host,
+        )}
     </span>
   );
 };
