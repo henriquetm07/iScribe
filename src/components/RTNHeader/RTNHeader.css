@@ -95,6 +95,54 @@
 .is-rtn-details__when .is-rtn-field__line {
   bottom: -3px;
 }
+/* Time while editing: the HH:MM mask (the ":" always stays; empty digits show their letter in low contrast,
+   tabular figures so nothing shifts) and the AM / PM toggle (Tabs, Web) 8px after it */
+.is-rtn-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: -11px 0;
+}
+.is-rtn-time__digits {
+  display: inline-flex;
+  outline: none;
+  font-variant-numeric: tabular-nums;
+  cursor: text;
+}
+.is-rtn-time__slot {
+  position: relative;
+}
+.is-rtn-time__slot--empty {
+  color: var(--is-foreground-low-contrast-primary-foreground);
+}
+/* The caret: a thin accent bar before the current digit, or after the last one */
+.is-rtn-time__digits:focus .is-rtn-time__slot--caret::before,
+.is-rtn-time__digits--caret-end:focus > .is-rtn-time__slot:last-child::after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  width: 1.5px;
+  border-radius: 1px;
+  background: var(--is-button-accent);
+  animation: is-rtn-caret 1s steps(1) infinite;
+}
+.is-rtn-time__slot--caret::before {
+  left: -1px;
+}
+.is-rtn-time__slot:last-child::after {
+  right: -1px;
+}
+@keyframes is-rtn-caret {
+  50% {
+    opacity: 0;
+  }
+}
+.is-rtn-time .is-tabs {
+  flex: none;
+  font-weight: 400;
+}
+
 /* The date picker opens 10px below the date, lined up with it. It sits in the details row (left / top measured
    from the date), so the row's clipped info doesn't cut it off. */
 .is-rtn-details {

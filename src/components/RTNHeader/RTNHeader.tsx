@@ -6,6 +6,7 @@ import { IconButton } from '../IconButton/IconButton';
 import { MicSettings, type MicSettingsProps } from '../MicSettings/MicSettings';
 import { ScheduleCalendarPanel } from '../ScheduleSideBar/SchedulePanels';
 import { SelectionList } from '../SelectionList/SelectionList';
+import { Tabs } from '../Tabs/Tabs';
 import { formatTime, RecordRoundButton, RecordTextButton, useRecorder, Waves, type RecordState } from '../Record/RecordParts';
 import './RTNHeader.css';
 
@@ -120,9 +121,8 @@ export const RTNHeaderDetails = ({
         {showDate && showTime && <span className="is-rtn-dot" aria-hidden="true" />}
         {showTime && (
           <span className="is-rtn-details__when">
-            <TextField
+            <TimeField
               value={time}
-              placeholder="Time"
               label="Appointment time"
               onChange={(v) => {
                 setEditedTime(v);
@@ -473,6 +473,198 @@ const DateField = ({ value, label, onChange }: { value: string; label: string; o
           </span>,
           at.host,
         )}
+    </span>
+  );
+};
+
+/** The time's mask: four digit slots around a fixed ":" */
+const TIME_MASK = ['H', 'H', 'M', 'M'];
+const timeOptions = [
+  { value: 'AM', label: 'AM' },
+  { value: 'PM', label: 'PM' },
+];
+
+/** "9:40 AM" → the four digit slots ("0940") and AM / PM; empty slots when it can't be read */
+const parseTime = (value: string): { digits: string[]; period: 'AM' | 'PM' } => {
+  const m = /^\s*(\d{1,2}):(\d{2})\s*([AaPp])?/.exec(value);
+  const period = /p/i.test(m?.[3] ?? '') ? 'PM' : 'AM';
+  if (!m) return { digits: ['', '', '', ''], period };
+  return { digits: [...m[1].padStart(2, '0'), ...m[2]], period };
+};
+
+/** Whether `digit` may go in slot `i`, given the slots so far (hours 01–12, minutes 00–59) */
+const fitsTime = (digits: string[], i: number, digit: string) => {
+  const d = Number(digit);
+  if (i === 0) return d <= 1;
+  if (i === 1) return digits[0] === '1' ? d <= 2 : digits[0] === '0' ? d >= 1 : true;
+  if (i === 2) return d <= 5;
+  return true;
+};
+
+/**
+ * The appointment time. Shown as "9:40 AM"; click it to edit. While editing, the time is an HH:MM mask that never
+ * loses its ":" — typing fills the digits, Backspace / Delete empty one (its letter comes back, e.g. "10:2M" or
+ * "HH:40"), ← → and clicks move between them — and AM / PM is a toggle next to it (Components / Tabs, Web).
+ * Enter or a click outside keeps the time when every digit is filled in; Escape (or an unfinished time) puts back
+ * the one before.
+ */
+const TimeField = ({ value, label, onChange }: { value: string; label: string; onChange: (value: string) => void }) => {
+  const [editing, setEditing] = useState(false);
+  const [digits, setDigits] = useState<string[]>(['', '', '', '']);
+  const [period, setPeriod] = useState<'AM' | 'PM'>('AM');
+  const [caret, setCaret] = useState(0);
+  const root = useRef<HTMLSpanElement>(null);
+  const box = useRef<HTMLSpanElement>(null);
+  const display = useRef<HTMLButtonElement>(null);
+  const state = useRef({ digits, period });
+  state.current = { digits, period };
+
+  const start = () => {
+    const t = parseTime(value);
+    setDigits(t.digits);
+    setPeriod(t.period);
+    setCaret(0);
+    setEditing(true);
+  };
+  const finish = (keep: boolean) => {
+    const { digits: d, period: p } = state.current;
+    if (keep && d.every(Boolean)) onChange(`${Number(d[0] + d[1])}:${d[2]}${d[3]} ${p}`);
+    setEditing(false);
+  };
+  const finishRef = useRef(finish);
+  finishRef.current = finish;
+
+  // Focus the digits when editing starts; a click outside (the digits and the toggle) keeps the time
+  useEffect(() => {
+    if (!editing) return;
+    box.current?.focus();
+    const onDown = (e: globalThis.PointerEvent) => {
+      if (!root.current?.contains(e.target as Node)) finishRef.current(true);
+    };
+    document.addEventListener('pointerdown', onDown);
+    return () => document.removeEventListener('pointerdown', onDown);
+  }, [editing]);
+  // Back on the time after editing, so the keyboard stays in place
+  const wasEditing = useRef(false);
+  useEffect(() => {
+    if (wasEditing.current && !editing) display.current?.focus();
+    wasEditing.current = editing;
+  }, [editing]);
+
+  const onKeyDown = (e: KeyboardEvent<HTMLSpanElement>) => {
+    const k = e.key;
+    if (/^\d$/.test(k)) {
+      e.preventDefault();
+      if (caret > 3) return;
+      const next = [...digits];
+      // A first hour digit of 2–9 is an hour on its own: "0" then that digit
+      if (caret === 0 && Number(k) > 1) {
+        next[0] = '0';
+        next[1] = k;
+        setDigits(next);
+        setCaret(2);
+        return;
+      }
+      if (!fitsTime(next, caret, k)) return;
+      next[caret] = k;
+      setDigits(next);
+      setCaret(caret + 1);
+    } else if (k === 'Backspace') {
+      e.preventDefault();
+      if (caret === 0) return;
+      const next = [...digits];
+      next[caret - 1] = '';
+      setDigits(next);
+      setCaret(caret - 1);
+    } else if (k === 'Delete') {
+      e.preventDefault();
+      if (caret > 3) return;
+      const next = [...digits];
+      next[caret] = '';
+      setDigits(next);
+    } else if (k === 'ArrowLeft') {
+      e.preventDefault();
+      setCaret(Math.max(0, caret - 1));
+    } else if (k === 'ArrowRight') {
+      e.preventDefault();
+      setCaret(Math.min(4, caret + 1));
+    } else if (k === 'Home') {
+      e.preventDefault();
+      setCaret(0);
+    } else if (k === 'End') {
+      e.preventDefault();
+      setCaret(4);
+    } else if (k === 'a' || k === 'A' || k === 'p' || k === 'P') {
+      e.preventDefault();
+      setPeriod(/p/i.test(k) ? 'PM' : 'AM');
+    } else if (k === 'Enter') {
+      e.preventDefault();
+      finish(true);
+    } else if (k === 'Escape') {
+      e.preventDefault();
+      finish(false);
+    }
+  };
+
+  if (!editing)
+    return (
+      <span className="is-rtn-field is-rtn-field--select">
+        <button ref={display} type="button" aria-label={`${label}: ${value}`} onClick={start}>
+          {value}
+        </button>
+        <span className="is-rtn-field__line" aria-hidden="true" />
+      </span>
+    );
+
+  const slot = (i: number) => (
+    <span
+      key={i}
+      className={`is-rtn-time__slot${digits[i] ? '' : ' is-rtn-time__slot--empty'}${caret === i ? ' is-rtn-time__slot--caret' : ''}`}
+      onMouseDown={(e) => {
+        e.preventDefault();
+        box.current?.focus();
+        setCaret(i);
+      }}
+    >
+      {digits[i] || TIME_MASK[i]}
+    </span>
+  );
+
+  return (
+    <span ref={root} className="is-rtn-time">
+      <span className="is-rtn-field is-rtn-field--open">
+        <span
+          ref={box}
+          className={`is-rtn-time__digits${caret > 3 ? ' is-rtn-time__digits--caret-end' : ''}`}
+          role="textbox"
+          tabIndex={0}
+          inputMode="numeric"
+          aria-label={`${label} (HH:MM)`}
+          aria-valuetext={`${digits[0] || 'H'}${digits[1] || 'H'}:${digits[2] || 'M'}${digits[3] || 'M'} ${period}`}
+          onKeyDown={onKeyDown}
+        >
+          {slot(0)}
+          {slot(1)}
+          <span className="is-rtn-time__colon" aria-hidden="true">
+            :
+          </span>
+          {slot(2)}
+          {slot(3)}
+        </span>
+        <span className="is-rtn-field__line" aria-hidden="true" />
+      </span>
+      {/* Components / Tabs, Web (the smallest): AM · PM */}
+      <Tabs
+        device="web"
+        width={92}
+        options={timeOptions}
+        value={period}
+        onChange={(v) => {
+          setPeriod(v as 'AM' | 'PM');
+          box.current?.focus();
+        }}
+        aria-label="AM or PM"
+      />
     </span>
   );
 };
