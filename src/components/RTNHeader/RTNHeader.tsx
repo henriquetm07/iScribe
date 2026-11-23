@@ -406,6 +406,9 @@ const SelectField = ({ value, placeholder, label, options, onChange }: { value: 
  */
 const DateField = ({ value, label, onChange }: { value: string; label: string; onChange: (value: string) => void }) => {
   const [open, setOpen] = useState(false);
+  // Where the picker goes: 10px below the date, lined up with it. It is fixed to the window there, because the
+  // details row's info is clipped (overflow hidden, to keep long text on one line) and would cut it off.
+  const [at, setAt] = useState<{ left: number; top: number } | null>(null);
   const root = useRef<HTMLSpanElement>(null);
   const button = useRef<HTMLButtonElement>(null);
   const parsed = new Date(value);
@@ -437,13 +440,17 @@ const DateField = ({ value, label, onChange }: { value: string; label: string; o
         aria-label={`${label}: ${value}`}
         aria-haspopup="dialog"
         aria-expanded={open}
-        onClick={() => setOpen((o) => !o)}
+        onClick={() => {
+          const b = button.current?.getBoundingClientRect();
+          if (b) setAt({ left: b.left, top: b.bottom + 10 });
+          setOpen((o) => !o);
+        }}
       >
         {value}
       </button>
       <span className="is-rtn-field__line" aria-hidden="true" />
       {open && (
-        <span className="is-rtn-field__menu is-rtn-field__menu--calendar">
+        <span className="is-rtn-field__menu is-rtn-field__menu--calendar" style={at ?? undefined}>
           <ScheduleCalendarPanel
             header={false}
             value={day}
