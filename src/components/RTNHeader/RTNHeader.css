@@ -97,7 +97,7 @@
 }
 /* The date picker opens 10px below the date, lined up with it: fixed to the window (left / top set from the
    date's position), so the details row's clipped info doesn't cut it off */
-.is-rtn-field__menu--calendar {
+.is-rtn-field__menu.is-rtn-field__menu--calendar {
   position: fixed;
   z-index: 30;
   font-weight: 400;
