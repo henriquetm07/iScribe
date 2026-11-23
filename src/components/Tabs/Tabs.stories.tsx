@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
-import { Tabs, type TabsOption, type TabsProps } from './Tabs';
+import { Tabs, tabsGlassDefaults, type TabsOption, type TabsProps } from './Tabs';
 import { tabsSpecComment } from './Tabs.docs';
 
 /** Five tabs, as in the Figma "Tab" component */
@@ -15,9 +15,8 @@ const meta = {
     device: 'iphone',
     width: 630,
     tint: 'periwinkle',
-    refraction: 22,
-    lens: 1.05,
-    elasticity: 0.6,
+    // The component's defaults, so every story (and every Tabs in the app) starts from the same glass
+    ...tabsGlassDefaults,
     'aria-label': 'Sections',
     onChange: fn(),
   },

@@ -2,7 +2,7 @@
  * Human-readable reference for the Tabs, shown in the Storybook "Show code" panel. Mirrors Tabs.css.
  */
 import { asComment } from '../Button/Button.docs';
-import type { TabItemProps, TabsDevice, TabsProps } from './Tabs';
+import { tabsGlassDefaults, type TabItemProps, type TabsDevice, type TabsProps } from './Tabs';
 
 const deviceName: Record<TabsDevice, string> = { iphone: 'iPhone', ipad: 'iPad', web: 'Web' };
 const item: Record<TabsDevice, { height: number; text: number }> = {
@@ -46,10 +46,10 @@ export const tabsSpecLines = (p: Partial<TabsProps>) => {
     ...itemLines(d),
     '',
     'LIQUID GLASS INDICATOR',
-    `  Refraction  ${p.refraction ?? 22}  — edges bend what is under them (SVG displacement map of the pill);`,
+    `  Refraction  ${p.refraction ?? tabsGlassDefaults.refraction}  — edges bend what is under them (SVG displacement map of the pill);`,
     '              labels inside get 20% of it so they stay readable; doubles while held',
-    `  Lens        ${p.lens ?? 1.05}  — the selected label inside the glass is enlarged by this factor`,
-    `  Elasticity  ${p.elasticity ?? 0.6}  — spring motion: stretches up to 45% wide / 16% short while moving,`,
+    `  Lens        ${p.lens ?? tabsGlassDefaults.lens}  — the selected label inside the glass is enlarged by this factor`,
+    `  Elasticity  ${p.elasticity ?? tabsGlassDefaults.elasticity}  — spring motion: stretches up to 45% wide / 16% short while moving,`,
     '              wobbles as it lands (0 = rigid, 1 = very elastic)',
     '  Highlight   a soft sheen that follows the pointer',
     '',

@@ -77,11 +77,11 @@ export interface TabsProps {
   width?: number | string;
   /** Colour of the selection glass: periwinkle (default, T Periwinkle 20 as in Figma) or white */
   tint?: TabsTint;
-  /** Liquid glass: how strongly the glass bends what is under its edges (0 = flat, 40 = strong). Default 22. */
+  /** Liquid glass: how strongly the glass bends what is under its edges (0 = flat, 40 = strong). Default 10. */
   refraction?: number;
   /** Liquid glass: how much the lens enlarges the selected label (1 = none, 1.25 = 25% larger). Default 1.05. */
   lens?: number;
-  /** Liquid glass: how much the glass stretches while it moves and wobbles when it lands (0 = rigid, 1 = very elastic). Default 0.6. */
+  /** Liquid glass: how much the glass stretches while it moves and wobbles when it lands (0 = rigid, 1 = very elastic). Default 0.4. */
   elasticity?: number;
   /** Accessible name, e.g. "Patients and jobs" */
   'aria-label'?: string;
@@ -136,6 +136,9 @@ const makeLensMap = (w: number, h: number, edge: number) => {
   return c.toDataURL();
 };
 
+/** The liquid glass every Tabs uses unless told otherwise (Web App, Generated Note, the device selector, …) */
+export const tabsGlassDefaults = { refraction: 10, lens: 1.05, elasticity: 0.4 } as const;
+
 /** Share of the refraction applied to the labels inside the glass, so they stay readable */
 const LABEL_REFRACTION = 0.2;
 
@@ -158,9 +161,9 @@ export const Tabs = ({
   device = 'iphone',
   width = '100%',
   tint = 'periwinkle',
-  refraction = 22,
-  lens = 1.05,
-  elasticity = 0.6,
+  refraction = tabsGlassDefaults.refraction,
+  lens = tabsGlassDefaults.lens,
+  elasticity = tabsGlassDefaults.elasticity,
   'aria-label': ariaLabel,
 }: TabsProps) => {
   const [inner, setInner] = useState(defaultValue ?? options[0]?.value);

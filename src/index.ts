@@ -61,7 +61,7 @@ export { DrawerList, DrawerListTitle, DrawerMacroListItem, DrawerDiagnosesListIt
 export { PreviousNoteDrawerSample, samplePreviousNoteSections, PREVIOUS_NOTE_TITLE, PREVIOUS_NOTE_DESCRIPTION, type PreviousNoteDrawerSampleProps, type PreviousNoteSection } from './components/Drawer/PreviousNoteDrawerSample';
 export { DrawerSample, drawerSampleKinds, drawerSampleOptions, sampleDiagnoses, sampleOrders, type DrawerSampleProps, type DrawerSampleKind, type SampleDrawerItem } from './components/Drawer/DrawerSample';
 export { MacroDrawerSample, sampleMacros, type MacroDrawerSampleProps, type SampleMacro } from './components/Drawer/MacroDrawerSample';
-export { Tabs, TabItem, type TabsProps, type TabItemProps, type TabsOption, type TabsDevice } from './components/Tabs/Tabs';
+export { Tabs, TabItem, tabsGlassDefaults, type TabsProps, type TabItemProps, type TabsOption, type TabsDevice } from './components/Tabs/Tabs';
 export { WebNavBar, type WebNavBarProps, type WebNavBarItem, type WebNavBarAvatar, type WebNavBarMenuMode } from './components/WebNavBar/WebNavBar';
 export { BottomTab, type BottomTabProps, type BottomTabContent } from './components/BottomTab/BottomTab';
 export { SendSlider, type SendSliderProps, type BottomTabDevice } from './components/BottomTab/SendSlider';
