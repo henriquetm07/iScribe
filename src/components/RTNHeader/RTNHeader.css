@@ -101,7 +101,6 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin: -11px 0;
 }
 .is-rtn-time__digits {
   display: inline-flex;
@@ -138,9 +137,19 @@
     opacity: 0;
   }
 }
+/* AM / PM: the Web Tabs at their tiniest (Figma 3648:728): 72 × 26, 4px padding, 5px gap, 18px items with no
+   side padding, 12px labels */
 .is-rtn-time .is-tabs {
   flex: none;
+  height: 26px;
+  padding: 4px;
   font-weight: 400;
+}
+.is-rtn-time .is-tabs .is-tab-item {
+  height: 18px;
+  min-width: 0;
+  padding: 0;
+  font-size: 12px;
 }
 
 /* The date picker opens 10px below the date, lined up with it. It sits in the details row (left / top measured

@@ -655,10 +655,10 @@ const TimeField = ({ value, label, onChange }: { value: string; label: string; o
         </span>
         <span className="is-rtn-field__line" aria-hidden="true" />
       </span>
-      {/* Components / Tabs, Web (the smallest): AM · PM */}
+      {/* Components / Tabs, Web, in its tiny size (Figma 3648:728, 72 × 26): AM · PM */}
       <Tabs
         device="web"
-        width={112}
+        width={72}
         options={timeOptions}
         value={period}
         onChange={(v) => {
