@@ -658,7 +658,7 @@ const TimeField = ({ value, label, onChange }: { value: string; label: string; o
       {/* Components / Tabs, Web (the smallest): AM · PM */}
       <Tabs
         device="web"
-        width={92}
+        width={112}
         options={timeOptions}
         value={period}
         onChange={(v) => {
