@@ -21,7 +21,7 @@ export const rtnHeaderSpecLines = (p: Partial<RTNHeaderProps>) => [
   '  Then 10px apart: date · time (13px SemiBold, medium contrast) · check-in (13px, low contrast)',
   '              Date: click to open the date picker below it (Schedule Side Bar Calendar, no header)',
   '              Time: click to edit. HH:MM mask that always keeps its ":" (an emptied digit shows its',
-  '              letter in low contrast, e.g. "10:2M"); AM / PM is a toggle next to it (Tabs, Web, tiny: 72 × 26).',
+  '              letter in low contrast, e.g. "10:2M"); AM / PM is a toggle next to it (Tabs, Web, tiny: 72 × 26, white glass).',
   '              Enter / click outside keeps a complete time; Escape puts back the one before',
   '              3px dots in low contrast between them',
   '  Right       10px apart, 40px Icon Buttons with 16px icons:',
