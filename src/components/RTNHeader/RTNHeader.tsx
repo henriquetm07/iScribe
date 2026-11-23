@@ -46,10 +46,14 @@ const useNow = (live: boolean) => {
 export interface RTNHeaderDetailsProps {
   /** Grey labels at the start of the row (Figma: Visit, Room 12) */
   labels?: string[];
-  /** Appointment date, e.g. "Oct 23, 2026". Leave out to show today's date; pass "" to hide it */
+  /** Appointment date, e.g. "Oct 23, 2026". Leave out to show today's date; pass "" to hide it. Click it to edit it. */
   date?: string;
-  /** Appointment time (shown in semibold), e.g. "11:00 AM". Leave out to show the current time; pass "" to hide it */
+  /** Appointment time, e.g. "11:00 AM". Leave out to show the current time; pass "" to hide it. Click it to edit it. */
   time?: string;
+  /** Called with the date as it is edited */
+  onDateChange?: (date: string) => void;
+  /** Called with the time as it is edited */
+  onTimeChange?: (time: string) => void;
   /** Check-in note at the end */
   checkedIn?: string;
   /** Show Delete Recording (the trash, next to the mic) — once there is a recording */
@@ -61,22 +65,32 @@ export interface RTNHeaderDetailsProps {
 }
 
 /**
- * Figma "RTN Header Web Details": labels, date • time • check-in; on the right, Delete Recording (Destructive
+ * Figma "RTN Header Web Details": labels, date • time • check-in (date and time in SemiBold, medium contrast; click
+ * either to edit it in place, like the patient's details); on the right, Delete Recording (Destructive
  * Secondary Icon Button, once there is a recording) and Mic Settings (Ghost Icon Button)
  */
 export const RTNHeaderDetails = ({
   labels = ['Visit', 'Room 12'],
   date: dateProp,
   time: timeProp,
+  onDateChange,
+  onTimeChange,
   checkedIn = 'Checked in 11 min ago',
   deleteRecording = false,
   onDeleteRecording,
   micSettings,
   className = '',
 }: RTNHeaderDetailsProps) => {
-  const now = useNow(dateProp === undefined || timeProp === undefined);
-  const date = dateProp ?? formatRTNDate(now);
-  const time = timeProp ?? formatRTNTime(now);
+  // What was typed into the date and time (until the props change)
+  const [editedDate, setEditedDate] = useState<string | null>(null);
+  const [editedTime, setEditedTime] = useState<string | null>(null);
+  useEffect(() => setEditedDate(null), [dateProp]);
+  useEffect(() => setEditedTime(null), [timeProp]);
+  const now = useNow((dateProp === undefined && editedDate === null) || (timeProp === undefined && editedTime === null));
+  const date = editedDate ?? dateProp ?? formatRTNDate(now);
+  const time = editedTime ?? timeProp ?? formatRTNTime(now);
+  const showDate = dateProp !== '';
+  const showTime = timeProp !== '';
   return (
     <div className={`is-rtn-details ${className}`}>
       <div className="is-rtn-details__info">
@@ -89,10 +103,34 @@ export const RTNHeaderDetails = ({
             ))}
           </div>
         )}
-        {date && <span className="is-rtn-details__muted">{date}</span>}
-        {date && time && <span className="is-rtn-dot" aria-hidden="true" />}
-        {time && <span className="is-rtn-details__time">{time}</span>}
-        {(date || time) && checkedIn && <span className="is-rtn-dot" aria-hidden="true" />}
+        {showDate && (
+          <span className="is-rtn-details__when">
+            <TextField
+              value={date}
+              placeholder="Date"
+              label="Appointment date"
+              onChange={(v) => {
+                setEditedDate(v);
+                onDateChange?.(v);
+              }}
+            />
+          </span>
+        )}
+        {showDate && showTime && <span className="is-rtn-dot" aria-hidden="true" />}
+        {showTime && (
+          <span className="is-rtn-details__when">
+            <TextField
+              value={time}
+              placeholder="Time"
+              label="Appointment time"
+              onChange={(v) => {
+                setEditedTime(v);
+                onTimeChange?.(v);
+              }}
+            />
+          </span>
+        )}
+        {(showDate || showTime) && checkedIn && <span className="is-rtn-dot" aria-hidden="true" />}
         {checkedIn && <span className="is-rtn-details__muted">{checkedIn}</span>}
       </div>
       <div className="is-rtn-details__actions">
@@ -640,6 +678,8 @@ export const RTNHeader = ({
   date: dateProp,
   time: timeProp,
   checkedIn = 'Checked in 11 min ago',
+  onDateChange,
+  onTimeChange,
   onDeleteRecording,
   micSettings,
   patient,
@@ -653,10 +693,12 @@ export const RTNHeader = ({
   className = '',
   style,
 }: RTNHeaderProps) => {
-  // Today's date and the current time unless given
-  const now = useNow(dateProp === undefined || timeProp === undefined);
-  const date = dateProp ?? formatRTNDate(now);
-  const time = timeProp ?? formatRTNTime(now);
+  // Today's date unless given (for the playback title)
+  const now = useNow(dateProp === undefined);
+  // The date as edited in the header (the playback title follows it)
+  const [editedDate, setEditedDate] = useState<string | null>(null);
+  useEffect(() => setEditedDate(null), [dateProp]);
+  const date = editedDate ?? dateProp ?? formatRTNDate(now);
   // The patient as edited in the header (the playback title follows it)
   const [edited, setEdited] = useState<RTNPatient | null>(null);
   useEffect(() => setEdited(null), [JSON.stringify(patient ?? null)]);
@@ -674,8 +716,13 @@ export const RTNHeader = ({
     <header className={`is-rtn ${className}`} style={style}>
       <RTNHeaderDetails
         labels={labels}
-        date={date}
-        time={time}
+        date={dateProp}
+        time={timeProp}
+        onDateChange={(d) => {
+          setEditedDate(d);
+          onDateChange?.(d);
+        }}
+        onTimeChange={onTimeChange}
         checkedIn={checkedIn}
         deleteRecording={hasRecording}
         onDeleteRecording={() => {

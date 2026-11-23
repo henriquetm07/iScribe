@@ -84,10 +84,16 @@
   color: var(--is-foreground-low-contrast-primary-foreground);
   font-size: 13px;
 }
-.is-rtn-details__time {
+/* Date and time: Figtree SemiBold 13px, medium contrast; edited in place (the dotted line sits closer below) */
+.is-rtn-details__when {
+  display: inline-flex;
   color: var(--is-foreground-medium-contrast-primary-foreground);
   font-size: 13px;
   font-weight: 600;
+  white-space: nowrap;
+}
+.is-rtn-details__when .is-rtn-field__line {
+  bottom: -3px;
 }
 .is-rtn-dot {
   flex: none;
