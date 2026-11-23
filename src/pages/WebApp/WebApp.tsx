@@ -1,7 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Icon } from '../../icons/Icon';
 import type { IconName } from '../../icons/icons';
-import { MicSettings } from '../../components/MicSettings/MicSettings';
 import { formatRTNDate, RTNHeader, type RTNPatient } from '../../components/RTNHeader/RTNHeader';
 import { RtnDiagnosis, RtnItem, RtnItemContent, RtnOrder, RtnText, rtnTabs } from '../../components/RTNItems/RTNItems';
 import { DrawerSample, drawerSampleKinds, type DrawerSampleKind } from '../../components/Drawer/DrawerSample';
@@ -31,8 +30,9 @@ import './WebApp.css';
 /*
  * Pages / Web App — Figma "Web App V2" › Note Section (5094:35817).
  * Web Nav Bar on top; the Schedule Side Bar on the left (420px, or 180px collapsed); the Note Section on the right:
- * RTN Header (Web), then the note board with the RTN note (Chart Prep · Previous Note · Current Note) and the
- * Mic Settings in the bottom-left corner (the mic opens the Microphone Settings card above it). Every part is the Storybook component, behaviour included.
+ * RTN Header (Web), with Mic Settings and (once there is a recording) Delete Recording on its top right, then the
+ * note board with the RTN note (Chart Prep · Previous Note · Current Note). Every part is the Storybook component,
+ * behaviour included.
  * The + on Macros, Diagnoses or Orders opens that Drawer from the right, over everything; what is picked there
  * shows up in the note (× removes it, here or in the drawer). Stopping the recording shows spinners on those three
  * for ~3s, fills each with 1 or 2 items, then slides up the Generate Note bar. Generate Note: a spinner for 2s, then the
@@ -324,8 +324,8 @@ const DemographicsTip = ({ onClose }: { onClose: () => void }) => {
   );
 };
 
-/** Mic Settings with an input level that moves like a voice while the card is open (sample data) */
-const WebAppMicSettings = () => {
+/** The RTN Header's Mic Settings, with an input level that moves like a voice while the card is open (sample data) */
+const useMicSettings = () => {
   const [open, setOpen] = useState(false);
   const [level, setLevel] = useState(1 / 3);
   useEffect(() => {
@@ -337,7 +337,7 @@ const WebAppMicSettings = () => {
     }, 90);
     return () => window.clearInterval(id);
   }, [open]);
-  return <MicSettings placement="top" open={open} onOpenChange={setOpen} level={level} />;
+  return { open, onOpenChange: setOpen, level };
 };
 
 /** Statuses the Web App starts with that differ from the Schedule List sample: Sarah Johnson has just checked in */
@@ -417,6 +417,7 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
   // Macros, Diagnoses and Orders, which then get 1 or 2 items each. Only then does the Web Note Bottom Bar slide up
   // with Generate Note; it slides away while recording again. Kept per visit.
   const visitId = newNote?.id ?? appointment.id;
+  const micSettings = useMicSettings();
   const [stoppedVisit, setStoppedVisit] = useState<string | null>(null);
   const [processing, setProcessing] = useState<string[]>([]);
   const [processed, setProcessed] = useState<string[]>([]);
@@ -444,6 +445,15 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
     setDoneAt((m) => ({ ...m, [id]: new Date() }));
     setDoneStatus((m) => ({ ...m, [id]: action === 'send-to-ehr' ? 'sent-to-ehr' : 'copied-to-ehr' }));
   };
+  /** Delete Recording: back to Start Recording, with the note as before the recording */
+  const deleteRecording = (id: string) => {
+    setStoppedVisit((cur) => (cur === id ? null : cur));
+    setProcessing((l) => l.filter((x) => x !== id));
+    setProcessed((l) => l.filter((x) => x !== id));
+    setGenerating((l) => l.filter((x) => x !== id));
+    setGenerated((l) => l.filter((x) => x !== id));
+  };
+
   const onRecordState = (id: string, state: string) => {
     const stopped = state === 'paused' || state === 'playing';
     setStoppedVisit((cur) => (stopped ? id : cur === id ? null : cur));
@@ -505,6 +515,8 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
               patient={newNote.patient ?? null}
               onPatientChange={(patient) => updateNew(newNote.id, { patient, started: true })}
               recordLocked={!!doneAt[newNote.id]}
+              micSettings={micSettings}
+              onDeleteRecording={() => deleteRecording(newNote.id)}
               onRecordStateChange={(state) => {
                 onRecordState(newNote.id, state);
                 if (state === 'idle') return;
@@ -520,6 +532,8 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
               time={appointment.time}
               patient={toPatient(appointment)}
               recordLocked={!!doneAt[appointment.id]}
+              micSettings={micSettings}
+              onDeleteRecording={() => deleteRecording(appointment.id)}
               // A finished visit opens on its recording, ready to play back
               recordState={past[appointment.id] ? 'paused' : undefined}
               duration={past[appointment.id]?.duration}
@@ -561,9 +575,6 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
             onAction={(action) => (action === 'generate-note' ? generateNote(visitId) : finish(visitId, action))}
             className={`is-webapp__bottom-bar${showBottomBar ? ' is-webapp__bottom-bar--shown' : ''}`}
           />
-          <div className="is-webapp__mic">
-            <WebAppMicSettings />
-          </div>
         </section>
       </div>
     </div>

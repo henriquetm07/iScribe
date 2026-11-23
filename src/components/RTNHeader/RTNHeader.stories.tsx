@@ -30,7 +30,7 @@ const meta = {
     showCheckedIn: true,
     duration: 160,
     position: 32,
-    onMoreClick: fn(),
+    onDeleteRecording: fn(),
     onRecordStateChange: fn(),
     onPatientChange: fn(),
   },
@@ -47,7 +47,8 @@ const meta = {
     date: { table: { disable: true } },
     time: { table: { disable: true } },
     patient: { table: { disable: true } },
-    onMoreClick: { table: { disable: true } },
+    onDeleteRecording: { table: { disable: true } },
+    micSettings: { table: { disable: true } },
     onRecordStateChange: { table: { disable: true } },
     onPatientChange: { table: { disable: true } },
     className: { table: { disable: true } },
@@ -68,7 +69,7 @@ const meta = {
   // Room below the header for the sex field's Selection List, so it isn't cut off when it opens
   decorators: [
     (Story) => (
-      <div style={{ minHeight: 320 }}>
+      <div style={{ minHeight: 520 }}>
         <Story />
       </div>
     ),
@@ -87,7 +88,10 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Try it: Start Recording, then Stop, play, drag the bar and Resume. Click the name or any detail to edit it. */
+/**
+ * Try it: Start Recording, then Stop, play, drag the bar and Resume. Once there is a recording, the trash next to
+ * the mic deletes it (back to Start Recording). The mic opens Mic Settings. Click the name or any detail to edit it.
+ */
 export const Default: Story = {};
 
 export const Recording: Story = { args: { recordState: 'recording', duration: 0 } };
@@ -97,10 +101,21 @@ export const Playback: Story = { args: { recordState: 'paused' } };
 /** The patient's profile isn't filled in yet: dotted blanks in place of the name and details. Click any of them to fill it in. */
 export const EmptyProfile: Story = { name: 'Empty profile', args: { filledIn: false } };
 
-/** Figma "RTN Header Web Details" on its own. */
+/** Figma "RTN Header Web Details" on its own: without and with Delete Recording (shown once there is a recording). */
 export const Details: Story = {
   parameters: { controls: { disable: true }, layout: 'padded' },
-  render: () => <RTNHeaderDetails onMoreClick={fn()} />,
+  render: () => (
+    <div style={{ display: 'grid', gap: 24, paddingBottom: 260 }}>
+      <div>
+        <p style={caption}>Default</p>
+        <RTNHeaderDetails />
+      </div>
+      <div>
+        <p style={caption}>Delete Recording</p>
+        <RTNHeaderDetails deleteRecording onDeleteRecording={fn()} />
+      </div>
+    </div>
+  ),
 };
 
 /** Figma "RTN Header Web Patient Information": Web and Chrome Extension, filled in and empty. */

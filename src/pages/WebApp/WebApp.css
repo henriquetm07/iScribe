@@ -83,14 +83,6 @@
   text-align: center;
 }
 
-/* Microphone settings: bottom-left corner of the Note Section */
-.is-webapp__mic {
-  position: absolute;
-  z-index: 6;
-  left: 20px;
-  bottom: 20px;
-}
-
 /*
  * Web Note Bottom Bar: below the note, across the note area. Hidden below the edge until the recording is
  * stopped, then slides up (0.3s); the note gets room underneath so its end stays reachable.

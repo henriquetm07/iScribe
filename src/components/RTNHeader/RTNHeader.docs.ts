@@ -20,7 +20,11 @@ export const rtnHeaderSpecLines = (p: Partial<RTNHeaderProps>) => [
   '              Relative Mono 10 Pitch 13px / 18px, high contrast',
   '  Then 10px apart: date (13px, low contrast) · time (13px SemiBold, medium) · check-in (13px, low)',
   '              3px dots in low contrast between them',
-  '  Right       <IconButton variant="ghost" size="regular" icon="meatballs" />  (40px, 16px icon)',
+  '  Right       10px apart, 40px Icon Buttons with 16px icons:',
+  '              Delete Recording  <IconButton variant="destructive-outline" icon="trash" />  (Figma',
+  '                                "Destructive Secondary"), only once there is a recording (Playback)',
+  '              Mic Settings      <MicSettings variant="ghost" placement="bottom" align="end" />: the',
+  '                                card opens below, lined up on the right',
   '',
   'PATIENT (RTNHeaderPatient, Figma "Complete Profile")',
   '  Web         photo 90 × 120px, radius 18px; 30px gap; 60px right padding',
@@ -46,7 +50,7 @@ export const rtnHeaderSpecLines = (p: Partial<RTNHeaderProps>) => [
   '',
   'FLOW',
   '  Start Recording → the waves grow from dots → Stop → Playback (play / pause, drag the bar or',
-  '  ← → to seek) → Resume records more. The clock is simulated in the docs; in the app, connect',
+  '  ← → to seek) → Resume records more. Delete Recording goes back to Start Recording. The clock is simulated in the docs; in the app, connect',
   '  useRecorder to the real recorder.',
 ];
 

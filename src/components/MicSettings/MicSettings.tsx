@@ -134,6 +134,10 @@ export interface MicSettingsProps extends Omit<MicSettingsPanelProps, 'onClose'>
   onOpenChange?: (open: boolean) => void;
   /** Where the card opens from the mic button */
   placement?: 'top' | 'bottom';
+  /** Which edge of the mic button the card lines up with (default start: the left edge) */
+  align?: 'start' | 'end';
+  /** The mic button's style (default secondary; ghost in the RTN Header). Alert (error) is always destructive. */
+  variant?: 'secondary' | 'ghost';
 }
 
 /**
@@ -145,6 +149,8 @@ export const MicSettings = ({
   defaultOpen = false,
   onOpenChange,
   placement = 'top',
+  align = 'start',
+  variant = 'secondary',
   error = false,
   ...panel
 }: MicSettingsProps) => {
@@ -179,10 +185,10 @@ export const MicSettings = ({
   }, [isOpen]);
 
   return (
-    <div ref={root} className={`is-mic-settings is-mic-settings--${placement}`}>
+    <div ref={root} className={`is-mic-settings is-mic-settings--${placement} is-mic-settings--${align}`}>
       <IconButton
         ref={button}
-        variant={error ? 'destructive' : 'secondary'}
+        variant={error ? 'destructive' : variant}
         size="regular"
         icon={<Icon name="mic" />}
         label="Microphone settings"

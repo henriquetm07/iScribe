@@ -46,6 +46,12 @@
   width: 100%;
   min-width: 0;
 }
+.is-rtn-details__actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 10px;
+}
 .is-rtn-details__info,
 .is-rtn-details__labels {
   display: flex;

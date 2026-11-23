@@ -2,6 +2,7 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties
 import { AnimatedIcon } from '../../icons/AnimatedIcon';
 import { Icon } from '../../icons/Icon';
 import { IconButton } from '../IconButton/IconButton';
+import { MicSettings, type MicSettingsProps } from '../MicSettings/MicSettings';
 import { SelectionList } from '../SelectionList/SelectionList';
 import { formatTime, RecordRoundButton, RecordTextButton, useRecorder, Waves, type RecordState } from '../Record/RecordParts';
 import './RTNHeader.css';
@@ -51,18 +52,26 @@ export interface RTNHeaderDetailsProps {
   time?: string;
   /** Check-in note at the end */
   checkedIn?: string;
-  /** The "more" (meatballs) button */
-  onMoreClick?: () => void;
+  /** Show Delete Recording (the trash, next to the mic) — once there is a recording */
+  deleteRecording?: boolean;
+  onDeleteRecording?: () => void;
+  /** The Mic Settings on the right: its card's contents and state (it opens below, lined up on the right) */
+  micSettings?: Omit<MicSettingsProps, 'placement' | 'align' | 'variant'>;
   className?: string;
 }
 
-/** Figma "RTN Header Web Details": labels, date • time • check-in, and a "more" icon button on the right */
+/**
+ * Figma "RTN Header Web Details": labels, date • time • check-in; on the right, Delete Recording (Destructive
+ * Secondary Icon Button, once there is a recording) and Mic Settings (Ghost Icon Button)
+ */
 export const RTNHeaderDetails = ({
   labels = ['Visit', 'Room 12'],
   date: dateProp,
   time: timeProp,
   checkedIn = 'Checked in 11 min ago',
-  onMoreClick,
+  deleteRecording = false,
+  onDeleteRecording,
+  micSettings,
   className = '',
 }: RTNHeaderDetailsProps) => {
   const now = useNow(dateProp === undefined || timeProp === undefined);
@@ -86,7 +95,19 @@ export const RTNHeaderDetails = ({
         {(date || time) && checkedIn && <span className="is-rtn-dot" aria-hidden="true" />}
         {checkedIn && <span className="is-rtn-details__muted">{checkedIn}</span>}
       </div>
-      <IconButton icon={<Icon name="meatballs" />} label="More options" variant="ghost" size="regular" onClick={onMoreClick} />
+      <div className="is-rtn-details__actions">
+        {deleteRecording && (
+          <IconButton
+            className="is-rtn-details__delete"
+            icon={<Icon name="trash" />}
+            label="Delete recording"
+            variant="destructive-outline"
+            size="regular"
+            onClick={onDeleteRecording}
+          />
+        )}
+        <MicSettings placement="bottom" align="end" variant="ghost" {...micSettings} />
+      </div>
     </div>
   );
 };
@@ -593,7 +614,7 @@ const RTNTimeline = ({ title, position, duration, onSeek }: { title: string; pos
 
 /* ---------- RTN Header ---------- */
 
-export interface RTNHeaderProps extends Omit<RTNHeaderDetailsProps, 'className'> {
+export interface RTNHeaderProps extends Omit<RTNHeaderDetailsProps, 'className' | 'deleteRecording'> {
   /** The patient; leave out for the empty (not filled in) profile */
   patient?: RTNPatient | null;
   /** Show the patient's photo */
@@ -619,7 +640,8 @@ export const RTNHeader = ({
   date: dateProp,
   time: timeProp,
   checkedIn = 'Checked in 11 min ago',
-  onMoreClick,
+  onDeleteRecording,
+  micSettings,
   patient,
   showPhoto = true,
   recordState = 'idle',
@@ -642,9 +664,28 @@ export const RTNHeader = ({
   const name = shown ? `${shown.firstName} ${shown.lastName}`.trim() : '';
   // The playback title, as in Figma: "Sarah Johnson • Visit • Oct 23, 2026"
   const title = [name, labels[0] ?? '', date ?? ''].filter(Boolean).join(' • ');
+  // Where the record feature is, so Delete Recording shows once a recording is done (Playback). Deleting it
+  // brings back Start Recording (a fresh record feature).
+  const [state, setState] = useState<RecordState>(recordState);
+  const [deleted, setDeleted] = useState(0);
+  useEffect(() => setState(recordState), [recordState]);
+  const hasRecording = (state === 'paused' || state === 'playing') && !recordLocked;
   return (
     <header className={`is-rtn ${className}`} style={style}>
-      <RTNHeaderDetails labels={labels} date={date} time={time} checkedIn={checkedIn} onMoreClick={onMoreClick} />
+      <RTNHeaderDetails
+        labels={labels}
+        date={date}
+        time={time}
+        checkedIn={checkedIn}
+        deleteRecording={hasRecording}
+        onDeleteRecording={() => {
+          setDeleted((n) => n + 1);
+          setState('idle');
+          onRecordStateChange?.('idle');
+          onDeleteRecording?.();
+        }}
+        micSettings={micSettings}
+      />
       <div className="is-rtn__row">
         <RTNHeaderPatient
           patient={patient}
@@ -654,7 +695,18 @@ export const RTNHeader = ({
             onPatientChange?.(p);
           }}
         />
-        <RTNHeaderRecord state={recordState} duration={duration} position={position} title={title} onStateChange={onRecordStateChange} locked={recordLocked} />
+        <RTNHeaderRecord
+          key={deleted}
+          state={deleted ? 'idle' : recordState}
+          duration={deleted ? 0 : duration}
+          position={deleted ? 0 : position}
+          title={title}
+          onStateChange={(s) => {
+            setState(s);
+            onRecordStateChange?.(s);
+          }}
+          locked={recordLocked}
+        />
       </div>
     </header>
   );
