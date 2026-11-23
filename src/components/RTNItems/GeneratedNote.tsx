@@ -108,8 +108,60 @@ export interface GeneratedNoteFrameProps {
    * integrated with an EHR, whose note is copied over. Off for integrated patients, whose note is sent to the EHR.
    */
   copyable?: boolean;
+  /**
+   * The note is still being generated: the tabs are there (and can be switched) but the transcript and the note
+   * show skeleton placeholders, and Copy is disabled
+   */
+  loading?: boolean;
   className?: string;
 }
+
+/** A shimmering placeholder bar; `width` as a CSS length */
+const Bone = ({ width, height = 12 }: { width: string; height?: number }) => (
+  <span className="is-gen-skeleton__bone" style={{ width, height }} aria-hidden="true" />
+);
+
+/** Placeholder line widths, so the skeleton reads like text */
+const SKELETON_NOTE = [
+  { title: '42%', lines: ['100%', '96%', '88%', '62%'] },
+  { title: '34%', lines: ['100%', '92%', '70%'] },
+  { title: '48%', lines: ['100%', '98%', '94%', '90%', '54%'] },
+  { title: '30%', lines: ['86%', '40%'] },
+];
+const SKELETON_TRANSCRIPT = ['96%', '100%', '72%', '100%', '94%', '58%', '100%', '88%', '80%'];
+
+/** Skeleton for the note: white cards with a title bar and a few lines of text */
+const NoteSkeleton = () => (
+  <div className="is-rtn-frame__list is-gen-skeleton" aria-hidden="true">
+    {SKELETON_NOTE.map((s, i) => (
+      <div key={i} className="is-gen-item is-gen-skeleton__item">
+        <div className="is-gen-item__header">
+          <Bone width={s.title} height={16} />
+        </div>
+        <hr className="is-gen-item__divider" />
+        <div className="is-gen-skeleton__lines">
+          {s.lines.map((w, j) => (
+            <Bone key={j} width={w} />
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
+/** Skeleton for the transcript: the search field, then timestamped paragraphs */
+const TranscriptSkeleton = () => (
+  <div className="is-gen-skeleton" aria-hidden="true">
+    <div className="is-gen-search is-gen-skeleton__search">
+      <Bone width="40%" />
+    </div>
+    <div className="is-gen-skeleton__lines is-gen-skeleton__transcript">
+      {SKELETON_TRANSCRIPT.map((w, i) => (
+        <Bone key={i} width={w} height={14} />
+      ))}
+    </div>
+  </div>
+);
 
 /** Splits a line around the search matches, so they can be highlighted */
 const highlight = (text: string, query: string) => {
@@ -133,6 +185,7 @@ export const GeneratedNoteFrame = ({
   transcript,
   defaultSearch = '',
   copyable = true,
+  loading = false,
   className,
 }: GeneratedNoteFrameProps) => {
   const [own, setOwn] = useState<GeneratedNoteTab>(defaultTab);
@@ -147,7 +200,10 @@ export const GeneratedNoteFrame = ({
   const label = tab === 'transcript' ? 'Copy Transcript' : 'Copy All';
 
   return (
-    <div className={['is-rtn-frame', 'is-rtn-frame--web', 'is-gen-frame', className].filter(Boolean).join(' ')}>
+    <div
+      className={['is-rtn-frame', 'is-rtn-frame--web', 'is-gen-frame', loading && 'is-gen-frame--loading', className].filter(Boolean).join(' ')}
+      aria-busy={loading || undefined}
+    >
       <div className="is-rtn-frame__tabs is-gen-frame__top">
         <Tabs
           device="web"
@@ -161,13 +217,20 @@ export const GeneratedNoteFrame = ({
           aria-label="Generated note"
         />
         {copyable && (
-          <Button variant="secondary" size="regular" iconLeft={<Icon name={copied ? 'check' : 'copy'} />} onClick={copyAll}>
+          <Button variant="secondary" size="regular" iconLeft={<Icon name={copied ? 'check' : 'copy'} />} onClick={copyAll} disabled={loading}>
             {copied ? 'Copied' : label}
           </Button>
         )}
       </div>
       <div className="is-rtn-frame__note">
-        {tab === 'transcript' ? (
+        {loading && <span className="is-gen-skeleton__status" role="status">Generating the {tab === 'transcript' ? 'transcript' : 'note'}…</span>}
+        {loading ? (
+          tab === 'transcript' ? (
+            <TranscriptSkeleton />
+          ) : (
+            <NoteSkeleton />
+          )
+        ) : tab === 'transcript' ? (
           <>
             <label className="is-gen-search">
               <Icon name="search" size={20} />

@@ -20,7 +20,6 @@ import { Tooltip } from '../../components/Tooltip/Tooltip';
 import { WebNavBar, type WebNavBarItem } from '../../components/WebNavBar/WebNavBar';
 import { WebNoteBottomBar } from '../../components/WebNoteBottomBar/WebNoteBottomBar';
 import type { AppointmentStatusValue } from '../../components/AppointmentStatus/AppointmentStatus';
-import { AnimatedIcon } from '../../icons/AnimatedIcon';
 import { GeneratedNoteFrame } from '../../components/RTNItems/GeneratedNote';
 import { sampleGeneratedNote, sampleTranscript } from '../../components/RTNItems/sampleGeneratedNote';
 import '../../components/RTNItems/RTNItems.css';
@@ -35,8 +34,8 @@ import './WebApp.css';
  * behaviour included.
  * The + on Macros, Diagnoses or Orders opens that Drawer from the right, over everything; what is picked there
  * shows up in the note (× removes it, here or in the drawer). Stopping the recording shows spinners on those three
- * for ~3s, fills each with 1 or 2 items, then slides up the Generate Note bar. Generate Note: a spinner for 2s, then the
- * Generated Note (Transcript · Note) in place of the note; integrated patients (EHR logo) get no copy buttons and
+ * for ~3s, fills each with 1 or 2 items, then slides up the Generate Note bar. Generate Note: the tabs switch at once to the
+ * Generated Note's Transcript · Note, with skeletons for ~3s until its content is there; integrated patients (EHR logo) get no copy buttons and
  * Send to EHR, the others (broken link) copy buttons and Mark as Complete. Once sent / complete, recording is blocked. On the Previous Note tab, the big + opens Drawer › Previous Note
  * (the previous note as a checklist), in sync with the note's own + buttons.
  * A new note shows the "Say it, don't type it" tooltip next to the demographics until it is closed or a recording starts.
@@ -421,7 +420,7 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
   const [stoppedVisit, setStoppedVisit] = useState<string | null>(null);
   const [processing, setProcessing] = useState<string[]>([]);
   const [processed, setProcessed] = useState<string[]>([]);
-  // Generate Note: the note gives way to a spinner for 2s, then the Generated Note (Transcript · Note) appears and
+  // Generate Note: the Generated Note (Transcript · Note) takes the note's place at once, with skeletons for 3s, then
   // the bar moves on to Mark as Complete. Per visit.
   const [generating, setGenerating] = useState<string[]>([]);
   const [generated, setGenerated] = useState<string[]>(() => Object.keys(past));
@@ -433,7 +432,7 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
     window.setTimeout(() => {
       setGenerating((l) => l.filter((x) => x !== id));
       setGenerated((l) => [...l, id]);
-    }, 2000);
+    }, 3000);
   };
   const showBottomBar = (stoppedVisit === visitId && processed.includes(visitId)) || isGenerating || isGenerated;
   // Integrated patients (EHR logo) get their note sent: no copy buttons, then Send to EHR. Not integrated (broken
@@ -553,14 +552,11 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
                 filled={processed.includes(visitId)}
               />
             </div>
-            {isGenerating && (
-              <div className="is-webapp__generating" role="status">
-                <AnimatedIcon name="spinner" size={32} title="Generating the note" />
-              </div>
-            )}
-            {isGenerated && (
+            {/* Generate Note swaps the tabs at once to Transcript · Note, with skeletons while they are generated */}
+            {(isGenerating || isGenerated) && (
               <GeneratedNoteFrame
                 key={visitId}
+                loading={isGenerating}
                 copyable={!integrated}
                 sections={sampleGeneratedNote}
                 transcript={sampleTranscript}

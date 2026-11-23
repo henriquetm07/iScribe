@@ -124,3 +124,61 @@
 .is-gen-transcript__empty {
   color: var(--is-foreground-low-contrast-primary-foreground);
 }
+
+/* ---------- Loading: skeletons while the transcript and note are generated ---------- */
+.is-gen-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.is-gen-skeleton__item .is-gen-item__header {
+  min-height: 40px;
+}
+.is-gen-skeleton__lines {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.is-gen-skeleton__transcript {
+  gap: 10px;
+}
+.is-gen-skeleton__search {
+  cursor: default;
+}
+/* A soft bar with a light sweeping across it */
+.is-gen-skeleton__bone {
+  display: block;
+  max-width: 100%;
+  border-radius: 6px;
+  background: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--is-surface-super-soft-contrast-light, rgba(255, 255, 255, 0.5)) 50%,
+      transparent 100%
+    )
+    0 0 / 200% 100% no-repeat,
+    var(--is-surface-soft-contrast-background);
+  animation: is-gen-shimmer 1.4s ease-in-out infinite;
+}
+@keyframes is-gen-shimmer {
+  from {
+    background-position: 150% 0, 0 0;
+  }
+  to {
+    background-position: -50% 0, 0 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-gen-skeleton__bone {
+    animation: none;
+  }
+}
+/* Announced to screen readers only */
+.is-gen-skeleton__status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
