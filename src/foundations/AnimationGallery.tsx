@@ -3,10 +3,23 @@ import { Animation } from '../animations/Animation';
 import { animationNames, animations, type AnimationData, type AnimationName } from '../animations/animations';
 import { lottieInfo } from '../icons/animatedIcons';
 import { Icon } from '../icons/Icon';
+import { Button } from '../components/Button/Button';
 import './AnimatedIconGallery.css';
 import './AnimationGallery.css';
 
 const sizes = [120, 180, 240, 360] as const;
+
+/** Save a Lottie JSON as a file */
+const download = (data: object, file: string) => {
+  const url = URL.createObjectURL(new Blob([JSON.stringify(data)], { type: 'application/json' }));
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = file;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+};
 
 /**
  * One animation: a preview you can replay, its timing and versions, and copyable code. Same layout as Animated Icons.
@@ -58,6 +71,17 @@ const Tile = ({ name, size }: { name: AnimationName; size: number }) => {
         <button type="button" className="is-anim-tile__code" onClick={copy} title="Copy code">
           {copied ? 'Copied!' : code}
         </button>
+        {/* The Lottie JSON files, to download (light and dark when there are both) */}
+        <div className="is-anim-tile__downloads">
+          <Button variant="secondary" size="small" iconLeft={<Icon name="download" />} onClick={() => download(animation.light, `${name}${animation.dark ? '-light' : ''}.json`)}>
+            {animation.dark ? 'Light JSON' : 'Download JSON'}
+          </Button>
+          {animation.dark && (
+            <Button variant="secondary" size="small" iconLeft={<Icon name="download" />} onClick={() => download(animation.dark!, `${name}-dark.json`)}>
+              Dark JSON
+            </Button>
+          )}
+        </div>
       </div>
     </article>
   );
