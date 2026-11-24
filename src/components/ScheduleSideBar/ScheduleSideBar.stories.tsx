@@ -22,6 +22,14 @@ const meta = {
     onSelect: fn(),
     onDateChange: fn(),
   },
+  parameters: {
+    docs: {
+      description: {
+        component:
+          "Providers are able to check their agenda for any day in the Schedule Side Bar. They're also able to filter results and switch between an ongoing appointment schedule and pending notes",
+      },
+    },
+  },
   argTypes: {
     platform: { control: 'inline-radio', options: ['web', 'chrome'] },
     defaultCollapsed: { table: { disable: true } },
