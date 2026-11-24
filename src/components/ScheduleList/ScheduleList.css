@@ -204,18 +204,19 @@
 .is-sli-skeleton {
   cursor: default;
 }
+/* Lines 10px apart, centred: the photo's square and two lines on the side; three lines for the patient */
 .is-sli-skeleton .is-sli__summary,
-.is-sli-skeleton .is-sli__side {
-  gap: 8px;
-}
+.is-sli-skeleton .is-sli__side,
 .is-sli-skeleton__visit {
-  gap: 8px;
+  gap: 10px;
 }
+/* Every line: 9px tall, fully rounded */
 .is-sli-skeleton__bone {
   display: block;
   flex: none;
   max-width: 100%;
-  border-radius: 6px;
+  height: 9px;
+  border-radius: 100px;
   background: linear-gradient(
       90deg,
       transparent 0%,
@@ -227,6 +228,7 @@
   animation: is-sli-shimmer 1.4s ease-in-out infinite;
 }
 .is-sli-skeleton__bone--square {
+  height: 30px;
   border-radius: 10px; /* as the photo */
 }
 @keyframes is-sli-shimmer {

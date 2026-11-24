@@ -249,8 +249,9 @@ export interface ScheduleListProps {
   className?: string;
 }
 
-const Bone = ({ w, h = 12, square = false }: { w: number; h?: number; square?: boolean }) => (
-  <span className={`is-sli-skeleton__bone${square ? ' is-sli-skeleton__bone--square' : ''}`} style={{ width: w, height: h }} />
+/** A skeleton line (every line is the same height, fully rounded), or the photo's square */
+const Bone = ({ w, square = false }: { w: number; square?: boolean }) => (
+  <span className={`is-sli-skeleton__bone${square ? ' is-sli-skeleton__bone--square' : ''}`} style={{ width: w }} />
 );
 
 /** One skeleton item: the item's frame (compact or expanded) with bars where its photo, time, visit, name and status go */
@@ -258,23 +259,22 @@ export const ScheduleListItemSkeleton = ({ expanded = false }: { expanded?: bool
   expanded ? (
     <div className="is-sli is-sli--expanded is-sli-skeleton" aria-hidden="true">
       <div className="is-sli__side">
-        <Bone w={30} h={30} square />
-        <Bone w={56} h={12} />
-        <Bone w={40} h={10} />
+        <Bone w={30} square />
+        <Bone w={58} />
+        <Bone w={58} />
       </div>
       <div className="is-sli__visit is-sli-skeleton__visit">
-        <Bone w={130} h={14} />
-        <Bone w={150} h={10} />
-        <Bone w={88} h={18} />
+        <Bone w={137} />
+        <Bone w={167} />
+        <Bone w={73} />
       </div>
     </div>
   ) : (
     <div className="is-sli is-sli--compact is-sli-skeleton" aria-hidden="true">
       <div className="is-sli__summary">
-        <Bone w={70} h={14} />
-        <Bone w={90} h={12} />
-        <Bone w={50} h={12} />
-        <Bone w={40} h={10} />
+        <Bone w={58} />
+        <Bone w={90} />
+        <Bone w={58} />
       </div>
     </div>
   );
