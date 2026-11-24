@@ -67,6 +67,8 @@ export interface RTNHeaderDetailsProps {
    * instead of deleting the recording at once
    */
   onDeleteNote?: () => void;
+  /** Show the trash with Delete note only (no recording to clear, e.g. right after Clear recording) */
+  deleteNote?: boolean;
   /** The Mic Settings on the right: its card's contents and state (it opens below, lined up on the right) */
   micSettings?: Omit<MicSettingsProps, 'placement' | 'align' | 'variant'>;
   className?: string;
@@ -87,6 +89,7 @@ export const RTNHeaderDetails = ({
   deleteRecording = false,
   onDeleteRecording,
   onDeleteNote,
+  deleteNote = false,
   micSettings,
   className = '',
 }: RTNHeaderDetailsProps) => {
@@ -141,9 +144,9 @@ export const RTNHeaderDetails = ({
         {checkedIn && <span className="is-rtn-details__muted">{checkedIn}</span>}
       </div>
       <div className="is-rtn-details__actions">
-        {deleteRecording &&
+        {(deleteRecording || (deleteNote && onDeleteNote)) &&
           (onDeleteNote ? (
-            <DeleteMenu onClearRecording={onDeleteRecording} onDeleteNote={onDeleteNote} />
+            <DeleteMenu onClearRecording={deleteRecording ? onDeleteRecording : undefined} onDeleteNote={onDeleteNote} />
           ) : (
             <IconButton
               className="is-rtn-details__delete"
@@ -214,7 +217,7 @@ const DeleteMenu = ({ onClearRecording, onDeleteNote }: { onClearRecording?: () 
             selectedIcon="none"
             aria-label="Delete"
             options={[
-              { value: 'recording', label: 'Clear recording', iconLeft: 'recording', destructive: true },
+              ...(onClearRecording ? [{ value: 'recording', label: 'Clear recording', iconLeft: 'recording' as const, destructive: true }] : []),
               { value: 'note', label: 'Delete note', iconLeft: 'trash', destructive: true },
             ]}
             onChange={(v) => {
@@ -1009,7 +1012,7 @@ const RTNTimeline = ({ title, position, duration, onSeek }: { title: string; pos
 
 /* ---------- RTN Header ---------- */
 
-export interface RTNHeaderProps extends Omit<RTNHeaderDetailsProps, 'className' | 'deleteRecording'> {
+export interface RTNHeaderProps extends Omit<RTNHeaderDetailsProps, 'className' | 'deleteRecording' | 'deleteNote'> {
   /** The patient; leave out for the empty (not filled in) profile */
   patient?: RTNPatient | null;
   /** Show the patient's photo */
@@ -1079,6 +1082,8 @@ export const RTNHeader = ({
   const [deleted, setDeleted] = useState(0);
   useEffect(() => setState(recordState), [recordState]);
   const hasRecording = (state === 'paused' || state === 'playing') && !recordLocked;
+  // After Clear recording the trash stays, with Delete note only (until the note is deleted)
+  const [cleared, setCleared] = useState(false);
   return (
     <header className={`is-rtn ${className}`} style={style}>
       <RTNHeaderDetails
@@ -1092,11 +1097,13 @@ export const RTNHeader = ({
         onTimeChange={onTimeChange}
         checkedIn={checkedIn}
         deleteRecording={hasRecording}
+        deleteNote={cleared && !recordLocked}
         onDeleteRecording={() => {
           const remove = () => {
             setDeleted((n) => n + 1);
             setState('idle');
             onRecordStateChange?.('idle');
+            setCleared(true);
             onDeleteRecording?.();
           };
           if (confirmDelete) confirmDelete('recording', remove);
@@ -1109,6 +1116,7 @@ export const RTNHeader = ({
               setDeleted((n) => n + 1);
               setState('idle');
               onRecordStateChange?.('idle');
+              setCleared(false);
               onDeleteNote();
             };
             if (confirmDelete) confirmDelete('note', remove);

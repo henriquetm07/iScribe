@@ -58,6 +58,7 @@ export const rtnHeaderSpecLines = (p: Partial<RTNHeaderProps>) => [
   '  useRecorder to the real recorder.',
   '  With onDeleteNote set, hovering (or clicking) the trash opens a Selection List below it, on the right: Clear',
   '  recording · Delete note. confirmDelete / confirmResume let the app ask first (the Web App uses Popup Message).',
+  '  After Clear recording the trash stays, with Delete note only.',
 ];
 
 export const rtnHeaderSpecComment = (p: Partial<RTNHeaderProps>) => asComment(rtnHeaderSpecLines(p));
