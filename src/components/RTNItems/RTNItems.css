@@ -150,6 +150,27 @@
 .is-rtn-text--iphone {
   font-size: 15px;
 }
+/* Pulled from the previous note: icon/previousnote/outline right before the text, 5px apart */
+.is-rtn-prev {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  min-width: 0;
+}
+.is-rtn-prev > .is-rtn-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.is-rtn-prev__icon {
+  flex: none;
+  color: var(--is-foreground-high-contrast-primary-foreground);
+}
+.is-rtn-prev--iphone .is-rtn-prev__icon {
+  margin-top: 2px;
+}
+.is-rtn-stack > .is-rtn-prev {
+  align-self: stretch;
+}
 
 /* ---------- Labels (codes) ---------- */
 .is-rtn-label {

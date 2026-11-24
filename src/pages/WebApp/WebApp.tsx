@@ -60,6 +60,9 @@ const practices = ['Midlands Orthopaedics', 'Midlands Orthopaedics Surgery Cente
 /** Topics shown on today's note, as in the Figma page. Their + opens the matching Drawer. */
 const TODAY_TOPICS: DrawerSampleKind[] = ['macros', 'diagnoses', 'orders'];
 
+/** Previous-note sections that have a matching section on today's note: what's pulled from them also shows there */
+const PREVIOUS_TO_TODAY: Record<string, DrawerSampleKind> = { macros: 'macros', dx: 'diagnoses', orders: 'orders' };
+
 /** What was picked in each Drawer (ids, newest first) */
 type Picks = Record<DrawerSampleKind, string[]>;
 const NO_PICKS: Picks = { macros: [], diagnoses: [], orders: [] };
@@ -173,6 +176,32 @@ const VisitNote = ({
       </RtnItemContent>
     );
   };
+  /** Entries pulled from the previous note into a section of today's note, shown there with the previous-note icon (× un-pulls them) */
+  const pulledEntries = (kind: DrawerSampleKind) =>
+    sections
+      .filter((s) => PREVIOUS_TO_TODAY[s.id] === kind)
+      .flatMap((s) => s.entries.filter((e) => added.includes(e.id)))
+      .map((e) => {
+        const name = typeof e.text === 'string' ? e.text : '';
+        return (
+          <RtnItemContent key={e.id} device="web" onRemove={() => toggle(e.id)}>
+            {kind === 'macros' ? (
+              <RtnText device="web" previousNote>{name}</RtnText>
+            ) : kind === 'diagnoses' ? (
+              <RtnDiagnosis
+                device="web"
+                previousNote
+                name={name}
+                code={e.code ?? ''}
+                active={activeProblems.includes(e.id)}
+                onActiveChange={(on) => setActiveProblems((a) => (on ? [...a, e.id] : a.filter((x) => x !== e.id)))}
+              />
+            ) : (
+              <RtnOrder device="web" previousNote name={name} />
+            )}
+          </RtnItemContent>
+        );
+      });
   const allIds = sections.flatMap((s) => s.entries.map((e) => e.id));
   // The big + (Check counter) opens Drawer › Previous Note: the previous note as a checklist, in sync with `added`.
   // A one-entry section is one row (the entry); Diagnoses, Orders and Billing are a section row with their entries.
@@ -249,6 +278,7 @@ const VisitNote = ({
           <div className="is-rtn-frame__list">
             {TODAY_TOPICS.map((t) => (
               <RtnItem key={t} device="web" topic={t} loading={loading} onAdd={() => openDrawer(t)}>
+                {pulledEntries(t)}
                 {picks[t].map((id) => entry(t, id))}
               </RtnItem>
             ))}

@@ -114,10 +114,20 @@ export const RtnLabel = ({ device = 'web', tone = 'neutral', size, icon, childre
 
 /* ------------------------------------------------------------------ Container Content types (750:8315) */
 
-/** Container Content · Text */
-export const RtnText = ({ device = 'web', size, children }: { device?: RtnDevice; size?: 'body' | 'large'; children: ReactNode }) => (
-  <p className={cx('is-rtn-text', `is-rtn-text--${size ?? 'body'}`, small(device) && 'is-rtn-text--iphone')}>{children}</p>
-);
+/**
+ * Container Content · Text. `previousNote` shows icon/previousnote/outline right before the text (hidden by default in
+ * Figma): the entry was pulled from the previous note. 16px on iPhone, 20px on iPad / Web, 5px from the text.
+ */
+export const RtnText = ({ device = 'web', size, previousNote = false, children }: { device?: RtnDevice; size?: 'body' | 'large'; previousNote?: boolean; children: ReactNode }) => {
+  const text = <p className={cx('is-rtn-text', `is-rtn-text--${size ?? 'body'}`, small(device) && 'is-rtn-text--iphone')}>{children}</p>;
+  if (!previousNote) return text;
+  return (
+    <div className={cx('is-rtn-prev', small(device) && 'is-rtn-prev--iphone')}>
+      <Icon name="previous-note" size={small(device) ? 16 : 20} className="is-rtn-prev__icon" title="From the previous note" />
+      {text}
+    </div>
+  );
+};
 
 export interface RtnEditingProps {
   device?: RtnDevice;
@@ -176,12 +186,14 @@ export interface RtnDiagnosisProps {
   /** Active problem toggle */
   active?: boolean;
   onActiveChange?: (active: boolean) => void;
+  /** Pulled from the previous note: the previous-note icon before the name */
+  previousNote?: boolean;
 }
 
 /** Container Content · Diagnosis: name, ICD code label and the Active problem toggle. */
-export const RtnDiagnosis = ({ device = 'web', name, code, active = false, onActiveChange }: RtnDiagnosisProps) => (
+export const RtnDiagnosis = ({ device = 'web', name, code, active = false, onActiveChange, previousNote }: RtnDiagnosisProps) => (
   <div className="is-rtn-stack">
-    <RtnText device={device} size="large">{name}</RtnText>
+    <RtnText device={device} size="large" previousNote={previousNote}>{name}</RtnText>
     <RtnLabel device={device}>{code}</RtnLabel>
     <div className="is-rtn-active">
       <Toggle size={small(device) ? 'default' : 'xl'} checked={active} onChange={onActiveChange} label="Active problem" />
@@ -191,9 +203,9 @@ export const RtnDiagnosis = ({ device = 'web', name, code, active = false, onAct
 );
 
 /** Container Content · Order and Order + Label (a red alert code next to the name). */
-export const RtnOrder = ({ device = 'web', name, alertCode }: { device?: RtnDevice; name: string; alertCode?: string }) => (
+export const RtnOrder = ({ device = 'web', name, alertCode, previousNote }: { device?: RtnDevice; name: string; alertCode?: string; previousNote?: boolean }) => (
   <div className="is-rtn-order">
-    <RtnText device={device} size="large">{name}</RtnText>
+    <RtnText device={device} size="large" previousNote={previousNote}>{name}</RtnText>
     {alertCode && <RtnLabel device={device} size={small(device) ? 'medium' : 'big'} tone="alert" icon="alert">{alertCode}</RtnLabel>}
   </div>
 );

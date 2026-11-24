@@ -23,6 +23,7 @@ export const rtnItemSpecLines = ({ device = 'web' }: { device?: RtnDevice }) => 
   '    Image          237 : 180, corners 12, "Add caption" Figtree Medium Italic 13px medium contrast',
   `    Diagnosis      name · ICD code label (${isPhone(device) ? 'Small' : 'Big'}, low contrast) · Toggle ${isPhone(device) ? 'Default' : 'XL'} + "Active problem" Figtree Medium ${isPhone(device) ? 13 : 15}px`,
   `    Order + Label  name, then a red alert label with the alert icon (${isPhone(device) ? 'Medium' : 'Big'})`,
+  `    Previous note  previousNote on Text / Diagnosis / Order: icon/previousnote/outline ${isPhone(device) ? 16 : 20}px right before the text, 5px apart (hidden by default)`,
   `    Billing        E&M code (accent label) · Billing Codes (Button secondary ${isPhone(device) ? 'Small' : 'Regular'}, Relative Mono, drag handle + ×) · Add Code (Button primary ${isPhone(device) ? 'Small' : 'Regular'})`,
   '                   Hold the double kebab to pick a code up: it floats above the whole page, tilted 15° around the grab point,',
   '                   6% larger with a shadow and a 5px blur behind it, and leaves a soft placeholder; on release it glides into place',
