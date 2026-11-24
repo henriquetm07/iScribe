@@ -29,8 +29,9 @@
   flex-direction: column;
   min-width: 0;
   min-height: 0;
-  /* The bottom bar waits just below this edge */
-  overflow: hidden;
+  /* Not clipped here, so menus from the RTN Header (e.g. Mic Settings' microphone list, which opens upward) can
+     show over the nav bar; the bottom bar still waits out of sight below the app's own (clipped) bottom edge */
+  overflow: visible;
 }
 .is-webapp__note > .is-rtn {
   flex-shrink: 0;
