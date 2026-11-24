@@ -251,18 +251,23 @@ const SEX_OPTIONS = [
   { value: 'Male', label: 'Male' },
 ];
 
-/** Date of birth mask; digits fill the letters and the separators are added automatically */
-const DOB_MASK = 'MM/DD/YYYY';
-const DOB_SEP = '/';
-
-/** Digits typed into the date of birth → "MM/DD/YYYY" (adds the separator right after MM and DD while typing) */
-const maskDob = (input: string, typing: boolean) => {
-  const d = input.replace(/\D/g, '').slice(0, 8);
-  let out = d.slice(0, 2);
-  if (d.length > 2 || (typing && d.length === 2)) out += DOB_SEP + d.slice(2, 4);
-  if (d.length > 4 || (typing && d.length === 4)) out += DOB_SEP + d.slice(4);
-  return out;
+/** The date of birth's eight digit slots (MM DD YYYY), from "03/15/1982" or a partly filled "03/__/1982" */
+const DOB_LETTERS = ['M', 'M', 'D', 'D', 'Y', 'Y', 'Y', 'Y'];
+const parseDob = (value: string): string[] => {
+  const m = /^([\d_]{2})\/([\d_]{2})\/([\d_]{4})$/.exec(value);
+  if (m) return [...m[1], ...m[2], ...m[3]].map((c) => (c === '_' ? '' : c));
+  // Anything else (e.g. typed digits from before): its digits, in order
+  const d = value.replace(/\D/g, '').slice(0, 8).split('');
+  return DOB_LETTERS.map((_, i) => d[i] ?? '');
 };
+/** Slots → "MM/DD/YYYY" (empty slots as "_"), or "" when every slot is empty */
+const formatDob = (digits: string[]) =>
+  digits.some(Boolean)
+    ? `${digits.slice(0, 2).map((c) => c || '_').join('')}/${digits.slice(2, 4).map((c) => c || '_').join('')}/${digits
+        .slice(4)
+        .map((c) => c || '_')
+        .join('')}`
+    : '';
 
 /** Age in whole years for a complete, real, past MM/DD/YYYY date; otherwise null */
 const ageFromDob = (dob: string, today = new Date()) => {
@@ -543,6 +548,132 @@ const DateField = ({ value, label, onChange }: { value: string; label: string; o
   );
 };
 
+/**
+ * The date of birth: an MM/DD/YYYY mask that never loses its "/" — each digit is edited in place, so the day can be
+ * deleted and typed again without rewriting the rest. Typing fills the digit at the caret and moves on; Backspace /
+ * Delete empty one (its letter comes back, e.g. "03/DD/1982"); ← → Home End and clicks move between them. Same
+ * slots and caret as the time.
+ */
+const DobField = ({ value, label, onChange }: { value: string; label: string; onChange: (value: string) => void }) => {
+  const [digits, setDigits] = useState(() => parseDob(value));
+  const [caret, setCaret] = useState(0);
+  const box = useRef<HTMLSpanElement>(null);
+  // The digits and caret as of the last key, so keys pressed in quick succession build on each other
+  const live = useRef({ digits, caret });
+  live.current = { digits, caret };
+  // A new value from outside (another patient) replaces the slots; our own changes coming back don't
+  const sent = useRef(value);
+  useEffect(() => {
+    if (value !== sent.current) {
+      sent.current = value;
+      setDigits(parseDob(value));
+    }
+  }, [value]);
+
+  const put = (next: string[], at: number) => {
+    const changed = next.some((d, i) => d !== live.current.digits[i]);
+    live.current = { digits: next, caret: at };
+    setDigits(next);
+    setCaret(at);
+    if (changed) {
+      sent.current = formatDob(next);
+      onChange(sent.current);
+    }
+  };
+
+  const onKeyDown = (e: KeyboardEvent<HTMLSpanElement>) => {
+    const k = e.key;
+    const { digits: cur, caret: at } = live.current;
+    const next = [...cur];
+    if (/^\d$/.test(k)) {
+      e.preventDefault();
+      if (at > 7) return;
+      next[at] = k;
+      put(next, at + 1);
+    } else if (k === 'Backspace') {
+      e.preventDefault();
+      if (at === 0) return;
+      next[at - 1] = '';
+      put(next, at - 1);
+    } else if (k === 'Delete') {
+      e.preventDefault();
+      if (at > 7) return;
+      next[at] = '';
+      put(next, at);
+    } else if (k === 'ArrowLeft' || k === 'Home') {
+      e.preventDefault();
+      put(cur, k === 'Home' ? 0 : Math.max(0, at - 1));
+    } else if (k === 'ArrowRight' || k === 'End') {
+      e.preventDefault();
+      put(cur, k === 'End' ? 8 : Math.min(8, at + 1));
+    } else if (k === 'Enter' || k === 'Escape') {
+      e.preventDefault();
+      e.currentTarget.blur();
+    }
+  };
+
+  const slot = (i: number) => (
+    <span
+      key={i}
+      className={`is-rtn-time__slot${digits[i] ? '' : ' is-rtn-time__slot--empty'}${caret === i ? ' is-rtn-time__slot--caret' : ''}`}
+      onMouseDown={(e) => {
+        e.preventDefault();
+        box.current?.focus();
+        put(live.current.digits, i);
+      }}
+    >
+      {digits[i] || DOB_LETTERS[i]}
+    </span>
+  );
+  const sep = (key: string) => (
+    <span key={key} className="is-rtn-time__colon" aria-hidden="true">
+      /
+    </span>
+  );
+
+  return (
+    <span className={`is-rtn-field is-rtn-dob${digits.some(Boolean) ? '' : ' is-rtn-field--blank'}`}>
+      <span
+        ref={box}
+        className={`is-rtn-time__digits${caret > 7 ? ' is-rtn-time__digits--caret-end' : ''}`}
+        role="textbox"
+        tabIndex={0}
+        inputMode="numeric"
+        aria-label={`${label} (MM/DD/YYYY)`}
+        aria-valuetext={digits.map((d, i) => d || DOB_LETTERS[i]).join('').replace(/^(..)(..)/, '$1/$2/')}
+        onKeyDown={onKeyDown}
+        onFocus={() => {
+          // Tabbing in starts at the first empty digit (or the start when it's all filled in)
+          if (!box.current?.matches(':active')) {
+            const first = live.current.digits.findIndex((d) => !d);
+            setCaret(first === -1 ? 0 : first);
+          }
+        }}
+        onMouseDown={(e) => {
+          // A click beside the digits puts the caret at the end
+          if (e.target === e.currentTarget) {
+            e.preventDefault();
+            box.current?.focus();
+            put(live.current.digits, 8);
+          }
+        }}
+      >
+        {slot(0)}
+        {slot(1)}
+        {sep('a')}
+        {slot(2)}
+        {slot(3)}
+        {sep('b')}
+        {slot(4)}
+        {slot(5)}
+        {slot(6)}
+        {slot(7)}
+      </span>
+      <span className="is-rtn-field__line" aria-hidden="true" />
+    </span>
+  );
+};
+
 /** The time's mask: four digit slots around a fixed ":" */
 const TIME_MASK = ['H', 'H', 'M', 'M'];
 const timeOptions = [
@@ -742,7 +873,7 @@ const TimeField = ({ value, label, onChange }: { value: string; label: string; o
 /**
  * Figma "Complete Profile": photo, name and demographics — or dotted blanks when nothing is filled in yet.
  * Every field can be clicked and edited: the names and age are typed in, sex is picked from a Selection List,
- * and the date of birth is typed as digits into an MM/DD/YYYY mask (the age then follows it).
+ * and the date of birth is an MM/DD/YYYY mask edited digit by digit (the age then follows it).
  */
 export const RTNHeaderPatient = ({ patient, device = 'web', showPhoto = true, onPatientChange, className = '' }: RTNHeaderPatientProps) => {
   const [fields, setFields] = useState(() => toFields(patient));
@@ -776,7 +907,7 @@ export const RTNHeaderPatient = ({ patient, device = 'web', showPhoto = true, on
         </p>
         <p className="is-rtn-patient__demo">
           <SelectField value={fields.sex} placeholder="Sex" label="Sex" options={SEX_OPTIONS} onChange={(sex) => update({ sex })} />
-          <TextField value={fields.dob} placeholder={DOB_MASK} label="Date of birth" mask={DOB_MASK} numeric format={maskDob} onChange={onDob} />
+          <DobField value={fields.dob} label="Date of birth" onChange={onDob} />
           <TextField
             value={fields.age}
             placeholder="Age"
