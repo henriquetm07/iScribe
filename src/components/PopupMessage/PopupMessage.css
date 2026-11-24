@@ -79,6 +79,7 @@
 }
 .is-popup--cta.is-popup--ipad .is-popup__message {
   font-size: 17px;
+  line-height: 20px;
 }
 .is-popup__ctas {
   display: flex;
