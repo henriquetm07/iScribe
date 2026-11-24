@@ -56,7 +56,7 @@ export const rtnHeaderSpecLines = (p: Partial<RTNHeaderProps>) => [
   '  Start Recording → the waves grow from dots → Stop → Playback (play / pause, drag the bar or',
   '  ← → to seek) → Resume records more. Delete Recording goes back to Start Recording. The clock is simulated in the docs; in the app, connect',
   '  useRecorder to the real recorder.',
-  '  With onDeleteNote set, hovering (or clicking) the trash opens a Selection List below it, on the right: Clear',
+  '  With onDeleteNote set, clicking the trash opens a Selection List below it, on the right: Clear',
   '  recording · Delete note. confirmDelete / confirmResume let the app ask first (the Web App uses Popup Message).',
   '  After Clear recording the trash stays, with Delete note only.',
 ];

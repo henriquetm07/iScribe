@@ -52,8 +52,7 @@
   align-items: center;
   gap: 10px;
 }
-/* The trash and its menu (Clear recording · Delete note), opening below it, lined up on the right. The 6px
-   padding below the button bridges the gap so the pointer can move into the menu without closing it. */
+/* The trash and its menu (Clear recording · Delete note), opening 6px below it on click, lined up on the right */
 .is-rtn-delete {
   position: relative;
   display: flex;

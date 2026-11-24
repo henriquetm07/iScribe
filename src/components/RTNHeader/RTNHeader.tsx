@@ -63,7 +63,7 @@ export interface RTNHeaderDetailsProps {
   deleteRecording?: boolean;
   onDeleteRecording?: () => void;
   /**
-   * Delete Note: with this set, hovering (or clicking) the trash opens a menu — Clear recording · Delete note —
+   * Delete Note: with this set, clicking the trash opens a menu — Clear recording · Delete note —
    * instead of deleting the recording at once
    */
   onDeleteNote?: () => void;
@@ -164,22 +164,12 @@ export const RTNHeaderDetails = ({
 };
 
 /**
- * The trash with its menu: hover (or click / Enter) opens a Selection List below it, lined up on the right —
- * Clear recording · Delete note (both red). It closes when the pointer leaves (after a moment), on Escape or outside.
+ * The trash with its menu: clicking it (or Enter) opens a Selection List below it, lined up on the right —
+ * Clear recording · Delete note (both red). It closes on a pick, the trash again, Escape or a click outside.
  */
 const DeleteMenu = ({ onClearRecording, onDeleteNote }: { onClearRecording?: () => void; onDeleteNote?: () => void }) => {
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
-  const timer = useRef<number | undefined>(undefined);
-  const show = () => {
-    window.clearTimeout(timer.current);
-    setOpen(true);
-  };
-  const hide = (delay = 180) => {
-    window.clearTimeout(timer.current);
-    timer.current = window.setTimeout(() => setOpen(false), delay);
-  };
-  useEffect(() => () => window.clearTimeout(timer.current), []);
   useEffect(() => {
     if (!open) return;
     const away = (e: Event) => !root.current?.contains(e.target as Node) && setOpen(false);
@@ -192,12 +182,7 @@ const DeleteMenu = ({ onClearRecording, onDeleteNote }: { onClearRecording?: () 
     };
   }, [open]);
   return (
-    <div
-      ref={root}
-      className="is-rtn-delete"
-      onPointerEnter={(e) => e.pointerType === 'mouse' && show()}
-      onPointerLeave={(e) => e.pointerType === 'mouse' && hide()}
-    >
+    <div ref={root} className="is-rtn-delete">
       <IconButton
         className="is-rtn-details__delete"
         icon={<Icon name="trash" />}
