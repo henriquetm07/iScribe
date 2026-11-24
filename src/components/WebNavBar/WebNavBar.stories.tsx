@@ -76,6 +76,10 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
     docs: {
+      description: {
+        component:
+          "The Nav bar is the top navigation element that allows users to navigate between different pages of the website. For this version, we haven't yet addressed the best information architecture to present this data.",
+      },
       source: {
         transform: (code: string, ctx: { args: StoryArgs }) => {
           const m = code.match(/^([ \t]*)<WebNavBar\b[\s\S]*?\/>/m);
