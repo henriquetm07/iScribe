@@ -35,6 +35,7 @@ const meta = {
   },
   parameters: {
     docs: {
+      description: { component: 'Tabs allow users to alternate between different sections.' },
       source: {
         transform: (code: string, ctx: { args: TabsProps }) =>
           `${tabsSpecComment(ctx.args)}\n${code.replace(/^(\s*\/\*[\s\S]*?\*\/\s*)+/, '').replace(/\n\s*onChange=\{[^}]*\}\}?/g, '')}`,
