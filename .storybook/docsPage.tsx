@@ -4,7 +4,7 @@ import '../src/components/Button/Button.css';
 /*
  * The docs page of every component: Storybook's own (title, text, the first story, controls, the other stories)
  * with "Project in Figma" under the text — a link to the component's page in the Figma file, drawn as a Button
- * Secondary Regular with the Figma logo.
+ * Secondary Small with the Figma logo.
  */
 
 const FIGMA_FILE = 'https://www.figma.com/design/tdZfpEpkPrEt8Eakka9Lzt/Design-System--SuperConscious-';
@@ -62,7 +62,7 @@ const FigmaLink = () => {
   const url = figmaUrlFor(meta.preparedMeta.title);
   if (!url) return null;
   return (
-    <a className="is-button is-button--secondary is-button--regular is-docs-figma" href={url} target="_blank" rel="noreferrer">
+    <a className="is-button is-button--secondary is-button--small is-docs-figma" href={url} target="_blank" rel="noreferrer">
       <span className="is-button__icon" aria-hidden="true">
         <FigmaLogo />
       </span>
