@@ -171,6 +171,13 @@
   --btn-bg: var(--is-button-secondary-active-bg);
 }
 
+/* Dark mode: Figma's Ghost / Outline Active BG is TGrey 44 (a dark tint), which barely shows on the dark backgrounds —
+   hover, pressed and selected looked like nothing happened. Use a light tint instead, like Secondary in dark. */
+[data-theme='dark']:not([data-theme='light']) {
+  --is-button-ghost-active-bg: var(--is-color-twhite-10);
+  --is-button-outline-active-bg: var(--is-color-twhite-10);
+}
+
 /* ---------- Outline ---------- */
 .is-button--outline {
   --btn-border: var(--is-foreground-high-contrast-primary-foreground);
