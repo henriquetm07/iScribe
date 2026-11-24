@@ -12,6 +12,7 @@ export { EhrIcon, EhrLogo, ehrs, ehrLabel, type EhrIconProps, type EhrLogoProps,
 export {
   ScheduleList,
   ScheduleListItem,
+  ScheduleListItemSkeleton,
   VisitType,
   type ScheduleListProps,
   type ScheduleListItemProps,

@@ -198,3 +198,56 @@
 .is-schedule-list__row {
   display: flex;
 }
+
+/* ---------- Loading: skeleton items ---------- */
+/* The item's frame, with soft bars and a light sweeping across them (as in the Generated Note's skeleton) */
+.is-sli-skeleton {
+  cursor: default;
+}
+.is-sli-skeleton .is-sli__summary,
+.is-sli-skeleton .is-sli__side {
+  gap: 8px;
+}
+.is-sli-skeleton__visit {
+  gap: 8px;
+}
+.is-sli-skeleton__bone {
+  display: block;
+  flex: none;
+  max-width: 100%;
+  border-radius: 6px;
+  background: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--is-surface-super-soft-contrast-light, rgba(255, 255, 255, 0.5)) 50%,
+      transparent 100%
+    )
+    0 0 / 200% 100% no-repeat,
+    var(--is-surface-soft-contrast-background);
+  animation: is-sli-shimmer 1.4s ease-in-out infinite;
+}
+.is-sli-skeleton__bone--square {
+  border-radius: 10px; /* as the photo */
+}
+@keyframes is-sli-shimmer {
+  from {
+    background-position: 150% 0, 0 0;
+  }
+  to {
+    background-position: -50% 0, 0 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-sli-skeleton__bone {
+    animation: none;
+  }
+}
+/* Announced to screen readers only */
+.is-sli-skeleton__status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

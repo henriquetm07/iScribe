@@ -14,6 +14,7 @@ const meta = {
     onSelect: { table: { disable: true } },
     onMoreInfo: { table: { disable: true } },
     height: { table: { disable: true } },
+    loading: { table: { disable: true } },
     className: { table: { disable: true } },
   },
 } satisfies Meta<typeof ScheduleList>;
@@ -57,4 +58,15 @@ export const Syncing: Story = {
       </div>
     );
   },
+};
+
+/** Loading (e.g. right after the day changes): skeleton items, compact and expanded. */
+export const Loading: Story = {
+  parameters: { controls: { disable: true } },
+  render: () => (
+    <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
+      <ScheduleList appointments={[]} loading={4} />
+      <ScheduleList appointments={[]} loading={4} expanded />
+    </div>
+  ),
 };

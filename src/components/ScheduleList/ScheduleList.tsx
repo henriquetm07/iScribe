@@ -241,8 +241,43 @@ export interface ScheduleListProps {
   onMoreInfo?: (id: string) => void;
   /** Height of the list (it scrolls inside). Default: as tall as its appointments. */
   height?: number | string;
+  /**
+   * Loading (e.g. right after the day changes): skeleton items in place of the appointments — the shape of each item
+   * with shimmering bars, like the Generated Note's skeleton. `true` shows 6; a number shows that many.
+   */
+  loading?: boolean | number;
   className?: string;
 }
+
+const Bone = ({ w, h = 12, square = false }: { w: number; h?: number; square?: boolean }) => (
+  <span className={`is-sli-skeleton__bone${square ? ' is-sli-skeleton__bone--square' : ''}`} style={{ width: w, height: h }} />
+);
+
+/** One skeleton item: the item's frame (compact or expanded) with bars where its photo, time, visit, name and status go */
+export const ScheduleListItemSkeleton = ({ expanded = false }: { expanded?: boolean }) =>
+  expanded ? (
+    <div className="is-sli is-sli--expanded is-sli-skeleton" aria-hidden="true">
+      <div className="is-sli__side">
+        <Bone w={30} h={30} square />
+        <Bone w={56} h={12} />
+        <Bone w={40} h={10} />
+      </div>
+      <div className="is-sli__visit is-sli-skeleton__visit">
+        <Bone w={130} h={14} />
+        <Bone w={150} h={10} />
+        <Bone w={88} h={18} />
+      </div>
+    </div>
+  ) : (
+    <div className="is-sli is-sli--compact is-sli-skeleton" aria-hidden="true">
+      <div className="is-sli__summary">
+        <Bone w={70} h={14} />
+        <Bone w={90} h={12} />
+        <Bone w={50} h={12} />
+        <Bone w={40} h={10} />
+      </div>
+    </div>
+  );
 
 /** Figma "Schedule List": the day's appointments on a soft panel, 10px apart, 20px top corners */
 export const ScheduleList = ({
@@ -252,14 +287,27 @@ export const ScheduleList = ({
   onSelect,
   onMoreInfo,
   height,
+  loading = false,
   className = '',
 }: ScheduleListProps) => (
   <div
     className={`is-schedule-list${expanded ? ' is-schedule-list--expanded' : ''} ${className}`}
     style={height !== undefined ? { height } : undefined}
     role="list"
+    aria-busy={loading ? true : undefined}
   >
-    {appointments.map(({ id, syncing, ...appointment }) => (
+    {loading ? (
+      <>
+        <span className="is-sli-skeleton__status" role="status">
+          Loading appointments…
+        </span>
+        {Array.from({ length: typeof loading === 'number' ? loading : 6 }, (_, i) => (
+          <div key={i} role="listitem" className="is-schedule-list__row">
+            <ScheduleListItemSkeleton expanded={expanded} />
+          </div>
+        ))}
+      </>
+    ) : appointments.map(({ id, syncing, ...appointment }) => (
       <div key={id} role="listitem" className="is-schedule-list__row">
         <ScheduleListItem
           {...appointment}

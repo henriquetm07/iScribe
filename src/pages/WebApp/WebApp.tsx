@@ -559,6 +559,16 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
     return () => cancelAnimationFrame(frame);
   }, [selectedId]);
 
+  // Changing the day loads the schedule: skeleton items for 2s
+  const [scheduleLoading, setScheduleLoading] = useState(false);
+  const scheduleTimer = useRef<number | undefined>(undefined);
+  const changeDay = () => {
+    window.clearTimeout(scheduleTimer.current);
+    setScheduleLoading(true);
+    scheduleTimer.current = window.setTimeout(() => setScheduleLoading(false), 2000);
+  };
+  useEffect(() => () => window.clearTimeout(scheduleTimer.current), []);
+
   // The nav bar's connectivity button opens the Connectivity Dialog (a simulated check; Reprocess runs it again)
   const connectivity = useSampleConnectivityCheck();
 
@@ -585,6 +595,8 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
           onNewNote={createNote}
           providers={sampleProviders}
           departments={sampleDepartments}
+          loading={scheduleLoading}
+          onDateChange={changeDay}
         />
         <section className="is-webapp__note" aria-label="Visit note">
           {newNote ? (

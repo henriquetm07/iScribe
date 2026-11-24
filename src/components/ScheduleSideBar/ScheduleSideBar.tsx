@@ -72,6 +72,8 @@ export interface ScheduleSideBarProps {
   defaultSort?: ScheduleSort;
   /** Height (the list scrolls inside). Default: fills its container. */
   height?: number | string;
+  /** The list is loading (e.g. right after the day changes): skeleton items in place of the appointments */
+  loading?: boolean;
   className?: string;
 }
 
@@ -184,6 +186,7 @@ export const ScheduleSideBar = ({
   defaultFilters = emptyScheduleFilters,
   defaultSort = { by: 'time', direction: 'asc' },
   height,
+  loading = false,
   className = '',
 }: ScheduleSideBarProps) => {
   const chrome = platform === 'chrome';
@@ -323,7 +326,9 @@ export const ScheduleSideBar = ({
       )}
       <div className="is-ssb__list">
         <AppliedFilters chips={chips} />
-        {shown.length ? (
+        {loading ? (
+          <ScheduleList appointments={[]} loading expanded={!collapsed} className="is-ssb__schedule" />
+        ) : shown.length ? (
           <ScheduleList appointments={shown} expanded={!collapsed} selectedId={selectedState} onSelect={select} className="is-ssb__schedule" />
         ) : (
           <p className="is-ssb__empty">{tab === 'pending' ? 'No pending notes' : chips.length ? 'No appointments match these filters' : 'No appointments'}</p>
