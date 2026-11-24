@@ -98,6 +98,10 @@
   overflow-x: hidden;
   scrollbar-width: none;
 }
+/* Loading: the skeleton fills the list's height (the last item may be cut off at the bottom), no scrolling */
+.is-ssb__schedule--loading {
+  overflow-y: hidden;
+}
 .is-ssb__schedule::-webkit-scrollbar {
   display: none;
 }

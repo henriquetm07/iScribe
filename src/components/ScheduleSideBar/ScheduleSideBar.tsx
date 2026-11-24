@@ -213,6 +213,18 @@ export const ScheduleSideBar = ({
   const [sort, setSort] = useState(defaultSort);
   const [panel, setPanel] = useState<PanelName | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  // Loading: as many skeleton items as fill the list's height (each 100px + 10px apart), kept up to date if it resizes
+  const listRef = useRef<HTMLDivElement>(null);
+  const [skeletons, setSkeletons] = useState(6);
+  useEffect(() => {
+    const list = listRef.current;
+    if (!loading || !list) return;
+    const fit = () => setSkeletons(Math.max(1, Math.ceil((list.clientHeight - 10) / 110)));
+    fit();
+    const observer = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(fit) : undefined;
+    observer?.observe(list);
+    return () => observer?.disconnect();
+  }, [loading]);
   const close = useMemo(() => () => setPanel(null), []);
   useDismiss(panel !== null, close, panelRef);
   const toggle = (name: PanelName) => setPanel((p) => (p === name ? null : name));
@@ -324,10 +336,10 @@ export const ScheduleSideBar = ({
           {panelNode}
         </div>
       )}
-      <div className="is-ssb__list">
+      <div ref={listRef} className="is-ssb__list">
         <AppliedFilters chips={chips} />
         {loading ? (
-          <ScheduleList appointments={[]} loading expanded={!collapsed} className="is-ssb__schedule" />
+          <ScheduleList appointments={[]} loading={skeletons} expanded={!collapsed} className="is-ssb__schedule is-ssb__schedule--loading" />
         ) : shown.length ? (
           <ScheduleList appointments={shown} expanded={!collapsed} selectedId={selectedState} onSelect={select} className="is-ssb__schedule" />
         ) : (
