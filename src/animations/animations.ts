@@ -5,6 +5,8 @@
  */
 import loadingAppointmentLight from './loading-appointment-light.json';
 import loadingAppointmentDark from './loading-appointment-dark.json';
+import generatedNoteSkeletonLight from './generated-note-skeleton-light.json';
+import generatedNoteSkeletonDark from './generated-note-skeleton-dark.json';
 
 export interface AnimationData {
   /** The Lottie JSON for light mode */
@@ -26,6 +28,14 @@ export const animations = {
       'Periwinkle circles pulse out from the centre, a new one every 2 seconds, fading as they grow past the edges. The background while an appointment loads. 360 × 360, loops every 4 seconds.',
     width: 360,
     height: 360,
+  },
+  'generated-note-skeleton': {
+    light: generatedNoteSkeletonLight,
+    dark: generatedNoteSkeletonDark,
+    description:
+      'Four note cards with title and text placeholders, a soft highlight sweeping across each bar. The Generated Note (Note tab) while the note is generated after Generate Note. 600 × 672, loops every 1.4 seconds.',
+    width: 600,
+    height: 672,
   },
 } satisfies Record<string, AnimationData>;
 
