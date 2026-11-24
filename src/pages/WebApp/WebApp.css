@@ -140,3 +140,36 @@
     animation: none;
   }
 }
+
+/* Resume Recording? — a Popup Message over the app, the app dimmed behind it */
+.is-webapp__popup {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.5);
+  animation: is-webapp-popup-in 160ms ease-out;
+}
+.is-webapp__popup .is-popup {
+  animation: is-webapp-popup-pop 200ms cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+@keyframes is-webapp-popup-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes is-webapp-popup-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-webapp__popup,
+  .is-webapp__popup .is-popup {
+    animation: none;
+  }
+}

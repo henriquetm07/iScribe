@@ -20,6 +20,7 @@ import { Tooltip } from '../../components/Tooltip/Tooltip';
 import { WebNavBar, type WebNavBarItem } from '../../components/WebNavBar/WebNavBar';
 import { WebNoteBottomBar } from '../../components/WebNoteBottomBar/WebNoteBottomBar';
 import type { AppointmentStatusValue } from '../../components/AppointmentStatus/AppointmentStatus';
+import { PopupMessage } from '../../components/PopupMessage/PopupMessage';
 import { GeneratedNoteFrame } from '../../components/RTNItems/GeneratedNote';
 import { sampleGeneratedNote, sampleTranscript } from '../../components/RTNItems/sampleGeneratedNote';
 import '../../components/RTNItems/RTNItems.css';
@@ -453,6 +454,23 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
     setGenerated((l) => l.filter((x) => x !== id));
   };
 
+  // Resume once a note was generated asks first (Popup Message): resuming means a new note will replace it
+  const [resumeAsk, setResumeAsk] = useState<{ id: string; resume: () => void } | null>(null);
+  const confirmResume = (id: string) => (generated.includes(id) ? (resume: () => void) => setResumeAsk({ id, resume }) : undefined);
+  /** Resume confirmed: record more, and the bar goes back to Generate Note (the next note replaces this one) */
+  const resumeRecording = () => {
+    if (!resumeAsk) return;
+    setGenerated((l) => l.filter((x) => x !== resumeAsk.id));
+    resumeAsk.resume();
+    setResumeAsk(null);
+  };
+  useEffect(() => {
+    if (!resumeAsk) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setResumeAsk(null);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [resumeAsk]);
+
   const onRecordState = (id: string, state: string) => {
     const stopped = state === 'paused' || state === 'playing';
     setStoppedVisit((cur) => (stopped ? id : cur === id ? null : cur));
@@ -514,6 +532,7 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
               patient={newNote.patient ?? null}
               onPatientChange={(patient) => updateNew(newNote.id, { patient, started: true })}
               recordLocked={!!doneAt[newNote.id]}
+              confirmResume={confirmResume(newNote.id)}
               micSettings={micSettings}
               onDeleteRecording={() => deleteRecording(newNote.id)}
               onRecordStateChange={(state) => {
@@ -531,6 +550,7 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
               time={appointment.time}
               patient={toPatient(appointment)}
               recordLocked={!!doneAt[appointment.id]}
+              confirmResume={confirmResume(appointment.id)}
               micSettings={micSettings}
               onDeleteRecording={() => deleteRecording(appointment.id)}
               // A finished visit opens on its recording, ready to play back
@@ -573,6 +593,21 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
           />
         </section>
       </div>
+      {resumeAsk && (
+        <div className="is-webapp__popup" onClick={(e) => e.target === e.currentTarget && setResumeAsk(null)}>
+          <PopupMessage
+            device="web"
+            icon={false}
+            title="Resume Recording?"
+            message="Your current note will be replaced when you generate a new one."
+            secondaryButton="Resume"
+            secondaryVariant="outline"
+            mainButton="Cancel"
+            onSecondary={resumeRecording}
+            onMain={() => setResumeAsk(null)}
+          />
+        </div>
+      )}
     </div>
   );
 };

@@ -739,6 +739,8 @@ export interface RTNHeaderRecordProps {
   onStateChange?: (state: RecordState) => void;
   /** No more recording (e.g. the note was sent to the EHR or marked as complete): Start Recording / Resume are blocked; playback still works */
   locked?: boolean;
+  /** Ask before Resume records more (e.g. a popup when a note was already generated): called with the resume, to run once confirmed */
+  confirmResume?: (resume: () => void) => void;
   className?: string;
 }
 
@@ -749,7 +751,7 @@ const WEB_BARS = 18;
  * Figma "RTN Header Web Record Feature": Start Recording (Default) → waves, red time and Stop (Recording) →
  * play/pause, the recording's title, a seekable bar and Resume (Playback).
  */
-export const RTNHeaderRecord = ({ state: initialState = 'idle', duration = 160, position = 32, title = '', onStateChange, locked = false, className = '' }: RTNHeaderRecordProps) => {
+export const RTNHeaderRecord = ({ state: initialState = 'idle', duration = 160, position = 32, title = '', onStateChange, locked = false, confirmResume, className = '' }: RTNHeaderRecordProps) => {
   const rec = useRecorder({ initialState, initialDuration: duration, initialPosition: position, onStateChange });
   // The first Start grows the waves from dots (as in the Record Widget); Resume brings them back in full
   const [started, setStarted] = useState(false);
@@ -849,9 +851,13 @@ export const RTNHeaderRecord = ({ state: initialState = 'idle', duration = 160, 
               gap={12}
               disabled={locked}
               onClick={() => {
-                setMorph(null);
-                setStarted(false);
-                rec.resume();
+                const resume = () => {
+                  setMorph(null);
+                  setStarted(false);
+                  rec.resume();
+                };
+                if (confirmResume) confirmResume(resume);
+                else resume();
               }}
             >
               Resume
@@ -939,6 +945,8 @@ export interface RTNHeaderProps extends Omit<RTNHeaderDetailsProps, 'className' 
   onRecordStateChange?: (state: RecordState) => void;
   /** Recording blocked (note sent to the EHR / marked as complete): Resume and Start Recording can't be pressed */
   recordLocked?: boolean;
+  /** Ask before Resume records more: called with the resume, to run once confirmed */
+  confirmResume?: (resume: () => void) => void;
   /** Called with the patient as it is edited in the header */
   onPatientChange?: (patient: RTNPatient) => void;
   className?: string;
@@ -962,6 +970,7 @@ export const RTNHeader = ({
   position,
   onRecordStateChange,
   recordLocked = false,
+  confirmResume,
   onPatientChange,
   className = '',
   style,
@@ -1026,6 +1035,7 @@ export const RTNHeader = ({
             onRecordStateChange?.(s);
           }}
           locked={recordLocked}
+          confirmResume={confirmResume}
         />
       </div>
     </header>

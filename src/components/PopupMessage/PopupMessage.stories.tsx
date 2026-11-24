@@ -20,6 +20,7 @@ const meta = {
     mainButton: { control: 'text', description: 'CTA: the Primary button\'s label ("" or false hides it)' },
     secondaryButton: { control: 'text', description: 'CTA: the Destructive Outline button\'s label ("" or false hides it)' },
     icon: { control: 'text' },
+    secondaryVariant: { control: 'select', options: ['destructive-outline', 'outline'], description: 'CTA: the secondary button\'s style (Outline when it isn\'t destructive, e.g. Resume)' },
     onMain: { table: { disable: true } },
     onSecondary: { table: { disable: true } },
     onClose: { table: { disable: true } },

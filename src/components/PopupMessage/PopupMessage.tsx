@@ -1,7 +1,7 @@
 import { useId, type ReactNode } from 'react';
 import { Icon } from '../../icons/Icon';
 import type { IconName } from '../../icons/icons';
-import { Button } from '../Button/Button';
+import { Button, type ButtonVariant } from '../Button/Button';
 import './PopupMessage.css';
 
 /*
@@ -36,14 +36,16 @@ export interface PopupMessageProps {
   device?: PopupMessageDevice;
   /** CTA (header, message, buttons) or Coms (a notice with ×) */
   contentStyle?: PopupMessageStyle;
-  /** Icon by the title (default: trash for CTA, alert flat for Coms) */
-  icon?: IconName;
+  /** Icon by the title (default: trash for CTA, alert flat for Coms), or false for none */
+  icon?: IconName | false;
   title?: ReactNode;
   message?: ReactNode;
   /** CTA: the main button (Primary) — its label, or false to hide it (default "Cancel") */
   mainButton?: string | false;
   /** CTA: the secondary button (Destructive Outline) — its label, or false to hide it (default "Delete") */
   secondaryButton?: string | false;
+  /** CTA: the secondary button's style (default Destructive Outline; Outline for a choice that isn't destructive) */
+  secondaryVariant?: ButtonVariant;
   onMain?: () => void;
   onSecondary?: () => void;
   /** Coms: the × in the top right corner (shown when this is set) */
@@ -67,6 +69,7 @@ export const PopupMessage = ({
   message,
   mainButton,
   secondaryButton,
+  secondaryVariant = 'destructive-outline',
   onMain,
   onSecondary,
   onClose,
@@ -83,7 +86,7 @@ export const PopupMessage = ({
     return (
       <section className={classes} role="alertdialog" aria-labelledby={`${id}-t`} aria-describedby={`${id}-m`}>
         <header className="is-popup__header">
-          <Icon name={icon ?? d.icon} size={ipad ? 22 : 18} />
+          {icon !== false && <Icon name={icon ?? d.icon} size={ipad ? 22 : 18} />}
           <h2 id={`${id}-t`} className="is-popup__header-title">
             {title ?? d.title}
           </h2>
@@ -95,7 +98,7 @@ export const PopupMessage = ({
           {(secondary || main) && (
             <div className="is-popup__ctas">
               {secondary && (
-                <Button variant="destructive-outline" size={ipad ? 'xl' : 'regular'} onClick={onSecondary}>
+                <Button variant={secondaryVariant} size={ipad ? 'xl' : 'regular'} onClick={onSecondary}>
                   {secondary}
                 </Button>
               )}
@@ -113,7 +116,7 @@ export const PopupMessage = ({
   return (
     <section className={classes} role="dialog" aria-labelledby={`${id}-t`} aria-describedby={`${id}-m`}>
       <div className="is-popup__content">
-        <Icon name={icon ?? d.icon} size={ipad ? 22 : 20} className="is-popup__icon" />
+        {icon !== false && <Icon name={icon ?? d.icon} size={ipad ? 22 : 20} className="is-popup__icon" />}
         <h2 id={`${id}-t`} className="is-popup__title">
           {title ?? d.title}
         </h2>
