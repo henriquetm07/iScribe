@@ -5,23 +5,6 @@ import { AnimationGallery } from './AnimationGallery';
 
 # Animations
 
-Larger animations in their own colours, such as backgrounds. Each is a Lottie animation (a JSON file), with a separate version for dark mode when it needs one.
-
-Click a preview to replay it. Use the buttons to change the size. The previews follow the Light / Dark toggle at the top, as the animations follow light and dark mode in the product. Click the code to copy it. Light JSON / Dark JSON download the Lottie files.
-
-```tsx
-import { Animation } from 'iscribe';
-
-<Animation name="loading-appointment" />                     // follows light / dark mode, loops
-<Animation name="loading-appointment" theme="dark" />        // always the dark version
-<Animation name="loading-appointment" width="100%" height={240} fit="cover" />   // fills its box, as a background
-```
-
-- **Light and dark** — with `theme="auto"` (the default) it shows the light version, or the dark one when the page, or a block around it, is in dark mode. `theme="light"` or `theme="dark"` forces one.
-- **Size** — `width` and `height` set the box; they default to the size it was drawn at. `fit="contain"` (default) shows all of it, `fit="cover"` fills the box and crops the edges, for backgrounds.
-- **Looping** — animations loop by default. Pass `loop={false}` to play once.
-- **Loading** — the Lottie player loads the first time an animation is shown.
-- **Reduced motion** — when the device asks for less motion, it shows a still frame.
-- **Adding one** — put the `.json` file(s) in `src/animations/` and register them in `src/animations/animations.ts`.
+Larger interface animations. Each is a Lottie animation (a JSON file), with a separate version for dark mode when it needs one.
 
 <AnimationGallery />
