@@ -111,7 +111,7 @@ const preview: Preview = {
     // Docs pages (headings, text, tables) in Figtree, light or dark with the toggle
     docs: {
       container: ThemedDocsContainer,
-      // Storybook's page plus "Check in Figma" under the text
+      // Storybook's page plus "Project in Figma" under the text
       page: DocsPage,
       // "Show code" shows the story itself, without the canvas wrappers (e.g. the device selector)
       source: { excludeDecorators: true },

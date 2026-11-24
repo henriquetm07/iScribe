@@ -3,7 +3,7 @@ import '../src/components/Button/Button.css';
 
 /*
  * The docs page of every component: Storybook's own (title, text, the first story, controls, the other stories)
- * with "Check in Figma" under the text — a link to the component's page in the Figma file, drawn as a Button
+ * with "Project in Figma" under the text — a link to the component's page in the Figma file, drawn as a Button
  * Secondary Regular with the Figma logo.
  */
 
@@ -66,7 +66,7 @@ const FigmaLink = () => {
       <span className="is-button__icon" aria-hidden="true">
         <FigmaLogo />
       </span>
-      <span className="is-button__label">Check in Figma</span>
+      <span className="is-button__label">Project in Figma</span>
     </a>
   );
 };
