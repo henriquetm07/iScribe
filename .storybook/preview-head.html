@@ -68,24 +68,16 @@
    * has a "Reload" label, and sits under the preview, before "Show code".
    * Super Soft Contrast Background is TGrey 3 in light mode, with its dark-mode counterpart in dark mode.
    */
-  /* "Check in Figma" under each component's text (docsPage.tsx): the Figma logo 20×20, 8px to the label */
+  /* "Check in Figma" under each component's text (docsPage.tsx): a Button Secondary Regular (a link), Figma logo 20×20 */
   .sbdocs a.is-docs-figma {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
     margin: 4px 0 24px;
-    font-family: 'Figtree', system-ui, sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 20px;
-    color: inherit;
-    text-decoration: none;
-  }
-  .sbdocs a.is-docs-figma:hover {
-    text-decoration: underline;
+    color: var(--btn-fg) !important;
+    text-decoration: none !important;
   }
   .sbdocs a.is-docs-figma svg {
     flex: none;
+    width: 20px;
+    height: 20px;
   }
   .sbdocs-preview {
     /* TGrey 6 stroke (Soft Contrast Background: TGrey 6 in light mode, its counterpart in dark mode) */
