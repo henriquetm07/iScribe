@@ -597,6 +597,7 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
               patient={newNote.patient ?? null}
               onPatientChange={(patient) => updateNew(newNote.id, { patient, started: true })}
               recordLocked={!!doneAt[newNote.id]}
+              recordState={doneAt[newNote.id] ? 'paused' : undefined}
               confirmResume={confirmResume(newNote.id)}
               confirmDelete={confirmDelete(newNote.id)}
               onDeleteNote={() => deleteNote(newNote.id)}
@@ -622,8 +623,8 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
               onDeleteNote={() => deleteNote(appointment.id)}
               micSettings={micSettings}
               onDeleteRecording={() => deleteRecording(appointment.id)}
-              // A finished visit opens on its recording, ready to play back
-              recordState={past[appointment.id] ? 'paused' : undefined}
+              // A finished visit (from the start, or sent / marked complete here) opens on its recording, ready to play back
+              recordState={past[appointment.id] || doneAt[appointment.id] ? 'paused' : undefined}
               duration={past[appointment.id]?.duration}
               position={past[appointment.id] ? 0 : undefined}
               onRecordStateChange={(state) => onRecordState(appointment.id, state)}
