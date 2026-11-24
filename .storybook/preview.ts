@@ -1,6 +1,7 @@
 import { createElement, useEffect, useState, type ComponentProps } from 'react';
 import type { Preview } from '@storybook/react-vite';
 import { DocsContainer } from '@storybook/addon-docs/blocks';
+import { DocsPage } from './docsPage';
 import { addons } from 'storybook/preview-api';
 import { create } from 'storybook/theming';
 import { hideDeviceControl, withDeviceSelector } from './deviceSelector';
@@ -110,6 +111,8 @@ const preview: Preview = {
     // Docs pages (headings, text, tables) in Figtree, light or dark with the toggle
     docs: {
       container: ThemedDocsContainer,
+      // Storybook's page plus "Check in Figma" under the text
+      page: DocsPage,
       // "Show code" shows the story itself, without the canvas wrappers (e.g. the device selector)
       source: { excludeDecorators: true },
     },
