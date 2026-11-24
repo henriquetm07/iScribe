@@ -21,6 +21,8 @@ import { WebNavBar, type WebNavBarItem } from '../../components/WebNavBar/WebNav
 import { WebNoteBottomBar } from '../../components/WebNoteBottomBar/WebNoteBottomBar';
 import type { AppointmentStatusValue } from '../../components/AppointmentStatus/AppointmentStatus';
 import { PopupMessage } from '../../components/PopupMessage/PopupMessage';
+import { ConnectivityDialog } from '../../components/ConnectivityDialog/ConnectivityDialog';
+import { useSampleConnectivityCheck } from '../../components/ConnectivityDialog/sampleConnectivity';
 import { GeneratedNoteFrame } from '../../components/RTNItems/GeneratedNote';
 import { sampleGeneratedNote, sampleTranscript } from '../../components/RTNItems/sampleGeneratedNote';
 import '../../components/RTNItems/RTNItems.css';
@@ -557,6 +559,9 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
     return () => cancelAnimationFrame(frame);
   }, [selectedId]);
 
+  // The nav bar's connectivity button opens the Connectivity Dialog (a simulated check; Reprocess runs it again)
+  const connectivity = useSampleConnectivityCheck();
+
   return (
     <div className="is-webapp">
       <WebNavBar
@@ -565,7 +570,9 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
         chromeExtension
         practices={practices}
         defaultPractice={practices[0].value}
-        connectivityAlert
+        onSearch={() => {}}
+        connectivity={<ConnectivityDialog groups={connectivity.groups} checking={connectivity.checking} onReprocess={connectivity.reprocess} />}
+        connectivityAlert={connectivity.alert}
       />
       <div className="is-webapp__main">
         <ScheduleSideBar

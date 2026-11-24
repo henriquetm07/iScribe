@@ -66,8 +66,13 @@ export interface WebNavBarProps {
 
   /** Called by the search button. Leave undefined to hide it. */
   onSearch?: () => void;
-  /** Called by the connectivity button. Leave undefined to hide it. */
+  /** Called by the connectivity button. Leave undefined (and no `connectivity`) to hide it. */
   onConnectivityClick?: () => void;
+  /**
+   * What the connectivity button opens (e.g. the Connectivity Dialog): shown below it, lined up on the right; closes
+   * on a click outside, Escape or the button again
+   */
+  connectivity?: ReactNode;
   /** Show the red alert badge on the connectivity button */
   connectivityAlert?: boolean;
 
@@ -150,6 +155,7 @@ export const WebNavBar = ({
   onAccountSelect,
   onSearch,
   onConnectivityClick,
+  connectivity,
   connectivityAlert = false,
   logo,
   'aria-label': ariaLabel = 'Main',
@@ -178,6 +184,7 @@ export const WebNavBar = ({
 
   const menuPop = usePopover();
   const accountPop = usePopover();
+  const connectivityPop = usePopover();
   useEffect(() => {
     if (!compressed) menuPop.setOpen(false);
   }, [compressed]);
@@ -298,17 +305,28 @@ export const WebNavBar = ({
             </div>
           )}
           {onSearch && <IconButton icon={<Icon name="search" />} label="Search" variant="ghost" size="small" onClick={onSearch} />}
-          {onConnectivityClick && (
-            <span className="is-web-nav__badge-host">
-              <IconButton
-                icon={<Icon name="connectivity" />}
-                label={connectivityAlert ? 'Connectivity (needs attention)' : 'Connectivity'}
-                variant="ghost"
-                size="small"
-                onClick={onConnectivityClick}
-              />
-              {connectivityAlert && <Icon name="alert-flat" className="is-web-nav__badge" />}
-            </span>
+          {(onConnectivityClick || connectivity) && (
+            <div ref={connectivityPop.root} className="is-web-nav__pop-root" onKeyDown={connectivityPop.onKeyDown}>
+              <span className="is-web-nav__badge-host">
+                <IconButton
+                  ref={connectivityPop.trigger}
+                  icon={<Icon name="connectivity" />}
+                  label={connectivityAlert ? 'Connectivity (needs attention)' : 'Connectivity'}
+                  variant="ghost"
+                  size="small"
+                  aria-haspopup={connectivity ? 'dialog' : undefined}
+                  aria-expanded={connectivity ? connectivityPop.open : undefined}
+                  onClick={() => {
+                    if (connectivity) connectivityPop.setOpen(!connectivityPop.open);
+                    onConnectivityClick?.();
+                  }}
+                />
+                {connectivityAlert && <Icon name="alert-flat" className="is-web-nav__badge" />}
+              </span>
+              {connectivity && connectivityPop.open && (
+                <div className="is-web-nav__popover is-web-nav__popover--end is-web-nav__popover--connectivity">{connectivity}</div>
+              )}
+            </div>
           )}
         </div>
       </div>

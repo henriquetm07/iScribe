@@ -32,6 +32,8 @@ export const webNavBarSpecLines = (p: Partial<WebNavBarProps>) => {
     '    <IconButton variant="ghost" size="small" icon="search" />',
     '    <IconButton variant="ghost" size="small" icon="connectivity" /> + 12px "alert-flat" badge',
     '              in var(--is-status-foreground-alert) when connectivityAlert',
+    '              `connectivity` (e.g. <ConnectivityDialog />) opens below it, lined up on the right, with the 0 0 20px',
+    '              basic shadow; closes on a click outside, Escape or the button again',
   ];
 };
 

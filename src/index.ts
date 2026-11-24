@@ -127,7 +127,7 @@ export {
 export { PopupMessage, popupMessageDefaults, type PopupMessageProps, type PopupMessageDevice, type PopupMessageStyle } from './components/PopupMessage/PopupMessage';
 export { Toast, toastLayouts, toastDefaults, type ToastProps, type ToastDevice, type ToastLayout, type ToastTone } from './components/Toast/Toast';
 export { ConnectivityDialog, ConnectivityRow, CONNECTIVITY_UNREACHABLE, type ConnectivityDialogProps, type ConnectivityGroup, type ConnectivityHost, type ConnectivityStatus } from './components/ConnectivityDialog/ConnectivityDialog';
-export { sampleConnectivity } from './components/ConnectivityDialog/sampleConnectivity';
+export { sampleConnectivity, useSampleConnectivityCheck } from './components/ConnectivityDialog/sampleConnectivity';
 export { Tooltip, WithTooltip, type TooltipProps, type TooltipTone, type TooltipTip, type TooltipPlacement, type WithTooltipProps } from './components/Tooltip/Tooltip';
 export { MicSettings, MicSettingsPanel, MicInputLevel, sampleMicrophones, MIC_LEVEL_BARS, type MicSettingsProps, type MicSettingsPanelProps, type MicInputLevelProps } from './components/MicSettings/MicSettings';
 export { GeneratedNoteItem, GeneratedNoteFrame, generatedNoteTabs, type GeneratedNoteItemProps, type GeneratedNoteFrameProps, type GeneratedNoteSection, type GeneratedNoteTab, type TranscriptLine } from './components/RTNItems/GeneratedNote';

@@ -82,6 +82,25 @@
 .is-web-nav__popover--end {
   right: 0;
 }
+/* The Connectivity Dialog: its shadow, and scrolling when the window is shorter than the dialog */
+.is-web-nav__popover--connectivity {
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+  border-radius: 20px;
+  box-shadow: 0 0 20px 0 var(--is-shadow-basic-shadow);
+  animation: is-web-nav-pop-in 160ms ease-out;
+}
+@keyframes is-web-nav-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-web-nav__popover--connectivity {
+    animation: none;
+  }
+}
 
 /* ---------- Right: Chrome extension | practice, avatar, search, connectivity ---------- */
 .is-web-nav__right {
