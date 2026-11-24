@@ -46,7 +46,7 @@ export const figmaUrlFor = (title = '') => {
   return key ? `${FIGMA_FILE}?node-id=${FIGMA_PAGES[key].replace(':', '-')}` : undefined;
 };
 
-/** The Figma logo, 20 × 20 */
+/** The Figma logo (sized to the button's icon in preview-head.html) */
 const FigmaLogo = () => (
   <svg width="20" height="20" viewBox="0 0 38 57" aria-hidden="true" focusable="false">
     <path fill="#1abcfe" d="M19 28.5a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0z" />
