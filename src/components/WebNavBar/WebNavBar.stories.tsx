@@ -53,7 +53,10 @@ const meta = {
   },
   argTypes: {
     menu: { control: 'inline-radio', options: ['auto', 'default', 'compressed'] },
-    barWidth: { name: 'bar width (story only)', control: { type: 'range', min: 600, max: 1440, step: 10 } },
+    barWidth: { table: { disable: true } },
+    avatar: { table: { disable: true } },
+    connectivity: { table: { disable: true } },
+    connectivityAlert: { table: { disable: true } },
     items: { table: { disable: true } },
     practices: { table: { disable: true } },
     value: { table: { disable: true } },
