@@ -490,22 +490,39 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
     setGenerated((l) => l.filter((x) => x !== id));
   };
 
-  // Resume once a note was generated asks first (Popup Message): resuming means a new note will replace it
-  const [resumeAsk, setResumeAsk] = useState<{ id: string; resume: () => void } | null>(null);
-  const confirmResume = (id: string) => (generated.includes(id) ? (resume: () => void) => setResumeAsk({ id, resume }) : undefined);
-  /** Resume confirmed: record more, and the bar goes back to Generate Note (the next note replaces this one) */
-  const resumeRecording = () => {
-    if (!resumeAsk) return;
-    setGenerated((l) => l.filter((x) => x !== resumeAsk.id));
-    resumeAsk.resume();
-    setResumeAsk(null);
+  /** Delete Note: the recording and everything in the note go; a new note is removed from the schedule altogether */
+  const [noteResets, setNoteResets] = useState<Record<string, number>>({});
+  const deleteNote = (id: string) => {
+    deleteRecording(id);
+    if (id.startsWith('new-')) {
+      setNewNotes((list) => list.filter((n) => n.id !== id));
+      setSelectedId(defaultSelectedId);
+    } else setNoteResets((m) => ({ ...m, [id]: (m[id] ?? 0) + 1 }));
+  };
+
+  // Confirmations (Popup Message): Resume once a note was generated (a new note will replace it), Clear recording and
+  // Delete note (from the trash's menu)
+  const [ask, setAsk] = useState<{ kind: 'resume' | 'recording' | 'note'; id: string; go: () => void } | null>(null);
+  const confirmResume = (id: string) => (generated.includes(id) ? (go: () => void) => setAsk({ kind: 'resume', id, go }) : undefined);
+  const confirmDelete = (id: string) => (kind: 'recording' | 'note', go: () => void) => setAsk({ kind, id, go });
+  const confirmAsk = () => {
+    if (!ask) return;
+    // Resume: record more, and the bar goes back to Generate Note (the next note replaces this one)
+    if (ask.kind === 'resume') setGenerated((l) => l.filter((x) => x !== ask.id));
+    ask.go();
+    setAsk(null);
+  };
+  const askCopy = {
+    resume: { title: 'Resume Recording?', message: 'Your current note will be replaced when you generate a new one.', action: 'Resume' },
+    recording: { title: 'Clear recording?', message: 'This will permanently delete your current audio recording.', action: 'Clear' },
+    note: { title: 'Delete note?', message: 'This will permanently delete your entire note.', action: 'Delete' },
   };
   useEffect(() => {
-    if (!resumeAsk) return;
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setResumeAsk(null);
+    if (!ask) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setAsk(null);
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [resumeAsk]);
+  }, [ask]);
 
   // Stopping a recording (recording → paused) brings the note back to Current Note, whatever tab it was on
   const lastRecordState = useRef<Record<string, string>>({});
@@ -574,6 +591,8 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
               onPatientChange={(patient) => updateNew(newNote.id, { patient, started: true })}
               recordLocked={!!doneAt[newNote.id]}
               confirmResume={confirmResume(newNote.id)}
+              confirmDelete={confirmDelete(newNote.id)}
+              onDeleteNote={() => deleteNote(newNote.id)}
               micSettings={micSettings}
               onDeleteRecording={() => deleteRecording(newNote.id)}
               onRecordStateChange={(state) => {
@@ -592,6 +611,8 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
               patient={toPatient(appointment)}
               recordLocked={!!doneAt[appointment.id]}
               confirmResume={confirmResume(appointment.id)}
+              confirmDelete={confirmDelete(appointment.id)}
+              onDeleteNote={() => deleteNote(appointment.id)}
               micSettings={micSettings}
               onDeleteRecording={() => deleteRecording(appointment.id)}
               // A finished visit opens on its recording, ready to play back
@@ -606,7 +627,7 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
             {/* Kept mounted (hidden) while the note is generated, so nothing picked is lost */}
             <div className="is-webapp__visit-note" hidden={isGenerating || isGenerated}>
               <VisitNote
-                key={visitId}
+                key={`${visitId}-${noteResets[visitId] ?? 0}`}
                 sections={newNote ? [] : sections}
                 onActivity={newNote ? () => start(newNote.id) : undefined}
                 loading={processing.includes(visitId)}
@@ -635,18 +656,18 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
           />
         </section>
       </div>
-      {resumeAsk && (
-        <div className="is-webapp__popup" onClick={(e) => e.target === e.currentTarget && setResumeAsk(null)}>
+      {ask && (
+        <div className="is-webapp__popup" onClick={(e) => e.target === e.currentTarget && setAsk(null)}>
           <PopupMessage
             device="web"
             icon={false}
-            title="Resume Recording?"
-            message="Your current note will be replaced when you generate a new one."
-            secondaryButton="Resume"
-            secondaryVariant="outline"
+            title={askCopy[ask.kind].title}
+            message={askCopy[ask.kind].message}
+            secondaryButton={askCopy[ask.kind].action}
+            secondaryVariant={ask.kind === 'resume' ? 'outline' : 'destructive-outline'}
             mainButton="Cancel"
-            onSecondary={resumeRecording}
-            onMain={() => setResumeAsk(null)}
+            onSecondary={confirmAsk}
+            onMain={() => setAsk(null)}
           />
         </div>
       )}

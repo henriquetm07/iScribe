@@ -62,6 +62,11 @@ export interface RTNHeaderDetailsProps {
   /** Show Delete Recording (the trash, next to the mic) — once there is a recording */
   deleteRecording?: boolean;
   onDeleteRecording?: () => void;
+  /**
+   * Delete Note: with this set, hovering (or clicking) the trash opens a menu — Clear recording · Delete note —
+   * instead of deleting the recording at once
+   */
+  onDeleteNote?: () => void;
   /** The Mic Settings on the right: its card's contents and state (it opens below, lined up on the right) */
   micSettings?: Omit<MicSettingsProps, 'placement' | 'align' | 'variant'>;
   className?: string;
@@ -81,6 +86,7 @@ export const RTNHeaderDetails = ({
   checkedIn = 'Checked in 11 min ago',
   deleteRecording = false,
   onDeleteRecording,
+  onDeleteNote,
   micSettings,
   className = '',
 }: RTNHeaderDetailsProps) => {
@@ -135,18 +141,90 @@ export const RTNHeaderDetails = ({
         {checkedIn && <span className="is-rtn-details__muted">{checkedIn}</span>}
       </div>
       <div className="is-rtn-details__actions">
-        {deleteRecording && (
-          <IconButton
-            className="is-rtn-details__delete"
-            icon={<Icon name="trash" />}
-            label="Delete recording"
-            variant="destructive-outline"
-            size="regular"
-            onClick={onDeleteRecording}
-          />
-        )}
+        {deleteRecording &&
+          (onDeleteNote ? (
+            <DeleteMenu onClearRecording={onDeleteRecording} onDeleteNote={onDeleteNote} />
+          ) : (
+            <IconButton
+              className="is-rtn-details__delete"
+              icon={<Icon name="trash" />}
+              label="Delete recording"
+              variant="destructive-outline"
+              size="regular"
+              onClick={onDeleteRecording}
+            />
+          ))}
         <MicSettings placement="bottom" align="end" variant="ghost" {...micSettings} />
       </div>
+    </div>
+  );
+};
+
+/**
+ * The trash with its menu: hover (or click / Enter) opens a Selection List below it, lined up on the right —
+ * Clear recording · Delete note (both red). It closes when the pointer leaves (after a moment), on Escape or outside.
+ */
+const DeleteMenu = ({ onClearRecording, onDeleteNote }: { onClearRecording?: () => void; onDeleteNote?: () => void }) => {
+  const [open, setOpen] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+  const timer = useRef<number | undefined>(undefined);
+  const show = () => {
+    window.clearTimeout(timer.current);
+    setOpen(true);
+  };
+  const hide = (delay = 180) => {
+    window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(() => setOpen(false), delay);
+  };
+  useEffect(() => () => window.clearTimeout(timer.current), []);
+  useEffect(() => {
+    if (!open) return;
+    const away = (e: Event) => !root.current?.contains(e.target as Node) && setOpen(false);
+    const key = (e: globalThis.KeyboardEvent) => e.key === 'Escape' && setOpen(false);
+    document.addEventListener('pointerdown', away);
+    document.addEventListener('keydown', key);
+    return () => {
+      document.removeEventListener('pointerdown', away);
+      document.removeEventListener('keydown', key);
+    };
+  }, [open]);
+  return (
+    <div
+      ref={root}
+      className="is-rtn-delete"
+      onPointerEnter={(e) => e.pointerType === 'mouse' && show()}
+      onPointerLeave={(e) => e.pointerType === 'mouse' && hide()}
+    >
+      <IconButton
+        className="is-rtn-details__delete"
+        icon={<Icon name="trash" />}
+        label="Delete"
+        variant="destructive-outline"
+        size="regular"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={() => setOpen((o) => !o)}
+      />
+      {open && (
+        <div className="is-rtn-delete__menu">
+          <SelectionList
+            device="web"
+            width={180}
+            value={null}
+            selectedIcon="none"
+            aria-label="Delete"
+            options={[
+              { value: 'recording', label: 'Clear recording', iconLeft: 'recording', destructive: true },
+              { value: 'note', label: 'Delete note', iconLeft: 'trash', destructive: true },
+            ]}
+            onChange={(v) => {
+              setOpen(false);
+              if (v === 'recording') onClearRecording?.();
+              else onDeleteNote?.();
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 };
@@ -947,6 +1025,11 @@ export interface RTNHeaderProps extends Omit<RTNHeaderDetailsProps, 'className' 
   recordLocked?: boolean;
   /** Ask before Resume records more: called with the resume, to run once confirmed */
   confirmResume?: (resume: () => void) => void;
+  /**
+   * Ask before Clear recording / Delete note (e.g. a popup): called with what is being deleted and the delete, to run
+   * once confirmed. Leave it out to delete at once.
+   */
+  confirmDelete?: (what: 'recording' | 'note', remove: () => void) => void;
   /** Called with the patient as it is edited in the header */
   onPatientChange?: (patient: RTNPatient) => void;
   className?: string;
@@ -971,6 +1054,8 @@ export const RTNHeader = ({
   onRecordStateChange,
   recordLocked = false,
   confirmResume,
+  confirmDelete,
+  onDeleteNote,
   onPatientChange,
   className = '',
   style,
@@ -1008,11 +1093,28 @@ export const RTNHeader = ({
         checkedIn={checkedIn}
         deleteRecording={hasRecording}
         onDeleteRecording={() => {
-          setDeleted((n) => n + 1);
-          setState('idle');
-          onRecordStateChange?.('idle');
-          onDeleteRecording?.();
+          const remove = () => {
+            setDeleted((n) => n + 1);
+            setState('idle');
+            onRecordStateChange?.('idle');
+            onDeleteRecording?.();
+          };
+          if (confirmDelete) confirmDelete('recording', remove);
+          else remove();
         }}
+        onDeleteNote={
+          onDeleteNote &&
+          (() => {
+            const remove = () => {
+              setDeleted((n) => n + 1);
+              setState('idle');
+              onRecordStateChange?.('idle');
+              onDeleteNote();
+            };
+            if (confirmDelete) confirmDelete('note', remove);
+            else remove();
+          })
+        }
         micSettings={micSettings}
       />
       <div className="is-rtn__row">
