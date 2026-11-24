@@ -121,6 +121,7 @@ const VisitNote = ({
   onActivity,
   loading = false,
   filled = false,
+  showCurrent = 0,
 }: {
   sections: PreviousNoteSection[];
   onActivity?: () => void;
@@ -128,8 +129,13 @@ const VisitNote = ({
   loading?: boolean;
   /** The recording has been processed: Macros, Diagnoses and Orders get 1 or 2 items each (once) */
   filled?: boolean;
+  /** Bumped when the recording is stopped: the note switches back to Current Note (from Chart Prep / Previous Note) */
+  showCurrent?: number;
 }) => {
   const [tab, setTab] = useState('current-note');
+  useEffect(() => {
+    if (showCurrent) setTab('current-note');
+  }, [showCurrent]);
   const [added, setAdded] = useState<string[]>([]);
   // + on Macros, Diagnoses or Orders opens that Drawer from the right, over the whole app
   const [picks, setPicks] = useState<Picks>(NO_PICKS);
@@ -501,7 +507,12 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
     return () => window.removeEventListener('keydown', onKey);
   }, [resumeAsk]);
 
+  // Stopping a recording (recording → paused) brings the note back to Current Note, whatever tab it was on
+  const lastRecordState = useRef<Record<string, string>>({});
+  const [stopCount, setStopCount] = useState(0);
   const onRecordState = (id: string, state: string) => {
+    if (lastRecordState.current[id] === 'recording' && state !== 'recording') setStopCount((n) => n + 1);
+    lastRecordState.current[id] = state;
     const stopped = state === 'paused' || state === 'playing';
     setStoppedVisit((cur) => (stopped ? id : cur === id ? null : cur));
     if (!stopped || processing.includes(id) || processed.includes(id)) return;
@@ -600,6 +611,7 @@ export const WebApp = ({ defaultCollapsed = false, defaultSelectedId = '6', visi
                 onActivity={newNote ? () => start(newNote.id) : undefined}
                 loading={processing.includes(visitId)}
                 filled={processed.includes(visitId)}
+                showCurrent={stopCount}
               />
             </div>
             {/* Generate Note swaps the tabs at once to Transcript · Note, with skeletons while they are generated */}
