@@ -24,6 +24,7 @@
   --is-surface-super-soft-contrast-secondary: var(--is-color-twhite-10);
   --is-surface-soft-contrast-light-secondary-2: var(--is-color-twhite-50);
   --is-surface-secondary-high-contrast: var(--is-color-pure-white);
+  --is-surface-secondary-medium-contrast: var(--is-color-off-white);
   --is-surface-soft-selection: var(--is-color-periwinkle-1);
   --is-surface-elevated-inverted: var(--is-color-pure-black);
   --is-status-background-positive-pw: var(--is-color-periwinkle-1);
@@ -103,6 +104,7 @@
   --is-surface-super-soft-contrast-secondary: var(--is-color-tgrey-3);
   --is-surface-soft-contrast-light-secondary-2: var(--is-color-tgrey-22);
   --is-surface-secondary-high-contrast: var(--is-color-twhite-8);
+  --is-surface-secondary-medium-contrast: var(--is-color-grey-3);
   --is-surface-soft-selection: var(--is-color-periwinkle-4);
   --is-surface-elevated-inverted: var(--is-color-pure-white);
   --is-status-background-positive-pw: var(--is-color-periwinkle-1);
