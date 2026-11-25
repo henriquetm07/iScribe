@@ -83,7 +83,16 @@ export const EhrIcon = ({ ehr = 'athena', integrated = false, size = 20, title, 
   if (integrated) return <EhrLogo ehr={ehr} size={size} title={title ?? `Integrated with ${ehrLabel(ehr)}`} className={className} />;
   const name = title ?? 'Not integrated';
   return (
-    // Figma "icon/link broken"
-    <Icon name="link-broken" size={size} title={name || undefined} className={`is-ehr-link ${className}`} />
+    // Figma "Integration=Not integrated": a 20 × 20 box with "icon/link broken" at 14 × 14 in its centre (3px inset),
+    // so it lines up with the 20px EHR logos
+    <span
+      className={`is-ehr-link ${className}`}
+      style={{ width: size, height: size }}
+      role={name ? 'img' : undefined}
+      aria-label={name || undefined}
+      aria-hidden={name ? undefined : true}
+    >
+      <Icon name="link-broken" size={Math.round((size * 14) / 20)} />
+    </span>
   );
 };

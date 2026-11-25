@@ -21,9 +21,11 @@
   width: 100%;
   height: 100%;
 }
-/* Not integrated: the link icon, low contrast */
+/* Not integrated: the link icon (14px in a 20px box, as in Figma), low contrast */
 .is-ehr-link {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex: none;
   vertical-align: middle;
   color: var(--is-foreground-low-contrast-primary-foreground);
