@@ -17,7 +17,7 @@ export const scheduleListItemSpecLines = ({ state = 'active', size = 'compact' }
     ? ['  Content     phone icon 20 × 30, then "Syncing note…" Figtree SemiBold 12px, 10px apart, centred']
     : size === 'compact'
       ? [
-          '  Content     stacked and centred, 5px apart, 10px side padding:',
+          '  Content     stacked and centred, 3px apart, 10px side padding:',
           '              status icon 20px · name Figtree SemiBold 12px (cut off with …) · time Relative Mono 13px · visit type',
         ]
       : [
