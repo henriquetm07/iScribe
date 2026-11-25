@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { fn } from 'storybook/test';
 import { appointmentStatuses } from '../AppointmentStatus/AppointmentStatus';
 import { ehrs } from '../EhrIcon/EhrIcon';
 import { ScheduleListItem, VisitType, type ScheduleListItemProps } from './ScheduleList';
@@ -13,7 +12,7 @@ const meta = {
   component: ScheduleListItem,
   args: {
     state: 'active',
-    size: 'compact',
+    size: 'expanded',
     name: 'Mathieu Donte',
     time: '8:00 AM',
     status: 'sent-to-ehr',
@@ -48,7 +47,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /** One appointment. Pick its state, size, status and EHR in Controls. */
-export const Default: Story = { args: { onMoreInfo: fn() } };
+export const Default: Story = {};
 
 /** Every state in both sizes, as in the Figma sheet. */
 export const AllStates: Story = {
