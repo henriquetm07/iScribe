@@ -23,7 +23,7 @@ export const scheduleListItemSpecLines = ({ state = 'active', size = 'compact' }
       : [
           '  Left        120px, 1px line on the right (soft contrast; medium when selected):',
           '              photo 30px (corners 10px) · time Relative Mono 13px · visit type, 5px apart',
-          '  Right       10px padding: name Figtree SemiBold 14px · sex, date of birth, age Figtree 11px',
+          '  Right       10px / 20px padding: name Figtree SemiBold 14px · sex, date of birth, age Figtree 11px',
           '              medium contrast, 10px apart · 8px · Appointment Status',
         ]),
   '  Visit type  EHR Icon 20px + label Figtree Medium 11px, 4px apart',

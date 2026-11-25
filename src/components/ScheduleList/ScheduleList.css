@@ -128,7 +128,8 @@
   justify-content: center;
   min-width: 0;
   height: 100%;
-  padding: 10px;
+  /* Figma: 10px top and bottom, 20px left and right */
+  padding: 10px 20px;
 }
 /* Sex, date of birth, age: Figtree 11px, medium contrast, 10px apart */
 .is-sli__info {
