@@ -100,6 +100,11 @@
 .is-sli--selected .is-sli__side {
   border-right-color: var(--is-surface-medium-contrast-background);
 }
+/* Figma: the divider in Selected is Surface / Super Soft Contrast Secondary of the page's mode — TWhite 10 on a light
+   page (= Medium Contrast in the dark card, above) and TGrey 3 on a dark page (the card is drawn light) */
+.is-sli--selected[data-theme='light'] .is-sli__side {
+  border-right-color: var(--is-color-tgrey-3);
+}
 .is-sli__photo {
   display: block;
   flex: none;
@@ -220,7 +225,7 @@
   background: linear-gradient(
       90deg,
       transparent 0%,
-      var(--is-surface-super-soft-contrast-light, rgba(255, 255, 255, 0.5)) 50%,
+      var(--is-surface-soft-contrast-light-secondary-2, rgba(255, 255, 255, 0.5)) 50%,
       transparent 100%
     )
     0 0 / 200% 100% no-repeat,

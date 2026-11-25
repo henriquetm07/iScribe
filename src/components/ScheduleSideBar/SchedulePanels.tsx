@@ -106,7 +106,14 @@ const Option = ({
     </span>
   );
   return (
-    <Button variant={on ? 'primary' : 'secondary'} size="regular" iconLeft={iconNode} aria-pressed={on} onClick={onClick}>
+    <Button
+      variant={on ? 'primary' : 'secondary'}
+      size="regular"
+      iconLeft={iconNode}
+      aria-pressed={on}
+      onClick={onClick}
+      className={on ? undefined : 'is-sched-option--off'}
+    >
       {children}
     </Button>
   );

@@ -153,7 +153,7 @@
   background: linear-gradient(
       90deg,
       transparent 0%,
-      var(--is-surface-super-soft-contrast-light, rgba(255, 255, 255, 0.5)) 50%,
+      var(--is-surface-soft-contrast-light-secondary-2, rgba(255, 255, 255, 0.5)) 50%,
       transparent 100%
     )
     0 0 / 200% 100% no-repeat,

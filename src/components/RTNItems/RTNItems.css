@@ -118,8 +118,8 @@
   width: 100%;
   padding: 20px;
   overflow: hidden;
-  background: var(--is-surface-super-soft-contrast-light);
-  border: 1px solid var(--is-surface-soft-contrast-light-2);
+  background: var(--is-surface-super-soft-contrast-secondary);
+  border: 1px solid var(--is-surface-soft-contrast-light-secondary-2);
   border-radius: var(--is-roundness-12);
 }
 .is-rtn-content--iphone {

@@ -352,6 +352,10 @@
   line-height: 18px;
 }
 /* An option's icon wrapper: no box of its own; only carries data-theme for the selected look */
+/* A filter option that isn't picked: only its 1px edge (Figma: the Secondary button with no fill) */
+.is-sched-option--off.is-button--secondary:not(:hover, :active, :focus-visible) {
+  --btn-bg: transparent;
+}
 .is-sched-option__icon {
   display: contents;
 }
