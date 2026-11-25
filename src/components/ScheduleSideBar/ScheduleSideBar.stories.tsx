@@ -40,6 +40,7 @@ const meta = {
     providerName: { table: { disable: true } },
     onProviderMenu: { table: { disable: true } },
     onNewNote: { table: { disable: true } },
+    loading: { table: { disable: true } },
     appointments: { table: { disable: true } },
     pending: { table: { disable: true } },
     providers: { table: { disable: true } },
