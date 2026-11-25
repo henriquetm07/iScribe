@@ -49,7 +49,7 @@ export const rtnHeaderSpecLines = (p: Partial<RTNHeaderProps>) => [
   '              var(--is-status-foreground-alert) · 60px red Stop (22px icon)',
   '  Playback    the same pill, full width: 40px play/pause ("play-pause" animated icon) ·',
   '              timeline (14px title, 5px bar var(--is-labels-accent) on',
-  '              var(--is-surface-secondary-medium-contrast), 10px mono times) · Resume',
+  '              var(--is-surface-soft-contrast-light-secondary-2), 10px mono times) · Resume',
   '              (secondary, 60px pill, 22px mic)',
   '',
   'FLOW',

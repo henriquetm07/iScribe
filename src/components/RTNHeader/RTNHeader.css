@@ -461,7 +461,7 @@
   position: relative;
   height: 5px;
   border-radius: 1000px;
-  background: var(--is-surface-secondary-medium-contrast);
+  background: var(--is-surface-soft-contrast-light-secondary-2);
   cursor: pointer;
   touch-action: none;
   outline: none;
