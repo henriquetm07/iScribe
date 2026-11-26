@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { useArgs } from 'storybook/preview-api';
 import { Button } from '../Button/Button';
-import { Dropdown } from '../Dropdown/Dropdown';
 import { AppointmentStatus, AppointmentStatusIcon, appointmentStatuses, type AppointmentStatusProps } from './AppointmentStatus';
 import { appointmentStatusSpecComment } from './AppointmentStatus.docs';
 
@@ -22,8 +20,9 @@ const meta = {
     controls: { disable: true },
     docs: {
       description: { component: 'Patient and note statuses' },
-      // No control panel: the status is picked in the canvas
       controls: false,
+      // The first story is the canvas at the top; not listed again below
+      primaryInStories: false,
       source: {
         transform: (code: string, ctx: { args: AppointmentStatusProps }) => `${appointmentStatusSpecComment(ctx.args.status)}\n${code.replace(/^(\s*\/\*[\s\S]*?\*\/\s*)+/, '')}`,
       },
@@ -34,11 +33,11 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const statusOptions = appointmentStatuses.map(({ value, label }) => ({ value, label }));
-
 /** The icon with its label. Pick a status in the dropdown. */
 export const Default: Story = {
   parameters: {
+    // The status dropdown on the canvas (as on Toast); no control panel
+    canvasSelect: { arg: 'status', label: 'Status', options: appointmentStatuses, width: 190 },
     docs: {
       source: {
         transform: (_code: string, ctx: { args: AppointmentStatusProps }) =>
@@ -46,24 +45,8 @@ export const Default: Story = {
       },
     },
   },
-  render: function Render(args) {
-    const [, updateArgs] = useArgs();
-    return (
-      // Tall enough for the open list (6 rows), so the canvas doesn't cut it off
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24, minHeight: 270 }}>
-        <Dropdown
-          device="web"
-          width={220}
-          visibleRows={6}
-          aria-label="Status"
-          options={statusOptions}
-          value={args.status}
-          onChange={(status) => updateArgs({ status })}
-        />
-        <AppointmentStatus {...args} />
-      </div>
-    );
-  },
+  // Room under the dropdown for its open list (8 statuses), so the canvas doesn't cut it off
+  decorators: [(Story) => <div style={{ display: 'flex', justifyContent: 'center', minHeight: 320 }}>{Story()}</div>],
 };
 
 /** Just the 20px icon (Figma "Appointment Status Icons"). */

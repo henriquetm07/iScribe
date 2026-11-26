@@ -18,6 +18,8 @@ interface CanvasSelect {
   arg: string;
   label?: string;
   options: { value: string; label: string }[];
+  /** Width of the dropdown (default 150px), for longer option names */
+  width?: number;
 }
 
 const canvasSelectOf = (parameters: Record<string, any>): CanvasSelect | null => {
@@ -99,7 +101,7 @@ export const withDeviceSelector: Decorator = (Story, context) => {
           <Dropdown
             device="web"
             rounded
-            width={150}
+            width={select.width ?? 150}
             options={select.options}
             value={String(args[select.arg])}
             onChange={(value) => updateArgs({ [select.arg]: value })}

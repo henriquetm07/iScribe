@@ -78,6 +78,12 @@ const MainControls = () => {
   return <Controls />;
 };
 
+/** The other stories; the first one too, unless the component sets docs.primaryInStories to false */
+const OtherStories = () => {
+  const meta = useOf('meta');
+  return <Stories includePrimary={meta.preparedMeta.parameters?.docs?.primaryInStories !== false} />;
+};
+
 export const DocsPage = () => (
   <>
     <Title />
@@ -86,6 +92,6 @@ export const DocsPage = () => (
     <FigmaLink />
     <Primary />
     <MainControls />
-    <Stories />
+    <OtherStories />
   </>
 );
