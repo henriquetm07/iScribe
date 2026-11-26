@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { useArgs } from 'storybook/preview-api';
 import { Button } from '../Button/Button';
+import { Dropdown } from '../Dropdown/Dropdown';
 import { AppointmentStatus, AppointmentStatusIcon, appointmentStatuses, type AppointmentStatusProps } from './AppointmentStatus';
 import { appointmentStatusSpecComment } from './AppointmentStatus.docs';
 
@@ -11,13 +13,17 @@ const meta = {
   component: AppointmentStatus,
   args: { status: 'new-note' },
   argTypes: {
-    status: { control: 'select', options: appointmentStatuses.map((s) => s.value) },
+    status: { table: { disable: true } },
     label: { table: { disable: true } },
     animate: { table: { disable: true } },
     className: { table: { disable: true } },
   },
   parameters: {
+    controls: { disable: true },
     docs: {
+      description: { component: 'Patient and note statuses' },
+      // No control panel: the status is picked in the canvas
+      controls: false,
       source: {
         transform: (code: string, ctx: { args: AppointmentStatusProps }) => `${appointmentStatusSpecComment(ctx.args.status)}\n${code.replace(/^(\s*\/\*[\s\S]*?\*\/\s*)+/, '')}`,
       },
@@ -28,8 +34,36 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** The icon with its label. Pick a status in Controls. */
-export const Default: Story = {};
+const statusOptions = appointmentStatuses.map(({ value, label }) => ({ value, label }));
+
+/** The icon with its label. Pick a status in the dropdown. */
+export const Default: Story = {
+  parameters: {
+    docs: {
+      source: {
+        transform: (_code: string, ctx: { args: AppointmentStatusProps }) =>
+          `${appointmentStatusSpecComment(ctx.args.status)}\n<AppointmentStatus status="${ctx.args.status}" />`,
+      },
+    },
+  },
+  render: function Render(args) {
+    const [, updateArgs] = useArgs();
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24 }}>
+        <Dropdown
+          device="web"
+          width={220}
+          visibleRows={6}
+          aria-label="Status"
+          options={statusOptions}
+          value={args.status}
+          onChange={(status) => updateArgs({ status })}
+        />
+        <AppointmentStatus {...args} />
+      </div>
+    );
+  },
+};
 
 /** Just the 20px icon (Figma "Appointment Status Icons"). */
 export const Icon: Story = {

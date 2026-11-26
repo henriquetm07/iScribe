@@ -71,6 +71,13 @@ const FigmaLink = () => {
   );
 };
 
+/** The controls of the first story, unless the component sets docs.controls to false (its canvas has its own) */
+const MainControls = () => {
+  const meta = useOf('meta');
+  if (meta.preparedMeta.parameters?.docs?.controls === false) return null;
+  return <Controls />;
+};
+
 export const DocsPage = () => (
   <>
     <Title />
@@ -78,7 +85,7 @@ export const DocsPage = () => (
     <Description />
     <FigmaLink />
     <Primary />
-    <Controls />
+    <MainControls />
     <Stories />
   </>
 );
