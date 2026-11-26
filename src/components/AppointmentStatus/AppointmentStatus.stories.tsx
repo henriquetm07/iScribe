@@ -49,7 +49,8 @@ export const Default: Story = {
   render: function Render(args) {
     const [, updateArgs] = useArgs();
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24 }}>
+      // Tall enough for the open list (6 rows), so the canvas doesn't cut it off
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24, minHeight: 270 }}>
         <Dropdown
           device="web"
           width={220}
