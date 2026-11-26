@@ -87,6 +87,15 @@
     width: var(--btn-icon);
     height: var(--btn-icon);
   }
+  /* Appointment Status: the status list opens past the canvas (over what's below) instead of being cut off */
+  #anchor--primary--components-appointment-status--default .sbdocs-preview,
+  #anchor--primary--components-appointment-status--default .docs-story {
+    overflow: visible !important;
+  }
+  #anchor--primary--components-appointment-status--default .sbdocs-preview {
+    position: relative;
+    z-index: 30;
+  }
   .sbdocs-preview {
     /* TGrey 6 stroke (Soft Contrast Background: TGrey 6 in light mode, its counterpart in dark mode) */
     border: 1px solid var(--is-surface-soft-contrast-background) !important;

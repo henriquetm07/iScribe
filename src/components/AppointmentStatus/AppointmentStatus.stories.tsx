@@ -45,8 +45,6 @@ export const Default: Story = {
       },
     },
   },
-  // Room under the dropdown for its open list (8 statuses), so the canvas doesn't cut it off
-  decorators: [(Story) => <div style={{ display: 'flex', justifyContent: 'center', minHeight: 320 }}>{Story()}</div>],
 };
 
 /** Just the 20px icon (Figma "Appointment Status Icons"). */
