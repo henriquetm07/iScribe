@@ -224,7 +224,7 @@
   --is-button-regular-gap: 6px;
   --is-button-regular-height: 40px;
   --is-button-regular-font-size: 13px;
-  --is-button-regular-icon-size: 16px;
+  --is-button-regular-icon-size: 18px;
   --is-button-regular-icon-size-icon-button: 20px;
   --is-button-regular-stroke: 1.3px;
   /* Big */
@@ -233,7 +233,7 @@
   --is-button-big-gap: 8px;
   --is-button-big-height: 50px;
   --is-button-big-font-size: 14px;
-  --is-button-big-icon-size: 18px;
+  --is-button-big-icon-size: 20px;
   --is-button-big-icon-size-icon-button: 24px;
   --is-button-big-stroke: 1.4px;
   /* XL */
